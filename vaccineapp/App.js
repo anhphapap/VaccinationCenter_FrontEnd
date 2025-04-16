@@ -1,20 +1,31 @@
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./components/Home/Home";
 import Book from "./components/Home/Book";
-import Cart from "./components/Home/Cart";
+import Cart, {
+  CartModalProvider,
+  useCartModal,
+} from "./components/Home/CartModalProvider";
 import History from "./components/Home/History";
 import Vaccine from "./components/Home/Vaccine";
 import Order from "./components/Home/Order";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Icon from "react-native-vector-icons/FontAwesome";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Button, PaperProvider, Portal } from "react-native-paper";
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
+  const { openCart } = useCartModal();
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -22,11 +33,84 @@ const StackNavigator = () => {
         component={Home}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="book" component={Book} />
-      <Stack.Screen name="cart" component={Cart} />
-      <Stack.Screen name="vaccine" component={Vaccine} />
-      <Stack.Screen name="history" component={History} />
-      <Stack.Screen name="order" component={Order} />
+      <Stack.Screen
+        name="book"
+        component={Book}
+        options={({ navigation }) => ({
+          title: "Đặt lịch",
+          headerStyle: {
+            backgroundColor: "#0a56df",
+          },
+          headerTintColor: "#fff",
+          headerTitleAlign: "center",
+          headerRight: () => (
+            <Button>
+              <FontAwesome5 name="plus" size={20} color={"white"} />
+            </Button>
+          ),
+          headerLeft: () => (
+            <Button onPress={() => navigation.goBack()}>
+              <FontAwesome5 name="arrow-left" size={20} color={"white"} />
+            </Button>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="vaccine"
+        component={Vaccine}
+        options={({ navigation }) => ({
+          title: "Danh mục vắc xin",
+          headerStyle: {
+            backgroundColor: "#0a56df",
+          },
+          headerTintColor: "#fff",
+          headerTitleAlign: "center",
+          headerRight: () => (
+            <Button onPress={openCart}>
+              <FontAwesome5 name="shopping-cart" size={20} color={"white"} />
+            </Button>
+          ),
+          headerLeft: () => (
+            <Button onPress={() => navigation.goBack()}>
+              <FontAwesome5 name="arrow-left" size={20} color={"white"} />
+            </Button>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="history"
+        component={History}
+        options={({ navigation }) => ({
+          title: "Lịch sử tiêm chủng",
+          headerStyle: {
+            backgroundColor: "#0a56df",
+          },
+          headerTintColor: "#fff",
+          headerTitleAlign: "center",
+          headerLeft: () => (
+            <Button onPress={() => navigation.goBack()}>
+              <FontAwesome5 name="arrow-left" size={20} color={"white"} />
+            </Button>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="order"
+        component={Order}
+        options={({ navigation }) => ({
+          title: "Đặt mua vắc xin",
+          headerStyle: {
+            backgroundColor: "#0a56df",
+          },
+          headerTintColor: "#fff",
+          headerTitleAlign: "center",
+          headerLeft: () => (
+            <Button onPress={() => navigation.goBack()}>
+              <FontAwesome5 name="arrow-left" size={20} color={"white"} />
+            </Button>
+          ),
+        })}
+      />
     </Stack.Navigator>
   );
 };
@@ -40,7 +124,7 @@ const TabNavigator = () => {
         name="TRANG CHỦ"
         component={StackNavigator}
         options={{
-          tabBarIcon: () => <Icon name="home" size={30} />,
+          tabBarIcon: () => <FontAwesome5 name="home" size={30} />,
         }}
       />
     </Tab.Navigator>
@@ -49,11 +133,13 @@ const TabNavigator = () => {
 
 const App = () => {
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <TabNavigator />
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <CartModalProvider>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <TabNavigator />
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </CartModalProvider>
   );
 };
 

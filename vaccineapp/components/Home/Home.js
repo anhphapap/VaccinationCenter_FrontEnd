@@ -1,13 +1,15 @@
 import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Avatar } from "react-native-paper";
+import { Avatar, Button } from "react-native-paper";
 import Styles from "../../styles/Styles";
 import Carousel from "./Carousel";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useNavigation } from "@react-navigation/native";
+import { useCartModal } from "./CartModalProvider";
 
 const Home = () => {
+  const { openCart } = useCartModal();
   const nav = useNavigation();
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -19,9 +21,14 @@ const Home = () => {
         resizeMode="cover"
       />
       <View style={Styles.container}>
-        <View style={[Styles.rowSpaceCenter, { paddingHorizontal: 10 }]}>
+        <View
+          style={[
+            Styles.rowSpaceCenter,
+            { paddingHorizontal: 10, marginTop: 10 },
+          ]}
+        >
           <View style={Styles.flexRow}>
-            <View style={{ marginHorizontal: 10 }}>
+            <View style={{ marginRight: 10 }}>
               <Avatar.Text
                 size={40}
                 label="AP"
@@ -31,21 +38,23 @@ const Home = () => {
             </View>
             <View style={Styles.flexCol}>
               <Text style={Styles.textWhite}>Xin chào,</Text>
-              <Text style={Styles.textWhite}>PHẠM ANH PHA</Text>
+              <Text style={[Styles.textWhite, { fontWeight: "bold" }]}>
+                PHẠM ANH PHA
+              </Text>
             </View>
           </View>
-          <TouchableOpacity onPress={() => nav.navigate("cart")}>
+          <Button onPress={openCart}>
             <FontAwesome5
               name="shopping-cart"
               color="white"
               size={24}
             ></FontAwesome5>
-          </TouchableOpacity>
+          </Button>
         </View>
-        <View style={{ height: 200, marginTop: 20 }}>
+        <View style={{ height: 200, marginTop: 30 }}>
           <Carousel></Carousel>
         </View>
-        <View style={[Styles.flexCol, { marginTop: 50 }]}>
+        <View style={[Styles.flexCol, { marginTop: 50, gap: 20 }]}>
           <View style={[Styles.flexRow, { justifyContent: "space-around" }]}>
             <View>
               <TouchableOpacity
@@ -119,8 +128,8 @@ const styles = StyleSheet.create({
   btn: {
     width: 100,
     height: 100,
-    borderRadius: 20,
-    backgroundColor: "#e2e5fc",
+    borderRadius: 30,
+    backgroundColor: "#e7e9f3",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -129,5 +138,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     margin: 10,
     width: 80,
+    fontWeight: "300",
   },
 });

@@ -1,7 +1,17 @@
 import React, { useRef, useState, useEffect } from "react";
-import { View, FlatList, Image, Dimensions, StyleSheet } from "react-native";
+import {
+  View,
+  FlatList,
+  Image,
+  Dimensions,
+  StyleSheet,
+  ViewToken,
+} from "react-native";
 
 const { width } = Dimensions.get("window");
+
+const SPACING = 10;
+const ITEM_WIDTH = width - SPACING * 4;
 
 const data = [
   {
@@ -26,9 +36,6 @@ const data = [
   },
 ];
 
-const ITEM_WIDTH = width - 30;
-const SPACER = (width - ITEM_WIDTH) / 2;
-
 const Carousel = () => {
   const flatListRef = useRef(null);
   const [index, setIndex] = useState(0);
@@ -36,46 +43,80 @@ const Carousel = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((prev) => {
-        const nextIndex = (prev + 1) % data.length;
-        flatListRef.current?.scrollToIndex({
-          index: nextIndex,
-          animated: true,
-        });
-        return nextIndex;
+        const next = (prev + 1) % data.length;
+        flatListRef.current?.scrollToIndex({ index: next, animated: true });
+        return next;
       });
-    }, 10000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
 
+  const handleLayout = () => {
+    flatListRef.current?.scrollToIndex({ index: 0, animated: false });
+  };
+
   return (
-    <FlatList
-      ref={flatListRef}
-      data={data}
-      keyExtractor={(item) => item.id}
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      pagingEnabled={false}
-      snapToInterval={ITEM_WIDTH}
-      decelerationRate="fast"
-      snapToAlignment="center"
-      contentContainerStyle={{ paddingHorizontal: SPACER }}
-      renderItem={({ item }) => (
-        <View style={{ width: ITEM_WIDTH, marginHorizontal: 5 }}>
-          <Image source={{ uri: item.image }} style={styles.image} />
-        </View>
-      )}
-    />
+    <>
+      <FlatList
+        ref={flatListRef}
+        data={data}
+        keyExtractor={(item) => item.id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        pagingEnabled={false}
+        snapToInterval={ITEM_WIDTH + SPACING * 2}
+        decelerationRate="normal"
+        snapToAlignment="center"
+        contentContainerStyle={styles.container}
+        scrollEnabled={false}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Image source={{ uri: item.image }} style={styles.image} />
+          </View>
+        )}
+        onLayout={handleLayout}
+      />
+      <View style={styles.dotContainer}>
+        {data.map((_, i) => (
+          <View key={i} style={[styles.dot, i === index && styles.activeDot]} />
+        ))}
+      </View>
+    </>
   );
 };
 
 export default Carousel;
 
 const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: SPACING,
+  },
+  card: {
+    width: ITEM_WIDTH,
+    marginHorizontal: SPACING,
+  },
   image: {
     width: "100%",
-    height: 200,
+    height: 180,
     borderRadius: 10,
     resizeMode: "cover",
+  },
+  dotContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
+  dot: {
+    width: 15,
+    height: 3,
+    borderRadius: 4,
+    backgroundColor: "#ccc",
+    marginHorizontal: 4,
+  },
+  activeDot: {
+    width: 15,
+    height: 3,
+    borderRadius: 4,
+    backgroundColor: "#007AFF",
   },
 });
