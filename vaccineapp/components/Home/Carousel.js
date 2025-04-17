@@ -57,7 +57,7 @@ const Carousel = () => {
   };
 
   return (
-    <>
+    <View style={{ position: "relative" }}>
       <FlatList
         ref={flatListRef}
         data={data}
@@ -82,7 +82,7 @@ const Carousel = () => {
           <View key={i} style={[styles.dot, i === index && styles.activeDot]} />
         ))}
       </View>
-    </>
+    </View>
   );
 };
 
@@ -105,18 +105,21 @@ const styles = StyleSheet.create({
   dotContainer: {
     flexDirection: "row",
     justifyContent: "center",
+    position: "absolute",
+    bottom: 10,
+    width: "100%",
   },
   dot: {
-    width: 15,
+    width: 18,
     height: 3,
     borderRadius: 4,
-    backgroundColor: "#ccc",
+    backgroundColor: "white",
     marginHorizontal: 4,
   },
   activeDot: {
-    width: 15,
-    height: 3,
+    width: 18,
+    height: 4,
     borderRadius: 4,
-    backgroundColor: "#007AFF",
+    backgroundColor: "#0201ee",
   },
 });

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Image,
   ScrollView,
+  Pressable,
 } from "react-native";
 import Styles from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -32,6 +33,13 @@ export const CartModalProvider = ({ children }) => {
       img: "https://vnvc.vn/wp-content/uploads/2024/09/vaccine-qdenga-1.jpg",
     },
     {
+      id: "vac-xin-qdeng",
+      name: "Vắc xin Qdenga",
+      price: 1390000,
+      disease: "Sốt xuất huyết",
+      img: "https://vnvc.vn/wp-content/uploads/2024/09/vaccine-qdenga-1.jpg",
+    },
+    {
       id: "vac-xin-shingrix",
       name: "Vắc xin Shingrix",
       price: 3890000,
@@ -40,6 +48,13 @@ export const CartModalProvider = ({ children }) => {
     },
     {
       id: "vac-xin-shingri",
+      name: "Vắc xin Shingrix",
+      price: 3890000,
+      disease: "Zona thần kinh",
+      img: "https://vnvc.vn/wp-content/uploads/2023/11/vacxin-shingrix.jpg",
+    },
+    {
+      id: "vac-xin-shingr",
       name: "Vắc xin Shingrix",
       price: 3890000,
       disease: "Zona thần kinh",
@@ -58,16 +73,18 @@ export const CartModalProvider = ({ children }) => {
         onRequestClose={closeCart}
       >
         <View style={styles.overlay}>
+          <Pressable style={styles.overlayTouchable} onPress={closeCart} />
           <View style={styles.modalContainer}>
             <View>
               <View
                 style={[
                   Styles.rowSpaceCenter,
                   {
-                    padding: 20,
+                    paddingVertical: 10,
                     borderBottomWidth: 1,
-                    borderColor: "#eee",
+                    borderColor: "#c7c8d0",
                     paddingRight: 10,
+                    paddingLeft: 20,
                   },
                 ]}
               >
@@ -80,8 +97,17 @@ export const CartModalProvider = ({ children }) => {
                 <FlatList
                   data={cartItems}
                   keyExtractor={(item) => item.id}
-                  style={{ maxHeight: "89%" }}
+                  style={{
+                    height: "86%",
+                  }}
                   showsVerticalScrollIndicator={false}
+                  ListHeaderComponent={
+                    <View style={{ marginVertical: 10 }}>
+                      <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                        Vắc xin đã chọn
+                      </Text>
+                    </View>
+                  }
                   renderItem={({ item }) => (
                     <View style={styles.iContainer}>
                       <View
@@ -143,16 +169,17 @@ export const CartModalProvider = ({ children }) => {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: "rgba(0,0,0,0.6)",
     justifyContent: "flex-end",
+    position: "relative",
   },
   iContainer: {
     padding: 20,
     borderWidth: 1,
-    borderColor: "#eee",
+    borderColor: "#c7c8d0",
     borderRadius: 10,
     flexDirection: "column",
-    marginTop: 10,
+    marginBottom: 10,
   },
   body: {
     paddingHorizontal: 20,
@@ -167,10 +194,10 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "500",
   },
   closeBtn: {
-    backgroundColor: "#007AFF",
+    backgroundColor: "#0a56df",
     padding: 12,
     borderRadius: 10,
     alignItems: "center",
@@ -188,11 +215,19 @@ const styles = StyleSheet.create({
   },
   iBottom: {
     borderTopWidth: 1,
-    borderColor: "#eee",
+    borderColor: "#c7c8d0",
     position: "absolute",
     bottom: 0,
     left: 0,
     backgroundColor: "white",
     width: "100%",
+  },
+  overlayTouchable: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 0,
   },
 });
