@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
-import Styles from "../../styles/Styles";
+import Styles, { color } from "../../styles/Styles";
 import { Button } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { DatePickerInput } from "react-native-paper-dates";
@@ -36,6 +36,16 @@ const cartItems = [
   },
 ];
 
+const userInfo = {
+  name: "Phạm Anh Pha",
+  phone: "0912195113",
+  birth: "17/09/2004",
+  id: "1",
+  sex: "Nam",
+  email: "anhphapap0@gmail.com",
+  address: "Bình Định",
+};
+
 const Order = () => {
   registerTranslation("vi", {
     save: "Lưu",
@@ -56,7 +66,6 @@ const Order = () => {
     close: "Đóng",
   });
 
-  const [date, setDate] = useState(addDays(new Date(), 0));
   const theme = {
     ...DefaultTheme,
     roundness: 10,
@@ -67,6 +76,10 @@ const Order = () => {
       outline: "#ccc",
     },
   };
+
+  const [date, setDate] = useState(addDays(new Date(), 0));
+  const [showInfo, setShowInfo] = useState(true);
+
   return (
     <View
       style={{
@@ -81,6 +94,76 @@ const Order = () => {
             <Text style={[Styles.fontBold, Styles.fz16]}>PHẠM ANH PHA</Text>
           </View>
           <View style={Styles.p10}>
+            <TouchableOpacity onPress={() => setShowInfo(!showInfo)}>
+              <Text style={[{ color: color.primary }, Styles.fontPreBold]}>
+                Chi tiết người tiêm{" "}
+                <FontAwesome5
+                  name={showInfo ? "chevron-up" : "chevron-down"}
+                  color={color.primary}
+                />
+              </Text>
+            </TouchableOpacity>
+            {showInfo && (
+              <View style={[{ gap: 10 }, Styles.mv10]}>
+                <View style={Styles.rowSpaceCenter}>
+                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
+                    Họ và tên
+                  </Text>
+                  <Text style={Styles.fontPreBold}>{userInfo.name}</Text>
+                </View>
+                <View style={Styles.rowSpaceCenter}>
+                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
+                    Số điện thoại
+                  </Text>
+                  <Text style={Styles.fontPreBold}>{userInfo.phone}</Text>
+                </View>
+                <View style={Styles.rowSpaceCenter}>
+                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
+                    Ngày sinh
+                  </Text>
+                  <Text style={Styles.fontPreBold}>{userInfo.birth}</Text>
+                </View>
+                <View style={Styles.rowSpaceCenter}>
+                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
+                    Mã khách hàng
+                  </Text>
+                  <Text style={Styles.fontPreBold}>{userInfo.id}</Text>
+                </View>
+                <View style={Styles.rowSpaceCenter}>
+                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
+                    Giới tính
+                  </Text>
+                  <Text style={Styles.fontPreBold}>{userInfo.sex}</Text>
+                </View>
+                <View style={Styles.rowSpaceCenter}>
+                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
+                    Email
+                  </Text>
+                  <Text style={Styles.fontPreBold}>{userInfo.email}</Text>
+                </View>
+                <View style={Styles.rowSpaceCenter}>
+                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
+                    Địa chỉ
+                  </Text>
+                  <Text style={Styles.fontPreBold}>{userInfo.address}</Text>
+                </View>
+              </View>
+            )}
+            <Text style={[Styles.fontPreBold, Styles.mv10, Styles.mt20]}>
+              Địa điểm tiêm
+            </Text>
+            <View
+              style={[
+                Styles.border1,
+                Styles.rounded10,
+                Styles.p10,
+                { backgroundColor: color.secondary },
+              ]}
+            >
+              <Text style={Styles.fontPreBold}>
+                Nhà Bè, Thành phố Hồ Chí Minh
+              </Text>
+            </View>
             <Text style={[Styles.fontPreBold, Styles.mv10]}>
               Chọn vắc xin *
             </Text>
@@ -182,22 +265,22 @@ export default Order;
 const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
-    borderColor: "#c7c8d0",
+    borderColor: color.border,
     borderRadius: 10,
   },
   header: {
-    backgroundColor: "#e7e9f3",
+    backgroundColor: color.secondary,
     padding: 10,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
   btn1: {
-    backgroundColor: "#0a56df",
+    backgroundColor: color.primary,
     borderRadius: 10,
     flex: 1,
   },
   btn2: {
-    borderColor: "#0a56df",
+    borderColor: color.primary,
     fontWeight: "bold",
     borderWidth: 1,
     borderRadius: 10,
@@ -207,7 +290,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderTopWidth: 1,
-    borderColor: "#c7c8d0",
+    borderColor: color.border,
     position: "absolute",
     bottom: 0,
     left: 0,
@@ -217,14 +300,14 @@ const styles = StyleSheet.create({
   iContainer: {
     padding: 20,
     borderWidth: 1,
-    borderColor: "#c7c8d0",
+    borderColor: color.border,
     borderRadius: 10,
     flexDirection: "column",
     marginBottom: 10,
   },
   iBottom: {
     borderTopWidth: 1,
-    borderColor: "#c7c8d0",
+    borderColor: color.border,
     position: "absolute",
     bottom: 0,
     left: 0,
@@ -235,5 +318,8 @@ const styles = StyleSheet.create({
     height: 80,
     width: 160,
     marginRight: 10,
+  },
+  locate: {
+    padding: 10,
   },
 });

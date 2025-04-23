@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, Button } from "react-native-paper";
-import Styles from "../../styles/Styles";
+import Styles, { color } from "../../styles/Styles";
 import Carousel from "./Carousel";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useNavigation } from "@react-navigation/native";
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     flexDirection: "row",
     padding: 20,
-    backgroundColor: "#e7e9f360",
+    backgroundColor: color.secondary,
     borderRadius: 10,
     marginHorizontal: 10,
     alignItems: "center",
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 30,
-    backgroundColor: "#e7e9f360",
+    backgroundColor: color.secondary,
     alignItems: "center",
     justifyContent: "center",
   },

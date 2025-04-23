@@ -1,5 +1,12 @@
 import { StyleSheet } from "react-native";
 
+export const color = {
+  primary: "#0a56df",
+  border: "#c7c8d0",
+  secondary: "#e7e9f360",
+  white: "#fff",
+};
+
 export default StyleSheet.create({
   flexCol: {
     flexDirection: "column",
@@ -49,5 +56,15 @@ export default StyleSheet.create({
   },
   fz18: {
     fontSize: 18,
+  },
+  border1: {
+    borderWidth: 1,
+    borderColor: color.border,
+  },
+  rounded10: {
+    borderRadius: 10,
+  },
+  rounded20: {
+    borderRadius: 20,
   },
 });

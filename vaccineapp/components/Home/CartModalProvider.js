@@ -10,7 +10,7 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import Styles from "../../styles/Styles";
+import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button } from "react-native-paper";
 
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   iContainer: {
     padding: 20,
     borderWidth: 1,
-    borderColor: "#c7c8d0",
+    borderColor: color.border,
     borderRadius: 10,
     flexDirection: "column",
     marginBottom: 10,
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     overflow: "scroll",
   },
   modalContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: color.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     height: "90%",
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   closeBtn: {
-    backgroundColor: "#0a56df",
+    backgroundColor: color.primary,
     padding: 12,
     borderRadius: 10,
     alignItems: "center",
@@ -209,13 +209,13 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   price: {
-    color: "#007AFF",
+    color: color.primary,
     fontWeight: "bold",
     fontSize: 16,
   },
   iBottom: {
     borderTopWidth: 1,
-    borderColor: "#c7c8d0",
+    borderColor: color.border,
     position: "absolute",
     bottom: 0,
     left: 0,
