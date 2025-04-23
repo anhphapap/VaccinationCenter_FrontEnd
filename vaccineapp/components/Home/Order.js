@@ -78,7 +78,7 @@ const Order = () => {
   };
 
   const [date, setDate] = useState(addDays(new Date(), 0));
-  const [showInfo, setShowInfo] = useState(true);
+  const [showInfo, setShowInfo] = useState(false);
 
   return (
     <View

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import {
   Modal,
   View,
@@ -13,6 +13,7 @@ import {
 import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button } from "react-native-paper";
+import Apis, { endpoints } from "../../configs/Apis";
 
 const CartModalContext = createContext();
 
@@ -20,48 +21,19 @@ export const useCartModal = () => useContext(CartModalContext);
 
 export const CartModalProvider = ({ children }) => {
   const [visible, setVisible] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
 
   const openCart = () => setVisible(true);
   const closeCart = () => setVisible(false);
 
-  const cartItems = [
-    {
-      id: "vac-xin-qdenga",
-      name: "Vắc xin Qdenga",
-      price: 1390000,
-      disease: "Sốt xuất huyết",
-      img: "https://vnvc.vn/wp-content/uploads/2024/09/vaccine-qdenga-1.jpg",
-    },
-    {
-      id: "vac-xin-qdeng",
-      name: "Vắc xin Qdenga",
-      price: 1390000,
-      disease: "Sốt xuất huyết",
-      img: "https://vnvc.vn/wp-content/uploads/2024/09/vaccine-qdenga-1.jpg",
-    },
-    {
-      id: "vac-xin-shingrix",
-      name: "Vắc xin Shingrix",
-      price: 3890000,
-      disease: "Zona thần kinh",
-      img: "https://vnvc.vn/wp-content/uploads/2023/11/vacxin-shingrix.jpg",
-    },
-    {
-      id: "vac-xin-shingri",
-      name: "Vắc xin Shingrix",
-      price: 3890000,
-      disease: "Zona thần kinh",
-      img: "https://vnvc.vn/wp-content/uploads/2023/11/vacxin-shingrix.jpg",
-    },
-    {
-      id: "vac-xin-shingr",
-      name: "Vắc xin Shingrix",
-      price: 3890000,
-      disease: "Zona thần kinh",
-      img: "https://vnvc.vn/wp-content/uploads/2023/11/vacxin-shingrix.jpg",
-    },
-  ];
-  const total = cartItems.reduce((sum, item) => sum + item.price, 0);
+  const loadItem = async () => {
+    let res = await Apis.get(endpoints.vaccines);
+    setCartItems(res.data.results);
+  };
+
+  useEffect(() => {
+    loadItem();
+  }, []);
 
   return (
     <CartModalContext.Provider value={{ openCart, closeCart }}>
@@ -75,82 +47,80 @@ export const CartModalProvider = ({ children }) => {
         <View style={styles.overlay}>
           <Pressable style={styles.overlayTouchable} onPress={closeCart} />
           <View style={styles.modalContainer}>
-            <View>
-              <View
-                style={[
-                  Styles.rowSpaceCenter,
-                  {
-                    paddingVertical: 10,
-                    borderBottomWidth: 1,
-                    borderColor: "#c7c8d0",
-                    paddingRight: 10,
-                    paddingLeft: 20,
-                  },
-                ]}
-              >
-                <Text style={styles.title}>Danh sách vắc xin chọn mua</Text>
-                <Button mode="text" onPress={closeCart} textColor="black">
-                  Đóng
-                </Button>
-              </View>
-              <View style={styles.body}>
-                <FlatList
-                  data={cartItems}
-                  keyExtractor={(item) => item.id}
-                  style={{
-                    height: "86%",
-                  }}
-                  showsVerticalScrollIndicator={false}
-                  ListHeaderComponent={
-                    <View style={{ marginVertical: 10 }}>
-                      <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                        Vắc xin đã chọn
-                      </Text>
-                    </View>
-                  }
-                  renderItem={({ item }) => (
-                    <View style={styles.iContainer}>
-                      <View
-                        style={[
-                          Styles.rowSpaceCenter,
-                          { justifyContent: "flex-start" },
-                        ]}
-                      >
-                        <Image
-                          source={{ uri: item.img }}
-                          resizeMode="cover"
-                          style={styles.img}
-                        ></Image>
+            <View
+              style={[
+                Styles.rowSpaceCenter,
+                {
+                  paddingVertical: 10,
+                  borderBottomWidth: 1,
+                  borderColor: "#c7c8d0",
+                  paddingRight: 10,
+                  paddingLeft: 20,
+                },
+              ]}
+            >
+              <Text style={styles.title}>Danh sách vắc xin chọn mua</Text>
+              <Button mode="text" onPress={closeCart} textColor="black">
+                Đóng
+              </Button>
+            </View>
+            <View style={styles.body}>
+              <FlatList
+                data={cartItems}
+                keyExtractor={(item) => item.id}
+                showsVerticalScrollIndicator={false}
+                ListHeaderComponent={
+                  <View style={{ marginVertical: 10 }}>
+                    <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                      Vắc xin đã chọn
+                    </Text>
+                  </View>
+                }
+                renderItem={({ item }) => (
+                  <View style={styles.iContainer}>
+                    <View
+                      style={[
+                        Styles.rowSpaceCenter,
+                        { justifyContent: "flex-start" },
+                      ]}
+                    >
+                      <Image
+                        source={{ uri: item.image }}
+                        resizeMode="cover"
+                        style={styles.img}
+                      ></Image>
+                      <View style={{ flexShrink: 1 }}>
                         <Text
                           style={{
                             textTransform: "uppercase",
                             fontWeight: "500",
                             fontSize: 16,
+                            flexWrap: "wrap",
                           }}
                         >
                           {item.name}
                         </Text>
                       </View>
-                      <View style={[Styles.flexRow, { marginVertical: 20 }]}>
-                        <Text style={{ fontWeight: "bold" }}>Phòng bệnh: </Text>
-                        <Text>{item.disease}</Text>
-                      </View>
-                      <View style={Styles.rowSpaceCenter}>
-                        <Text style={styles.price}>
-                          {item.price.toLocaleString()} VNĐ
-                        </Text>
-                        <TouchableOpacity>
-                          <FontAwesome5
-                            name="trash"
-                            color={"red"}
-                            size={16}
-                          ></FontAwesome5>
-                        </TouchableOpacity>
-                      </View>
                     </View>
-                  )}
-                />
-              </View>
+                    <View style={[Styles.flexRow, { marginVertical: 20 }]}>
+                      <Text style={{ fontWeight: "bold" }}>Phòng bệnh: </Text>
+                      <Text>...</Text>
+                    </View>
+                    <View style={Styles.rowSpaceCenter}>
+                      <Text style={styles.price}>
+                        {item.price.toLocaleString()} VNĐ
+                      </Text>
+                      <TouchableOpacity>
+                        <FontAwesome5
+                          name="trash"
+                          color={"red"}
+                          size={16}
+                        ></FontAwesome5>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+              />
             </View>
             <View style={styles.iBottom}>
               <TouchableOpacity style={styles.closeBtn}>
@@ -189,8 +159,9 @@ const styles = StyleSheet.create({
     backgroundColor: color.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    height: "90%",
     justifyContent: "space-between",
+    flex: 1,
+    paddingBottom: 140,
   },
   title: {
     fontSize: 18,
