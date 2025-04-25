@@ -21,6 +21,8 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Button, PaperProvider, Portal } from "react-native-paper";
+import Profile from "./components/User/Profile";
+import { color } from "./styles/Styles";
 
 const Stack = createNativeStackNavigator();
 
@@ -119,12 +121,38 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: color.primary,
+        tabBarInactiveTintColor: "black",
+      }}
+    >
       <Tab.Screen
         name="TRANG CHỦ"
         component={StackNavigator}
         options={{
-          tabBarIcon: () => <FontAwesome5 name="home" size={30} />,
+          tabBarIcon: ({ focused }) => (
+            <FontAwesome5
+              name="home"
+              size={30}
+              color={focused ? color.primary : "black"}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="TÀI KHOẢN"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <FontAwesome5
+              name="user"
+              size={30}
+              solid
+              color={focused ? color.primary : "black"}
+            />
+          ),
         }}
       />
     </Tab.Navigator>

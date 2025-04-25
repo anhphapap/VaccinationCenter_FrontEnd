@@ -104,7 +104,11 @@ export const CartModalProvider = ({ children }) => {
                     </View>
                     <View style={[Styles.flexRow, { marginVertical: 20 }]}>
                       <Text style={{ fontWeight: "bold" }}>Phòng bệnh: </Text>
-                      <Text>...</Text>
+                      <Text>
+                        {item.disease === ""
+                          ? "Đang cập nhập..."
+                          : item.disease}
+                      </Text>
                     </View>
                     <View style={Styles.rowSpaceCenter}>
                       <Text style={styles.price}>

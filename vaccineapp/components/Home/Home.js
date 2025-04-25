@@ -29,7 +29,7 @@ const Home = () => {
               <Avatar.Text
                 size={40}
                 label="AP"
-                color="blue"
+                color={color.primary}
                 style={{ backgroundColor: "white" }}
               />
             </View>
@@ -61,7 +61,7 @@ const Home = () => {
                 <FontAwesome5
                   name="calendar"
                   size={40}
-                  color="blue"
+                  color={color.primary}
                 ></FontAwesome5>
               </TouchableOpacity>
               <Text style={styles.txt}>Đặt lịch</Text>
@@ -74,7 +74,7 @@ const Home = () => {
                 <FontAwesome5
                   name="history"
                   size={40}
-                  color="blue"
+                  color={color.primary}
                 ></FontAwesome5>
               </TouchableOpacity>
               <Text style={styles.txt}>Lịch sử tiêm chủng</Text>
@@ -86,7 +86,11 @@ const Home = () => {
                 style={styles.btn}
                 onPress={() => nav.navigate("vaccine")}
               >
-                <FontAwesome5 name="list" size={40} color="blue"></FontAwesome5>
+                <FontAwesome5
+                  name="list"
+                  size={40}
+                  color={color.primary}
+                ></FontAwesome5>
               </TouchableOpacity>
               <Text style={styles.txt}>Danh mục vắc xin</Text>
             </View>
@@ -98,7 +102,7 @@ const Home = () => {
                 <FontAwesome5
                   name="syringe"
                   size={40}
-                  color="blue"
+                  color={color.primary}
                 ></FontAwesome5>
               </TouchableOpacity>
               <Text style={styles.txt}>Đặt mua vắc xin</Text>

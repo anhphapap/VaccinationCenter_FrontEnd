@@ -1,7 +1,11 @@
 import { StyleSheet } from "react-native";
 
+export const defaultAvatar =
+  "https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png";
+
 export const color = {
-  primary: "#0a56df",
+  // primary: "#0a56df",
+  primary: "#0462d7",
   border: "#c7c8d0",
   secondary: "#e7e9f360",
   white: "#fff",
@@ -33,11 +37,29 @@ export default StyleSheet.create({
   fontPreBold: {
     fontWeight: "500",
   },
+  g10: {
+    gap: 10,
+  },
+  g20: {
+    gap: 20,
+  },
   p10: {
     padding: 10,
   },
   p20: {
     padding: 20,
+  },
+  pv10: {
+    paddingVertical: 10,
+  },
+  pv20: {
+    paddingVertical: 20,
+  },
+  ph10: {
+    paddingHorizontal: 10,
+  },
+  ph20: {
+    paddingHorizontal: 20,
   },
   mt10: {
     marginTop: 10,
@@ -45,11 +67,23 @@ export default StyleSheet.create({
   mt20: {
     marginTop: 20,
   },
+  mr10: {
+    marginRight: 10,
+  },
+  mr20: {
+    marginRight: 20,
+  },
   mv10: {
     marginVertical: 10,
   },
   mv20: {
     marginVertical: 20,
+  },
+  mh10: {
+    marginHorizontal: 10,
+  },
+  mh20: {
+    marginHorizontal: 20,
   },
   fz16: {
     fontSize: 16,
@@ -66,5 +100,32 @@ export default StyleSheet.create({
   },
   rounded20: {
     borderRadius: 20,
+  },
+  spaceAround: {
+    justifyContent: "space-around",
+  },
+  spaceBetween: {
+    justifyContent: "space-between",
+  },
+  spaceEvenly: {
+    justifyContent: "space-evenly",
+  },
+  flexStart: {
+    justifyContent: "flex-start",
+  },
+  flexEnd: {
+    justifyContent: "flex-end",
+  },
+  flexCenter: {
+    justifyContent: "center",
+  },
+  alignCenter: {
+    alignItems: "center",
+  },
+  bgWhite: {
+    backgroundColor: "white",
+  },
+  flex: {
+    flex: 1,
   },
 });
