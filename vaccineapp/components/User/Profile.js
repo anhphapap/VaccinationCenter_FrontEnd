@@ -9,10 +9,11 @@ import {
 import React, { useState } from "react";
 import Styles, { color, defaultAvatar } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { Button } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 
 const Profile = () => {
   const [user, setUser] = useState(null);
+  const nav = useNavigation();
 
   const listAdvance = [
     { icon: "edit", label: "Chỉnh sửa tài khoản" },
@@ -100,12 +101,18 @@ const Profile = () => {
           </View>
         ) : (
           <View style={[Styles.flexRow, Styles.g20]}>
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => nav.navigate("login")}
+            >
               <Text style={[{ color: color.primary }, Styles.fontBold]}>
                 Đăng nhập
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.btn2]}>
+            <TouchableOpacity
+              style={[styles.btn2]}
+              onPress={() => nav.navigate("register")}
+            >
               <Text style={[Styles.textWhite, Styles.fontBold]}>Đăng ký</Text>
             </TouchableOpacity>
           </View>
@@ -126,6 +133,7 @@ const Profile = () => {
                 borderColor: color.border,
               },
             ]}
+            key={item.label}
           >
             <View style={[Styles.flexRow, Styles.alignCenter]}>
               <FontAwesome5
@@ -168,6 +176,7 @@ const Profile = () => {
                 borderColor: color.border,
               },
             ]}
+            key={item.label}
           >
             <View style={[Styles.flexRow, Styles.alignCenter]}>
               <Image
@@ -201,6 +210,7 @@ const Profile = () => {
                 borderColor: color.border,
               },
             ]}
+            key={item.label}
           >
             <View style={[Styles.flexRow, Styles.alignCenter]}>
               <FontAwesome5

@@ -6,9 +6,19 @@ export const defaultAvatar =
 export const color = {
   // primary: "#0a56df",
   primary: "#0462d7",
+  primary2: "#f89221",
   border: "#c7c8d0",
   secondary: "#e7e9f360",
   white: "#fff",
+};
+
+export const logo = {
+  icon: "https://res.cloudinary.com/dpmek7kuc/image/upload/t_logo2/v1745747860/logo_m2c3di.png",
+  icon_name:
+    "https://res.cloudinary.com/dpmek7kuc/image/upload/t_logo2/v1745747860/logo_name2_ca9hh7.png",
+  icon_name2:
+    "https://res.cloudinary.com/dpmek7kuc/image/upload/v1745747859/logo_name_iqeu0d.png",
+  name: "https://res.cloudinary.com/dpmek7kuc/image/upload/v1745747858/name_odjnan.png",
 };
 
 export default StyleSheet.create({
@@ -127,5 +137,14 @@ export default StyleSheet.create({
   },
   flex: {
     flex: 1,
+  },
+  wrap: {
+    flexWrap: "wrap",
+  },
+  flexShink: {
+    flexShrink: 1,
+  },
+  underline: {
+    textDecorationLine: "underline",
   },
 });

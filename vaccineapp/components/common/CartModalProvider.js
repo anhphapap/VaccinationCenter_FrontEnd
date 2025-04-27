@@ -14,6 +14,7 @@ import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button } from "react-native-paper";
 import Apis, { endpoints } from "../../configs/Apis";
+import FloatBottomButton from "./FloatBottomButton";
 
 const CartModalContext = createContext();
 
@@ -89,7 +90,7 @@ export const CartModalProvider = ({ children }) => {
                         resizeMode="cover"
                         style={styles.img}
                       ></Image>
-                      <View style={{ flexShrink: 1 }}>
+                      <View style={Styles.flexShink}>
                         <Text
                           style={{
                             textTransform: "uppercase",
@@ -102,7 +103,7 @@ export const CartModalProvider = ({ children }) => {
                         </Text>
                       </View>
                     </View>
-                    <View style={[Styles.flexRow, { marginVertical: 20 }]}>
+                    <View style={[Styles.flexRow, Styles.mv20, Styles.wrap]}>
                       <Text style={{ fontWeight: "bold" }}>Phòng bệnh: </Text>
                       <Text>
                         {item.disease === ""
@@ -126,13 +127,9 @@ export const CartModalProvider = ({ children }) => {
                 )}
               />
             </View>
-            <View style={styles.iBottom}>
-              <TouchableOpacity style={styles.closeBtn}>
-                <Text style={{ color: "#fff", fontWeight: "bold" }}>
-                  Đăng ký mũi tiêm ({cartItems.length})
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <FloatBottomButton
+              label={`Đăng ký mũi tiêm (${cartItems.length})`}
+            ></FloatBottomButton>
           </View>
         </View>
       </Modal>
@@ -171,13 +168,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "500",
   },
-  closeBtn: {
-    backgroundColor: color.primary,
-    padding: 12,
-    borderRadius: 10,
-    alignItems: "center",
-    margin: 20,
-  },
+
   img: {
     height: 80,
     width: 160,
@@ -187,15 +178,6 @@ const styles = StyleSheet.create({
     color: color.primary,
     fontWeight: "bold",
     fontSize: 16,
-  },
-  iBottom: {
-    borderTopWidth: 1,
-    borderColor: color.border,
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    backgroundColor: "white",
-    width: "100%",
   },
   overlayTouchable: {
     position: "absolute",

@@ -5,7 +5,7 @@ import MyTextInput from "../common/MyTextInput";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
-const Login = () => {
+const Register = () => {
   const nav = useNavigation();
   return (
     <View style={[Styles.flex, Styles.p20, Styles.bgWhite]}>
@@ -28,6 +28,12 @@ const Login = () => {
           <MyTextInput title="Mật khẩu" secure />
         </View>
       </View>
+      <View>
+        <Text style={styles.label}>Xác nhận mật khẩu</Text>
+        <View style={Styles.rowSpaceCenter}>
+          <MyTextInput title="Xác nhận mật khẩu" secure />
+        </View>
+      </View>
       <Button
         mode="contained"
         style={[
@@ -40,13 +46,13 @@ const Login = () => {
         ]}
         labelStyle={{ fontSize: 16 }}
       >
-        Đăng nhập
+        Đăng ký
       </Button>
       <View style={[Styles.flexRow, Styles.flexCenter, Styles.mt10]}>
-        <Text style={Styles.fz16}>Bạn chưa có tài khoản? </Text>
-        <TouchableOpacity onPress={() => nav.navigate("register")}>
+        <Text style={Styles.fz16}>Bạn đã có tài khoản? </Text>
+        <TouchableOpacity onPress={() => nav.navigate("login")}>
           <Text style={[Styles.fontBold, Styles.underline, Styles.fz16]}>
-            Đăng ký
+            Đăng nhập
           </Text>
         </TouchableOpacity>
       </View>
@@ -54,7 +60,7 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
 
 const styles = StyleSheet.create({
   label: {

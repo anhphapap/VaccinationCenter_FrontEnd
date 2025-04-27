@@ -1,16 +1,39 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, Button } from "react-native-paper";
 import Styles, { color } from "../../styles/Styles";
 import Carousel from "./Carousel";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { useNavigation } from "@react-navigation/native";
-import { useCartModal } from "./CartModalProvider";
+import { useCartModal } from "../common/CartModalProvider";
+import EventBanner from "../common/EventBanner";
+import FeatureButton from "../common/FeatureButton";
+
+const listItem = [
+  {
+    label: "Đặt lịch",
+    icon: "calendar",
+    page: "book",
+  },
+  {
+    label: "Lịch sử tiêm chủng",
+    icon: "history",
+    page: "history",
+  },
+  {
+    label: "Danh mục vắc xin",
+    icon: "list",
+    page: "vaccine",
+  },
+  {
+    label: "Đặt mua vắc xin",
+    icon: "syringe",
+    page: "order",
+  },
+];
 
 const Home = () => {
   const { openCart } = useCartModal();
-  const nav = useNavigation();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Image
@@ -51,65 +74,22 @@ const Home = () => {
         <View style={{ height: 200, marginTop: 30 }}>
           <Carousel></Carousel>
         </View>
-        <View style={[Styles.flexCol, { marginTop: 20, gap: 20 }]}>
-          <View style={[Styles.flexRow, { justifyContent: "space-around" }]}>
-            <View>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => nav.navigate("book")}
-              >
-                <FontAwesome5
-                  name="calendar"
-                  size={40}
-                  color={color.primary}
-                ></FontAwesome5>
-              </TouchableOpacity>
-              <Text style={styles.txt}>Đặt lịch</Text>
-            </View>
-            <View>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => nav.navigate("history")}
-              >
-                <FontAwesome5
-                  name="history"
-                  size={40}
-                  color={color.primary}
-                ></FontAwesome5>
-              </TouchableOpacity>
-              <Text style={styles.txt}>Lịch sử tiêm chủng</Text>
-            </View>
-          </View>
-          <View style={[Styles.flexRow, { justifyContent: "space-around" }]}>
-            <View>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => nav.navigate("vaccine")}
-              >
-                <FontAwesome5
-                  name="list"
-                  size={40}
-                  color={color.primary}
-                ></FontAwesome5>
-              </TouchableOpacity>
-              <Text style={styles.txt}>Danh mục vắc xin</Text>
-            </View>
-            <View>
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => nav.navigate("order")}
-              >
-                <FontAwesome5
-                  name="syringe"
-                  size={40}
-                  color={color.primary}
-                ></FontAwesome5>
-              </TouchableOpacity>
-              <Text style={styles.txt}>Đặt mua vắc xin</Text>
-            </View>
-          </View>
+        <View
+          style={[Styles.flexRow, Styles.mv20, Styles.g10, Styles.spaceAround]}
+        >
+          {listItem.map((item) => (
+            <FeatureButton
+              icon={item.icon}
+              label={item.label}
+              page={item.page}
+              key={item.page}
+            ></FeatureButton>
+          ))}
         </View>
-        <View style={styles.adrsContainer}>
+        <View style={[Styles.mv10, Styles.ph10]}>
+          <EventBanner></EventBanner>
+        </View>
+        <View style={[styles.adrsContainer, Styles.mv20]}>
           <Image
             source={{
               uri: "https://cdn-icons-png.flaticon.com/512/1865/1865269.png",
@@ -152,20 +132,5 @@ const styles = StyleSheet.create({
     height: 220,
     borderBottomRightRadius: 100,
     borderBottomLeftRadius: 100,
-  },
-  btn: {
-    width: 100,
-    height: 100,
-    borderRadius: 30,
-    backgroundColor: color.secondary,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  txt: {
-    fontSize: 16,
-    textAlign: "center",
-    margin: 10,
-    width: 80,
-    fontWeight: "300",
   },
 });

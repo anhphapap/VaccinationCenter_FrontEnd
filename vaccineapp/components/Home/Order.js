@@ -11,13 +11,8 @@ import React, { useState } from "react";
 import Styles, { color } from "../../styles/Styles";
 import { Button } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { DatePickerInput } from "react-native-paper-dates";
-import { registerTranslation } from "react-native-paper-dates";
-import {
-  Provider as PaperProvider,
-  MD3LightTheme as DefaultTheme,
-} from "react-native-paper";
 import { addDays } from "date-fns";
+import DatePicker from "../common/DatePicker";
 
 const cartItems = [
   {
@@ -36,7 +31,7 @@ const cartItems = [
   },
 ];
 
-const userInfo = {
+const user = {
   name: "Phạm Anh Pha",
   phone: "0912195113",
   birth: "17/09/2004",
@@ -46,38 +41,39 @@ const userInfo = {
   address: "Bình Định",
 };
 
+const listInfo = [
+  {
+    field: "name",
+    label: "Họ và tên",
+  },
+  {
+    field: "phone",
+    label: "Số điện thoại",
+  },
+  {
+    label: "Ngày sinh",
+    field: "birth",
+  },
+  {
+    label: "Mã khách hàng",
+    field: "id",
+  },
+  {
+    label: "Giới tính",
+    field: "sex",
+  },
+  {
+    label: "Email",
+    field: "email",
+  },
+  {
+    label: "Địa chỉ",
+    field: "address",
+  },
+];
+
 const Order = () => {
-  registerTranslation("vi", {
-    save: "Lưu",
-    selectSingle: "Chọn ngày mong muốn tiêm",
-    selectMultiple: "Chọn nhiều ngày",
-    selectRange: "Chọn khoảng ngày",
-    notAccordingToDateFormat: (inputFormat) =>
-      `Ngày không đúng định dạng ${inputFormat}`,
-    mustBeHigherThan: (date) => `Phải sau ngày ${date}`,
-    mustBeLowerThan: (date) => `Phải trước ngày ${date}`,
-    mustBeBetween: (startDate, endDate) =>
-      `Phải trong khoảng ${startDate} - ${endDate}`,
-    dateIsDisabled: "Ngày này không được chọn",
-    previous: "Trước",
-    next: "Tiếp",
-    typeInDate: "Nhập ngày",
-    pickDateFromCalendar: "Chọn từ lịch",
-    close: "Đóng",
-  });
-
-  const theme = {
-    ...DefaultTheme,
-    roundness: 10,
-    colors: {
-      ...DefaultTheme.colors,
-      primary: "#007AFF",
-      surfaceVariant: "#fff",
-      outline: "#ccc",
-    },
-  };
-
-  const [date, setDate] = useState(addDays(new Date(), 0));
+  const [date, setDate] = useState();
   const [showInfo, setShowInfo] = useState(false);
 
   return (
@@ -105,48 +101,14 @@ const Order = () => {
             </TouchableOpacity>
             {showInfo && (
               <View style={[{ gap: 10 }, Styles.mv10]}>
-                <View style={Styles.rowSpaceCenter}>
-                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
-                    Họ và tên
-                  </Text>
-                  <Text style={Styles.fontPreBold}>{userInfo.name}</Text>
-                </View>
-                <View style={Styles.rowSpaceCenter}>
-                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
-                    Số điện thoại
-                  </Text>
-                  <Text style={Styles.fontPreBold}>{userInfo.phone}</Text>
-                </View>
-                <View style={Styles.rowSpaceCenter}>
-                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
-                    Ngày sinh
-                  </Text>
-                  <Text style={Styles.fontPreBold}>{userInfo.birth}</Text>
-                </View>
-                <View style={Styles.rowSpaceCenter}>
-                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
-                    Mã khách hàng
-                  </Text>
-                  <Text style={Styles.fontPreBold}>{userInfo.id}</Text>
-                </View>
-                <View style={Styles.rowSpaceCenter}>
-                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
-                    Giới tính
-                  </Text>
-                  <Text style={Styles.fontPreBold}>{userInfo.sex}</Text>
-                </View>
-                <View style={Styles.rowSpaceCenter}>
-                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
-                    Email
-                  </Text>
-                  <Text style={Styles.fontPreBold}>{userInfo.email}</Text>
-                </View>
-                <View style={Styles.rowSpaceCenter}>
-                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
-                    Địa chỉ
-                  </Text>
-                  <Text style={Styles.fontPreBold}>{userInfo.address}</Text>
-                </View>
+                {listInfo.map((item) => (
+                  <View style={Styles.rowSpaceCenter} key={item.field}>
+                    <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
+                      {item.label}
+                    </Text>
+                    <Text style={Styles.fontPreBold}>{user[item.field]}</Text>
+                  </View>
+                ))}
               </View>
             )}
             <Text style={[Styles.fontPreBold, Styles.mv10, Styles.mt20]}>
@@ -227,23 +189,7 @@ const Order = () => {
             <Text style={[Styles.fontPreBold, Styles.mt10]}>
               Chọn ngày mong muốn tiêm *
             </Text>
-            <PaperProvider theme={theme}>
-              <View style={Styles.mt10}>
-                <DatePickerInput
-                  locale="vi"
-                  label="Chọn ngày"
-                  value={date}
-                  onChange={(d) => setDate(d)}
-                  inputMode="start"
-                  mode="outlined"
-                  withDateFormatInLabel={false}
-                  validRange={{
-                    startDate: addDays(new Date(), 0),
-                  }}
-                  defaultValue=""
-                />
-              </View>
-            </PaperProvider>
+            <DatePicker date={date} setDate={setDate} />
           </View>
         </View>
       </ScrollView>

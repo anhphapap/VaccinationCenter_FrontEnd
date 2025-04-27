@@ -12,108 +12,120 @@ import Book from "./components/Home/Book";
 import Cart, {
   CartModalProvider,
   useCartModal,
-} from "./components/Home/CartModalProvider";
+} from "./components/common/CartModalProvider";
 import History from "./components/Home/History";
 import Vaccine from "./components/Home/Vaccine";
 import Order from "./components/Home/Order";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  getFocusedRouteNameFromRoute,
+  NavigationContainer,
+} from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Button, PaperProvider, Portal } from "react-native-paper";
 import Profile from "./components/User/Profile";
 import { color } from "./styles/Styles";
+import Login from "./components/User/Login";
+import Register from "./components/User/Register";
 
-const Stack = createNativeStackNavigator();
+const HomeStack = createNativeStackNavigator();
 
-const StackNavigator = () => {
+const HomeStackNavigator = () => {
   const { openCart } = useCartModal();
   return (
-    <Stack.Navigator>
-      <Stack.Screen
+    <HomeStack.Navigator
+      screenOptions={({ navigation }) => ({
+        headerStyle: {
+          backgroundColor: color.primary,
+        },
+        headerTintColor: "#fff",
+        headerTitleAlign: "center",
+        headerLeft: () => (
+          <Button onPress={() => navigation.goBack()}>
+            <FontAwesome5 name="arrow-left" size={20} color={"white"} />
+          </Button>
+        ),
+      })}
+    >
+      <HomeStack.Screen
         name="home"
         component={Home}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
+      <HomeStack.Screen
         name="book"
         component={Book}
-        options={({ navigation }) => ({
+        options={{
           title: "Đặt lịch",
-          headerStyle: {
-            backgroundColor: "#0a56df",
-          },
-          headerTintColor: "#fff",
-          headerTitleAlign: "center",
           headerRight: () => (
             <Button>
               <FontAwesome5 name="plus" size={20} color={"white"} />
             </Button>
           ),
-          headerLeft: () => (
-            <Button onPress={() => navigation.goBack()}>
-              <FontAwesome5 name="arrow-left" size={20} color={"white"} />
-            </Button>
-          ),
-        })}
+        }}
       />
-      <Stack.Screen
+      <HomeStack.Screen
         name="vaccine"
         component={Vaccine}
-        options={({ navigation }) => ({
+        options={{
           title: "Danh mục vắc xin",
-          headerStyle: {
-            backgroundColor: "#0a56df",
-          },
-          headerTintColor: "#fff",
-          headerTitleAlign: "center",
           headerRight: () => (
             <Button onPress={openCart}>
               <FontAwesome5 name="shopping-cart" size={20} color={"white"} />
             </Button>
           ),
-          headerLeft: () => (
-            <Button onPress={() => navigation.goBack()}>
-              <FontAwesome5 name="arrow-left" size={20} color={"white"} />
-            </Button>
-          ),
-        })}
+        }}
       />
-      <Stack.Screen
+      <HomeStack.Screen
         name="history"
         component={History}
-        options={({ navigation }) => ({
-          title: "Lịch sử tiêm chủng",
-          headerStyle: {
-            backgroundColor: "#0a56df",
-          },
-          headerTintColor: "#fff",
-          headerTitleAlign: "center",
-          headerLeft: () => (
-            <Button onPress={() => navigation.goBack()}>
-              <FontAwesome5 name="arrow-left" size={20} color={"white"} />
-            </Button>
-          ),
-        })}
+        options={{ title: "Lịch sử tiêm chủng" }}
       />
-      <Stack.Screen
+      <HomeStack.Screen
         name="order"
         component={Order}
-        options={({ navigation }) => ({
-          title: "Đặt mua vắc xin",
-          headerStyle: {
-            backgroundColor: "#0a56df",
-          },
-          headerTintColor: "#fff",
-          headerTitleAlign: "center",
-          headerLeft: () => (
-            <Button onPress={() => navigation.goBack()}>
-              <FontAwesome5 name="arrow-left" size={20} color={"white"} />
-            </Button>
-          ),
-        })}
+        options={{ title: "Đặt mua vắc xin" }}
       />
-    </Stack.Navigator>
+    </HomeStack.Navigator>
+  );
+};
+
+const AccountStack = createNativeStackNavigator();
+
+const AccountStackNavigator = () => {
+  return (
+    <AccountStack.Navigator
+      screenOptions={({ navigation }) => ({
+        headerStyle: {
+          backgroundColor: color.primary,
+        },
+        headerTintColor: "#fff",
+        headerTitleAlign: "center",
+        headerShadowVisible: false,
+        headerLeft: () => (
+          <Button onPress={() => navigation.navigate("profile")}>
+            <FontAwesome5 name="arrow-left" size={20} color={"white"} />
+          </Button>
+        ),
+      })}
+    >
+      <AccountStack.Screen
+        name="profile"
+        component={Profile}
+        options={{ headerShown: false }}
+      />
+      <AccountStack.Screen
+        name="login"
+        component={Login}
+        options={{ title: "Đăng nhập" }}
+      />
+      <AccountStack.Screen
+        name="register"
+        component={Register}
+        options={{ title: "Đăng ký" }}
+      />
+    </AccountStack.Navigator>
   );
 };
 
@@ -122,15 +134,28 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: color.primary,
-        tabBarInactiveTintColor: "black",
+      screenOptions={({ route }) => {
+        const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+
+        let tabBarStyle = {};
+        if (
+          (route.name === "TRANG CHỦ" && routeName && routeName !== "home") ||
+          (route.name === "TÀI KHOẢN" && routeName && routeName !== "profile")
+        ) {
+          tabBarStyle = { display: "none" };
+        }
+
+        return {
+          headerShown: false,
+          tabBarActiveTintColor: color.primary,
+          tabBarInactiveTintColor: "black",
+          tabBarStyle,
+        };
       }}
     >
       <Tab.Screen
         name="TRANG CHỦ"
-        component={StackNavigator}
+        component={HomeStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
@@ -143,7 +168,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="TÀI KHOẢN"
-        component={Profile}
+        component={AccountStackNavigator}
         options={{
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
