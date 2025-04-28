@@ -1,12 +1,81 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Styles, { color, logo } from "../../styles/Styles";
 import MyTextInput from "../common/MyTextInput";
-import { Button } from "react-native-paper";
+import { Button, HelperText } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import Apis, { endpoints } from "../../configs/Apis";
 
 const Register = () => {
+  const info = [
+    {
+      label: "Tên đăng nhập",
+      field: "username",
+      secure: false,
+    },
+    {
+      label: "Mật khẩu",
+      field: "password",
+      secure: true,
+    },
+    {
+      label: "Xác nhận mật khẩu",
+      field: "confirm",
+      secure: true,
+    },
+  ];
+
+  const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState();
   const nav = useNavigation();
+
+  const setState = (value, field) => {
+    setUser({ ...user, [field]: value });
+  };
+
+  const validate = () => {
+    if (Object.values(user).length === 0) {
+      setMsg("Vui lòng nhập thông tin!");
+      return false;
+    }
+    for (let i of info)
+      if (user[i.field] === "") {
+        setMsg(`Vui lòng nhập ${i.label}`);
+        return false;
+      }
+
+    if (user.password !== user.confirm) {
+      setMsg("Mật khẩu không khớp !");
+      return false;
+    }
+    setMsg(null);
+    return true;
+  };
+
+  const register = async () => {
+    if (validate() === true) {
+      try {
+        setLoading(true);
+        let form = new FormData();
+        for (let key in user)
+          if (key !== "confirm") form.append(key, user[key]);
+
+        let res = await Apis.post(endpoints["register"], form, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        if (res.status === 201) nav.navigate("registerprofile");
+      } catch (ex) {
+        setMsg(ex.response?.data?.password || ex.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <View style={[Styles.flex, Styles.p20, Styles.bgWhite]}>
       <View style={[Styles.alignCenter, Styles.mt20]}>
@@ -16,24 +85,21 @@ const Register = () => {
           resizeMode="cover"
         ></Image>
       </View>
-      <View>
-        <Text style={styles.label}>Tên đăng nhập</Text>
-        <View style={Styles.rowSpaceCenter}>
-          <MyTextInput title="Tên đăng nhập" />
+      <HelperText type="error" visible={msg}>
+        {msg}
+      </HelperText>
+      {info.map((item) => (
+        <View key={item.field}>
+          <Text style={styles.label}>{item.label}</Text>
+          <View style={Styles.rowSpaceCenter}>
+            <MyTextInput
+              title={item.label}
+              secure={item.secure}
+              onChangeText={(t) => setState(t, item.field)}
+            />
+          </View>
         </View>
-      </View>
-      <View>
-        <Text style={styles.label}>Mật khẩu</Text>
-        <View style={Styles.rowSpaceCenter}>
-          <MyTextInput title="Mật khẩu" secure />
-        </View>
-      </View>
-      <View>
-        <Text style={styles.label}>Xác nhận mật khẩu</Text>
-        <View style={Styles.rowSpaceCenter}>
-          <MyTextInput title="Xác nhận mật khẩu" secure />
-        </View>
-      </View>
+      ))}
       <Button
         mode="contained"
         style={[
@@ -45,6 +111,9 @@ const Register = () => {
           },
         ]}
         labelStyle={{ fontSize: 16 }}
+        disabled={loading}
+        loading={loading}
+        onPress={register}
       >
         Đăng ký
       </Button>

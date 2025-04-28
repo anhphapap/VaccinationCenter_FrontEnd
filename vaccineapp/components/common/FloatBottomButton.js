@@ -2,16 +2,24 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import React from "react";
 import { color } from "../../styles/Styles";
+import { Button } from "react-native-paper";
 
-const FloatBottomButton = ({ label, icon }) => {
+const FloatBottomButton = ({ label, icon, press, loading }) => {
   return (
     <View style={styles.iBottom}>
-      <TouchableOpacity style={styles.closeBtn}>
-        <Text style={{ color: "#fff", fontWeight: "bold" }}>{label}</Text>
+      <Button
+        style={styles.closeBtn}
+        onPress={press}
+        loading={loading}
+        disabled={loading}
+      >
+        <Text style={{ color: "#fff", fontWeight: "bold" }}>
+          {label + " "}{" "}
+        </Text>
         {icon && (
           <FontAwesome5 name={icon} size={14} color={"white"}></FontAwesome5>
         )}
-      </TouchableOpacity>
+      </Button>
     </View>
   );
 };
@@ -30,12 +38,11 @@ const styles = StyleSheet.create({
   },
   closeBtn: {
     backgroundColor: color.primary,
-    padding: 12,
+    padding: 8,
     borderRadius: 10,
     alignItems: "center",
     margin: 20,
     flexDirection: "row",
     justifyContent: "center",
-    gap: 10,
   },
 });

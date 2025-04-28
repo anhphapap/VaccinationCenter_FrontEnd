@@ -1,24 +1,37 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import React, { useState } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Styles, { color, defaultAvatar } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useNavigation } from "@react-navigation/native";
+import useUser from "../../hooks/useUser";
+import { useContext } from "react";
+import { MyDispatchContext } from "../../configs/Contexts";
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
+  const user = useUser();
   const nav = useNavigation();
+  const dispatch = useContext(MyDispatchContext);
+  const handleLogout = () => {
+    dispatch({
+      type: "logout",
+    });
+    nav.reset({
+      index: 0,
+      routes: [{ name: "TRANG CHỦ" }],
+    });
+  };
+
+  const handleEdit = () => {
+    nav.navigate("profileSetting");
+  };
+
+  const handleChangePass = () => {
+    nav.navigate("changePassword");
+  };
 
   const listAdvance = [
-    { icon: "edit", label: "Chỉnh sửa tài khoản" },
-    { icon: "lock", label: "Đổi mật khẩu" },
-    { icon: "sign-out-alt", label: "Đăng xuất" },
+    { icon: "edit", label: "Chỉnh sửa tài khoản", press: handleEdit },
+    { icon: "lock", label: "Đổi mật khẩu", press: handleChangePass },
+    { icon: "sign-out-alt", label: "Đăng xuất", press: handleLogout },
   ];
 
   const listContact = [
@@ -78,7 +91,12 @@ const Profile = () => {
       >
         <View style={styles.borderAvt}>
           <Image
-            source={{ uri: defaultAvatar }}
+            source={{
+              uri:
+                user && user.avatar !== "/static/images/avatar.png"
+                  ? user.avatar
+                  : defaultAvatar,
+            }}
             resizeMode="cover"
             style={styles.avt}
           ></Image>
@@ -93,10 +111,10 @@ const Profile = () => {
                 { textTransform: "uppercase" },
               ]}
             >
-              {user.name}
+              {user.last_name + " " + user.first_name}
             </Text>
             <Text style={Styles.textWhite}>
-              {user.phone} - {user.sex}, {user.birth}
+              {user.phone} - {user.gender ? "Nam" : "Nữ"}, {user.birth_date}
             </Text>
           </View>
         ) : (
@@ -118,46 +136,49 @@ const Profile = () => {
           </View>
         )}
       </View>
-      <View>
-        {listAdvance.map((item) => (
-          <TouchableOpacity
-            style={[
-              Styles.flexRow,
-              Styles.spaceBetween,
-              Styles.alignCenter,
-              Styles.ph20,
-              Styles.pv10,
-              Styles.bgWhite,
-              {
-                borderBottomWidth: 1,
-                borderColor: color.border,
-              },
-            ]}
-            key={item.label}
-          >
-            <View style={[Styles.flexRow, Styles.alignCenter]}>
+      {user && (
+        <View>
+          {listAdvance.map((item) => (
+            <TouchableOpacity
+              style={[
+                Styles.flexRow,
+                Styles.spaceBetween,
+                Styles.alignCenter,
+                Styles.ph20,
+                Styles.pv10,
+                Styles.bgWhite,
+                {
+                  borderBottomWidth: 1,
+                  borderColor: color.border,
+                },
+              ]}
+              key={item.label}
+              onPress={item.press}
+            >
+              <View style={[Styles.flexRow, Styles.alignCenter]}>
+                <FontAwesome5
+                  name={item.icon}
+                  color={color.primary}
+                  solid
+                  size={20}
+                  style={[
+                    Styles.mr20,
+                    Styles.alignCenter,
+                    { width: 25, height: 22 },
+                  ]}
+                ></FontAwesome5>
+                <Text style={Styles.fontPreBold}>{item.label}</Text>
+              </View>
               <FontAwesome5
-                name={item.icon}
-                color={color.primary}
+                name={"chevron-right"}
+                color={"gray"}
                 solid
-                size={20}
-                style={[
-                  Styles.mr20,
-                  Styles.alignCenter,
-                  { width: 25, height: 22 },
-                ]}
+                size={15}
               ></FontAwesome5>
-              <Text style={Styles.fontPreBold}>{item.label}</Text>
-            </View>
-            <FontAwesome5
-              name={"chevron-right"}
-              color={"gray"}
-              solid
-              size={15}
-            ></FontAwesome5>
-          </TouchableOpacity>
-        ))}
-      </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
       <Text style={[Styles.fontBold, Styles.mt10, Styles.ph20, Styles.pv10]}>
         Thông tin liên hệ
       </Text>

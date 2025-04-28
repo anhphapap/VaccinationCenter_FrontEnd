@@ -56,7 +56,6 @@ const DatePicker = ({ date, setDate, type = "forward" }) => {
           withDateFormatInLabel={false}
           validRange={validRange}
           placeholderTextColor={color.border}
-          textColor={color.border}
         />
       </View>
     </PaperProvider>

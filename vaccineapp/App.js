@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React from "react";
+import React, { useReducer } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./components/Home/Home";
 import Book from "./components/Home/Book";
@@ -28,6 +28,12 @@ import Profile from "./components/User/Profile";
 import { color } from "./styles/Styles";
 import Login from "./components/User/Login";
 import Register from "./components/User/Register";
+import RegisterProfile from "./components/User/RegisterProfile";
+import UserReducer from "./reducers/UserReducer";
+import { MyDispatchContext, MyUserContext } from "./configs/Contexts";
+import useUser from "./hooks/useUser";
+import ProfileSetting from "./components/User/ProfileSetting";
+import ChangePassword from "./components/User/ChangePassword";
 
 const HomeStack = createNativeStackNavigator();
 
@@ -94,6 +100,7 @@ const HomeStackNavigator = () => {
 const AccountStack = createNativeStackNavigator();
 
 const AccountStackNavigator = () => {
+  const user = useUser();
   return (
     <AccountStack.Navigator
       screenOptions={({ navigation }) => ({
@@ -115,16 +122,38 @@ const AccountStackNavigator = () => {
         component={Profile}
         options={{ headerShown: false }}
       />
-      <AccountStack.Screen
-        name="login"
-        component={Login}
-        options={{ title: "Đăng nhập" }}
-      />
-      <AccountStack.Screen
-        name="register"
-        component={Register}
-        options={{ title: "Đăng ký" }}
-      />
+      {user ? (
+        <>
+          <AccountStack.Screen
+            name="profileSetting"
+            component={ProfileSetting}
+            options={{ title: "Chỉnh sửa thông tin" }}
+          />
+          <AccountStack.Screen
+            name="changePassword"
+            component={ChangePassword}
+            options={{ title: "Đổi mật khẩu" }}
+          />
+        </>
+      ) : (
+        <>
+          <AccountStack.Screen
+            name="login"
+            component={Login}
+            options={{ title: "Đăng nhập" }}
+          />
+          <AccountStack.Screen
+            name="register"
+            component={Register}
+            options={{ title: "Đăng ký" }}
+          />
+          <AccountStack.Screen
+            name="registerProfile"
+            component={RegisterProfile}
+            options={{ title: "Đăng ký" }}
+          />
+        </>
+      )}
     </AccountStack.Navigator>
   );
 };
@@ -185,14 +214,19 @@ const TabNavigator = () => {
 };
 
 const App = () => {
+  const [user, dispatch] = useReducer(UserReducer, null);
   return (
-    <CartModalProvider>
-      <SafeAreaProvider>
-        <NavigationContainer>
-          <TabNavigator />
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </CartModalProvider>
+    <MyUserContext.Provider value={user}>
+      <MyDispatchContext.Provider value={dispatch}>
+        <CartModalProvider>
+          <SafeAreaProvider>
+            <NavigationContainer>
+              <TabNavigator />
+            </NavigationContainer>
+          </SafeAreaProvider>
+        </CartModalProvider>
+      </MyDispatchContext.Provider>
+    </MyUserContext.Provider>
   );
 };
 

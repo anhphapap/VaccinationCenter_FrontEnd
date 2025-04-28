@@ -1,12 +1,92 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useContext, useState } from "react";
 import Styles, { color, logo } from "../../styles/Styles";
 import MyTextInput from "../common/MyTextInput";
-import { Button } from "react-native-paper";
+import { Button, HelperText } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import { MyDispatchContext } from "../../configs/Contexts";
+import { CLIENT_ID, CLIENT_SECRET } from "@env";
+import Apis, { authApis, endpoints } from "../../configs/Apis";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import qs from "qs";
 
 const Login = () => {
+  const info = [
+    {
+      label: "Tên đăng nhập",
+      field: "username",
+      secure: false,
+    },
+    {
+      label: "Mật khẩu",
+      field: "password",
+      secure: true,
+    },
+  ];
+  const [user, setUser] = useState({});
+  const [msg, setMsg] = useState();
+  const [loading, setLoading] = useState(false);
+  const dispatch = useContext(MyDispatchContext);
   const nav = useNavigation();
+
+  const setState = (value, field) => {
+    setUser({ ...user, [field]: value });
+  };
+
+  const validate = () => {
+    if (Object.values(user).length === 0) {
+      setMsg("Vui lòng nhập thông tin!");
+      return false;
+    }
+
+    for (let i of info)
+      if (user[i.field] === "") {
+        setMsg(`Vui lòng nhập ${i.label}`);
+        return false;
+      }
+
+    setMsg("");
+    return true;
+  };
+
+  const login = async () => {
+    if (validate() === true) {
+      try {
+        setLoading(true);
+
+        const res = await Apis.post(
+          endpoints["login"],
+          qs.stringify({
+            ...user,
+            client_id: CLIENT_ID,
+            client_secret: CLIENT_SECRET,
+            grant_type: "password",
+          }),
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        );
+        await AsyncStorage.setItem("token", res.data.access_token);
+        let u = await authApis(res.data.access_token).get(
+          endpoints["current-user"](user.username)
+        );
+
+        dispatch({
+          type: "login",
+          payload: u.data,
+        });
+        nav.navigate("TRANG CHỦ");
+      } catch (ex) {
+        setMsg(ex.message);
+        console.error(ex.response?.data);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
     <View style={[Styles.flex, Styles.p20, Styles.bgWhite]}>
       <View style={[Styles.alignCenter, Styles.mt20]}>
@@ -16,18 +96,21 @@ const Login = () => {
           resizeMode="cover"
         ></Image>
       </View>
-      <View>
-        <Text style={styles.label}>Tên đăng nhập</Text>
-        <View style={Styles.rowSpaceCenter}>
-          <MyTextInput title="Tên đăng nhập" />
+      <HelperText type="error" visible={msg}>
+        {msg}
+      </HelperText>
+      {info.map((item) => (
+        <View key={item.field}>
+          <Text style={styles.label}>{item.label}</Text>
+          <View style={Styles.rowSpaceCenter}>
+            <MyTextInput
+              title={item.label}
+              secure={item.secure}
+              onChangeText={(t) => setState(t, item.field)}
+            />
+          </View>
         </View>
-      </View>
-      <View>
-        <Text style={styles.label}>Mật khẩu</Text>
-        <View style={Styles.rowSpaceCenter}>
-          <MyTextInput title="Mật khẩu" secure />
-        </View>
-      </View>
+      ))}
       <Button
         mode="contained"
         style={[
@@ -39,6 +122,9 @@ const Login = () => {
           },
         ]}
         labelStyle={{ fontSize: 16 }}
+        disabled={loading}
+        loading={loading}
+        onPress={login}
       >
         Đăng nhập
       </Button>

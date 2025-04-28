@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   behindHero: {
     width: "100%",
     height: 120,
-    borderRadius: 20,
+    borderRadius: 15,
     position: "relative",
   },
   hero: {

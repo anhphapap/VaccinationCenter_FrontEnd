@@ -2,20 +2,18 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { color } from "../../styles/Styles";
 
-const GenderPicker = () => {
-  const [gender, setGender] = useState("male");
-
+const GenderPicker = ({ gender, setGender }) => {
   return (
     <View style={styles.container}>
       <View style={styles.buttonGroup}>
         <TouchableOpacity
-          style={[styles.button, gender === "male" && styles.buttonActive]}
-          onPress={() => setGender("male")}
+          style={[styles.button, gender == true && styles.buttonActive]}
+          onPress={() => setGender(true, "gender")}
         >
           <Text
             style={[
               styles.buttonText,
-              gender === "male" && styles.buttonTextActive,
+              gender == true && styles.buttonTextActive,
             ]}
           >
             Nam
@@ -23,13 +21,13 @@ const GenderPicker = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.button, gender === "female" && styles.buttonActive]}
-          onPress={() => setGender("female")}
+          style={[styles.button, gender == false && styles.buttonActive]}
+          onPress={() => setGender(false, "gender")}
         >
           <Text
             style={[
               styles.buttonText,
-              gender === "female" && styles.buttonTextActive,
+              gender == false && styles.buttonTextActive,
             ]}
           >
             Nữ

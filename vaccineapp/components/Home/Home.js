@@ -2,12 +2,13 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, Button } from "react-native-paper";
-import Styles, { color } from "../../styles/Styles";
+import Styles, { color, defaultAvatar, logo } from "../../styles/Styles";
 import Carousel from "./Carousel";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useCartModal } from "../common/CartModalProvider";
 import EventBanner from "../common/EventBanner";
 import FeatureButton from "../common/FeatureButton";
+import useUser from "../../hooks/useUser";
 
 const listItem = [
   {
@@ -33,6 +34,7 @@ const listItem = [
 ];
 
 const Home = () => {
+  const user = useUser();
   const { openCart } = useCartModal();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
@@ -47,22 +49,39 @@ const Home = () => {
         <View
           style={[Styles.rowSpaceCenter, { paddingLeft: 10, marginTop: 10 }]}
         >
-          <View style={Styles.flexRow}>
-            <View style={{ marginRight: 10 }}>
-              <Avatar.Text
-                size={40}
-                label="AP"
-                color={color.primary}
-                style={{ backgroundColor: "white" }}
-              />
+          {user ? (
+            <View style={Styles.flexRow}>
+              <View style={{ marginRight: 10 }}>
+                <Image
+                  source={{
+                    uri:
+                      user?.avatar === "/static/images/avatar.png"
+                        ? defaultAvatar
+                        : user?.avatar,
+                  }}
+                  style={styles.avt}
+                  resizeMode="cover"
+                ></Image>
+              </View>
+              <View style={Styles.flexCol}>
+                <Text style={Styles.textWhite}>Xin chào,</Text>
+                <Text
+                  style={[
+                    Styles.textWhite,
+                    { fontWeight: "bold", textTransform: "uppercase" },
+                  ]}
+                >
+                  {user.last_name + " " + user.first_name}
+                </Text>
+              </View>
             </View>
-            <View style={Styles.flexCol}>
-              <Text style={Styles.textWhite}>Xin chào,</Text>
-              <Text style={[Styles.textWhite, { fontWeight: "bold" }]}>
-                PHẠM ANH PHA
-              </Text>
-            </View>
-          </View>
+          ) : (
+            <Image
+              source={{ uri: logo.icon_name2 }}
+              resizeMode="cover"
+              style={styles.logo}
+            ></Image>
+          )}
           <Button onPress={openCart}>
             <FontAwesome5
               name="shopping-cart"
@@ -74,9 +93,7 @@ const Home = () => {
         <View style={{ height: 200, marginTop: 30 }}>
           <Carousel></Carousel>
         </View>
-        <View
-          style={[Styles.flexRow, Styles.mv20, Styles.g10, Styles.spaceAround]}
-        >
+        <View style={[Styles.flexRow, Styles.mv20, Styles.spaceAround]}>
           {listItem.map((item) => (
             <FeatureButton
               icon={item.icon}
@@ -132,5 +149,14 @@ const styles = StyleSheet.create({
     height: 220,
     borderBottomRightRadius: 100,
     borderBottomLeftRadius: 100,
+  },
+  avt: {
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+  },
+  logo: {
+    height: 40,
+    width: 100,
   },
 });

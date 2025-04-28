@@ -3,7 +3,13 @@ import React, { useState } from "react";
 import { TextInput } from "react-native-paper";
 import { color } from "../../styles/Styles";
 
-const MyTextInput = ({ title, width = "100%", secure = false }) => {
+const MyTextInput = ({
+  title,
+  width = "100%",
+  secure = false,
+  onChangeText,
+  value,
+}) => {
   const [view, setView] = useState(secure);
   return (
     <TextInput
@@ -23,6 +29,8 @@ const MyTextInput = ({ title, width = "100%", secure = false }) => {
           />
         )
       }
+      onChangeText={onChangeText}
+      value={value}
     ></TextInput>
   );
 };
