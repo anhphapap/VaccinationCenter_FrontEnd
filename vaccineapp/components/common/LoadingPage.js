@@ -5,8 +5,19 @@ import Styles from "../../styles/Styles";
 
 const LoadingPage = () => {
   return (
-    <View style={[Styles.flex, { backgroundColor: "#00000010" }]}>
-      <ActivityIndicator animating={true} color="white"></ActivityIndicator>
+    <View
+      style={[
+        Styles.flex,
+        Styles.alignCenter,
+        Styles.flexCenter,
+        { backgroundColor: "#00000010" },
+      ]}
+    >
+      <ActivityIndicator
+        animating={true}
+        color="white"
+        size={50}
+      ></ActivityIndicator>
     </View>
   );
 };

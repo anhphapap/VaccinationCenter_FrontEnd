@@ -77,7 +77,18 @@ const Login = () => {
           type: "login",
           payload: u.data,
         });
-        nav.navigate("TRANG CHỦ");
+
+        if (!u.data.is_completed_profile) {
+          nav.reset({
+            index: 0,
+            routes: [{ name: "registerProfile" }],
+          });
+        } else {
+          nav.reset({
+            index: 0,
+            routes: [{ name: "TRANG CHỦ" }],
+          });
+        }
       } catch (ex) {
         setMsg(ex.message);
         console.error(ex.response?.data);

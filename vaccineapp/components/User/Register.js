@@ -67,7 +67,11 @@ const Register = () => {
           },
         });
 
-        if (res.status === 201) nav.navigate("registerprofile");
+        if (res.status === 201)
+          nav.reset({
+            index: 0,
+            routes: [{ name: "login" }],
+          });
       } catch (ex) {
         setMsg(ex.response?.data?.password || ex.message);
       } finally {

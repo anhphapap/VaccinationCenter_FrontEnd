@@ -35,6 +35,29 @@ import useUser from "./hooks/useUser";
 import ProfileSetting from "./components/User/ProfileSetting";
 import ChangePassword from "./components/User/ChangePassword";
 
+const Stack = createNativeStackNavigator();
+const RegisterProfileStack = () => (
+  <Stack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: color.primary,
+      },
+      headerTintColor: "#fff",
+      headerTitleAlign: "center",
+    }}
+  >
+    <Stack.Screen
+      name="RegisterProfile"
+      component={RegisterProfile}
+      options={{
+        headerLeft: null,
+        title: "Đăng ký thông tin",
+        headerShadowVisible: false,
+      }}
+    />
+  </Stack.Navigator>
+);
+
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator = () => {
@@ -147,11 +170,6 @@ const AccountStackNavigator = () => {
             component={Register}
             options={{ title: "Đăng ký" }}
           />
-          <AccountStack.Screen
-            name="registerProfile"
-            component={RegisterProfile}
-            options={{ title: "Đăng ký" }}
-          />
         </>
       )}
     </AccountStack.Navigator>
@@ -221,7 +239,11 @@ const App = () => {
         <CartModalProvider>
           <SafeAreaProvider>
             <NavigationContainer>
-              <TabNavigator />
+              {!user || user.is_completed_profile ? (
+                <TabNavigator />
+              ) : (
+                <RegisterProfileStack />
+              )}
             </NavigationContainer>
           </SafeAreaProvider>
         </CartModalProvider>

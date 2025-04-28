@@ -138,7 +138,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
         let form = new FormData();
         for (let key in user) {
           if (key === "avatar") {
-            if (user.avatar !== "/static/images/avatar.png") {
+            if (user.avatar !== currentUser.avatar) {
               let avt = await uploadToCloudinary(user.avatar);
               form.append(key, avt);
             } else form.append(key, user.avatar);
@@ -170,7 +170,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
     }
   };
 
-  return loading || !user ? (
+  return !user ? (
     <LoadingPage />
   ) : (
     <View style={{ position: "relative", flex: 1, backgroundColor: "white" }}>
