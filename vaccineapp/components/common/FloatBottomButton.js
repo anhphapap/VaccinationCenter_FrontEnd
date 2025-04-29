@@ -1,10 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import React from "react";
-import { color } from "../../styles/Styles";
+import Styles, { color } from "../../styles/Styles";
 import { Button } from "react-native-paper";
 
-const FloatBottomButton = ({ label, icon, press, loading }) => {
+const FloatBottomButton = ({ label, icon, press, loading = false }) => {
   return (
     <View style={styles.iBottom}>
       <Button
@@ -12,12 +12,18 @@ const FloatBottomButton = ({ label, icon, press, loading }) => {
         onPress={press}
         loading={loading}
         disabled={loading}
+        textColor="white"
+        contentStyle={styles.contentBtn}
+        labelStyle={styles.btnTxt}
       >
-        <Text style={{ color: "#fff", fontWeight: "bold" }}>
-          {label + " "}{" "}
-        </Text>
+        <Text style={[styles.btnTxt]}>{label + "  "}</Text>
         {icon && (
-          <FontAwesome5 name={icon} size={14} color={"white"}></FontAwesome5>
+          <FontAwesome5
+            name={icon}
+            size={14}
+            color="white"
+            style={{ marginLeft: 8 }}
+          />
         )}
       </Button>
     </View>
@@ -38,11 +44,19 @@ const styles = StyleSheet.create({
   },
   closeBtn: {
     backgroundColor: color.primary,
-    padding: 8,
-    borderRadius: 10,
-    alignItems: "center",
     margin: 20,
+    borderRadius: 10,
+  },
+  btnTxt: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  contentBtn: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignSelf: "center",
   },
 });

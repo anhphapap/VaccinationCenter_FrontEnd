@@ -4,17 +4,15 @@ import {
   View,
   Text,
   FlatList,
-  TouchableOpacity,
   StyleSheet,
-  Image,
-  ScrollView,
   Pressable,
 } from "react-native";
 import Styles, { color } from "../../styles/Styles";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button } from "react-native-paper";
 import Apis, { endpoints } from "../../configs/Apis";
-import FloatBottomButton from "./FloatBottomButton";
+import FloatBottomButton from "../common/FloatBottomButton";
+import VaccineCard from "../common/VaccineCard";
+import { useLoading } from "./LoadingContext";
 
 const CartModalContext = createContext();
 
@@ -23,13 +21,16 @@ export const useCartModal = () => useContext(CartModalContext);
 export const CartModalProvider = ({ children }) => {
   const [visible, setVisible] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const { showLoading, hideLoading } = useLoading();
 
   const openCart = () => setVisible(true);
   const closeCart = () => setVisible(false);
 
   const loadItem = async () => {
+    showLoading();
     let res = await Apis.get(endpoints.vaccines);
     setCartItems(res.data.results);
+    hideLoading();
   };
 
   useEffect(() => {
@@ -78,52 +79,13 @@ export const CartModalProvider = ({ children }) => {
                   </View>
                 }
                 renderItem={({ item }) => (
-                  <View style={styles.iContainer}>
-                    <View
-                      style={[
-                        Styles.rowSpaceCenter,
-                        { justifyContent: "flex-start" },
-                      ]}
-                    >
-                      <Image
-                        source={{ uri: item.image }}
-                        resizeMode="cover"
-                        style={styles.img}
-                      ></Image>
-                      <View style={Styles.flexShink}>
-                        <Text
-                          style={{
-                            textTransform: "uppercase",
-                            fontWeight: "500",
-                            fontSize: 16,
-                            flexWrap: "wrap",
-                          }}
-                        >
-                          {item.name}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={[Styles.flexRow, Styles.mv20, Styles.wrap]}>
-                      <Text style={{ fontWeight: "bold" }}>Phòng bệnh: </Text>
-                      <Text>
-                        {item.disease === ""
-                          ? "Đang cập nhập..."
-                          : item.disease}
-                      </Text>
-                    </View>
-                    <View style={Styles.rowSpaceCenter}>
-                      <Text style={styles.price}>
-                        {item.price.toLocaleString()} VNĐ
-                      </Text>
-                      <TouchableOpacity>
-                        <FontAwesome5
-                          name="trash"
-                          color={"red"}
-                          size={16}
-                        ></FontAwesome5>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
+                  <VaccineCard
+                    btnDel
+                    image={item.image}
+                    name={item.name}
+                    price={item.price}
+                    disease={item.disease}
+                  ></VaccineCard>
                 )}
               />
             </View>
@@ -144,14 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     position: "relative",
   },
-  iContainer: {
-    padding: 20,
-    borderWidth: 1,
-    borderColor: color.border,
-    borderRadius: 10,
-    flexDirection: "column",
-    marginBottom: 10,
-  },
+
   body: {
     paddingHorizontal: 20,
     overflow: "scroll",
@@ -167,17 +122,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "500",
-  },
-
-  img: {
-    height: 80,
-    width: 160,
-    marginRight: 10,
-  },
-  price: {
-    color: color.primary,
-    fontWeight: "bold",
-    fontSize: 16,
   },
   overlayTouchable: {
     position: "absolute",

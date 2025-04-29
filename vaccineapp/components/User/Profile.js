@@ -4,7 +4,7 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useNavigation } from "@react-navigation/native";
 import useUser from "../../hooks/useUser";
 import { useContext } from "react";
-import { MyDispatchContext } from "../../configs/Contexts";
+import { MyDispatchContext } from "../contexts/Contexts";
 
 const Profile = () => {
   const user = useUser();

@@ -12,7 +12,7 @@ import Book from "./components/Home/Book";
 import Cart, {
   CartModalProvider,
   useCartModal,
-} from "./components/common/CartModalProvider";
+} from "./components/contexts/CartModalContext";
 import History from "./components/Home/History";
 import Vaccine from "./components/Home/Vaccine";
 import Order from "./components/Home/Order";
@@ -30,10 +30,14 @@ import Login from "./components/User/Login";
 import Register from "./components/User/Register";
 import RegisterProfile from "./components/User/RegisterProfile";
 import UserReducer from "./reducers/UserReducer";
-import { MyDispatchContext, MyUserContext } from "./configs/Contexts";
+import {
+  MyDispatchContext,
+  MyUserContext,
+} from "./components/contexts/Contexts";
 import useUser from "./hooks/useUser";
 import ProfileSetting from "./components/User/ProfileSetting";
 import ChangePassword from "./components/User/ChangePassword";
+import { LoadingProvider } from "./components/contexts/LoadingContext";
 
 const Stack = createNativeStackNavigator();
 const RegisterProfileStack = () => (
@@ -99,9 +103,10 @@ const HomeStackNavigator = () => {
         component={Vaccine}
         options={{
           title: "Danh mục vắc xin",
+          headerShadowVisible: false,
           headerRight: () => (
             <Button onPress={openCart}>
-              <FontAwesome5 name="shopping-cart" size={20} color={"white"} />
+              <FontAwesome5 name="shopping-bag" size={20} color={"white"} />
             </Button>
           ),
         }}
@@ -236,17 +241,19 @@ const App = () => {
   return (
     <MyUserContext.Provider value={user}>
       <MyDispatchContext.Provider value={dispatch}>
-        <CartModalProvider>
-          <SafeAreaProvider>
-            <NavigationContainer>
-              {!user || user.is_completed_profile ? (
-                <TabNavigator />
-              ) : (
-                <RegisterProfileStack />
-              )}
-            </NavigationContainer>
-          </SafeAreaProvider>
-        </CartModalProvider>
+        <LoadingProvider>
+          <CartModalProvider>
+            <SafeAreaProvider>
+              <NavigationContainer>
+                {!user || user.is_completed_profile ? (
+                  <TabNavigator />
+                ) : (
+                  <RegisterProfileStack />
+                )}
+              </NavigationContainer>
+            </SafeAreaProvider>
+          </CartModalProvider>
+        </LoadingProvider>
       </MyDispatchContext.Provider>
     </MyUserContext.Provider>
   );

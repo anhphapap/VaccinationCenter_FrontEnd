@@ -5,7 +5,7 @@ import { Avatar, Button } from "react-native-paper";
 import Styles, { color, defaultAvatar, logo } from "../../styles/Styles";
 import Carousel from "./Carousel";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { useCartModal } from "../common/CartModalProvider";
+import { useCartModal } from "../contexts/CartModalContext";
 import EventBanner from "../common/EventBanner";
 import FeatureButton from "../common/FeatureButton";
 import useUser from "../../hooks/useUser";
@@ -84,9 +84,9 @@ const Home = () => {
           )}
           <Button onPress={openCart}>
             <FontAwesome5
-              name="shopping-cart"
+              name="shopping-bag"
               color="white"
-              size={24}
+              size={20}
             ></FontAwesome5>
           </Button>
         </View>

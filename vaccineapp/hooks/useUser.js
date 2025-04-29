@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { MyUserContext } from "../configs/Contexts";
+import { MyUserContext } from "../components/contexts/Contexts";
 
 const useUser = () => {
   return useContext(MyUserContext);

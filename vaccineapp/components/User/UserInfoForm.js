@@ -19,17 +19,18 @@ import { useNavigation } from "@react-navigation/native";
 import { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HelperText } from "react-native-paper";
-import LoadingPage from "../common/LoadingPage";
+import LoadingPage from "../common/LoadingOverlay";
 import { format, parseISO } from "date-fns";
-import { MyDispatchContext } from "../../configs/Contexts";
+import { MyDispatchContext } from "../contexts/Contexts";
+import { useLoading } from "../contexts/LoadingContext";
 
 const UserInfoForm = ({ title, onSubmit }) => {
   const currentUser = useUser();
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
   const dispatch = useContext(MyDispatchContext);
+  const { showLoading, hideLoading } = useLoading();
   useEffect(() => {
-    setLoading(true);
+    showLoading();
     if (currentUser) {
       setUser({
         ...currentUser,
@@ -39,7 +40,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
           : null,
       });
     }
-    setLoading(false);
+    hideLoading();
   }, [currentUser]);
   const [msg, setMsg] = useState();
   const nav = useNavigation();
@@ -133,7 +134,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
   const submit = async () => {
     if (validate() === true) {
       try {
-        setLoading(true);
+        showLoading();
 
         let form = new FormData();
         for (let key in user) {
@@ -165,7 +166,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
         setMsg(ex.message);
         console.error(ex.response);
       } finally {
-        setLoading(false);
+        hideLoading();
       }
     }
   };
@@ -271,7 +272,6 @@ const UserInfoForm = ({ title, onSubmit }) => {
         label={title}
         icon={"arrow-right"}
         press={submit}
-        loading={loading}
       ></FloatBottomButton>
     </View>
   );

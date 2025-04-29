@@ -77,11 +77,23 @@ export default StyleSheet.create({
   mt20: {
     marginTop: 20,
   },
+  mb10: {
+    marginBottom: 10,
+  },
+  mb20: {
+    marginBottom: 20,
+  },
   mr10: {
     marginRight: 10,
   },
   mr20: {
     marginRight: 20,
+  },
+  ml10: {
+    marginLeft: 10,
+  },
+  ml20: {
+    marginLeft: 20,
   },
   mv10: {
     marginVertical: 10,

@@ -4,7 +4,7 @@ import Styles, { color, logo } from "../../styles/Styles";
 import MyTextInput from "../common/MyTextInput";
 import { Button, HelperText } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import { MyDispatchContext } from "../../configs/Contexts";
+import { MyDispatchContext } from "../contexts/Contexts";
 import { CLIENT_ID, CLIENT_SECRET } from "@env";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
