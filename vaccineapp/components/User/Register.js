@@ -1,10 +1,11 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Styles, { color, logo } from "../../styles/Styles";
 import MyTextInput from "../common/MyTextInput";
 import { Button, HelperText } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import Apis, { endpoints } from "../../configs/Apis";
+import Toast from "react-native-toast-message";
 
 const Register = () => {
   const info = [
@@ -36,20 +37,19 @@ const Register = () => {
 
   const validate = () => {
     if (Object.values(user).length === 0) {
-      setMsg("Vui lòng nhập thông tin!");
+      setMsg({ type: "error", msg: "Vui lòng nhập thông tin!" });
       return false;
     }
     for (let i of info)
-      if (user[i.field] === "") {
-        setMsg(`Vui lòng nhập ${i.label}`);
+      if (!user[i.field]) {
+        setMsg({ type: "error", msg: `Vui lòng nhập ${i.label}` });
         return false;
       }
 
     if (user.password !== user.confirm) {
-      setMsg("Mật khẩu không khớp !");
+      setMsg({ type: "error", msg: `Mật khẩu không khớp !` });
       return false;
     }
-    setMsg(null);
     return true;
   };
 
@@ -67,18 +67,34 @@ const Register = () => {
           },
         });
 
+        Toast.show({
+          type: "success",
+          text1: "Đã đăng xuất",
+        });
+
         if (res.status === 201)
           nav.reset({
             index: 0,
             routes: [{ name: "login" }],
           });
       } catch (ex) {
-        setMsg(ex.response?.data?.password || ex.message);
+        setMsg({
+          type: "error",
+          msg: ex.response?.data?.password || ex.message,
+        });
       } finally {
         setLoading(false);
       }
     }
   };
+
+  useEffect(() => {
+    if (msg)
+      Toast.show({
+        type: msg.type,
+        text1: msg.msg,
+      });
+  }, [msg]);
 
   return (
     <View style={[Styles.flex, Styles.p20, Styles.bgWhite]}>
@@ -89,9 +105,6 @@ const Register = () => {
           resizeMode="cover"
         ></Image>
       </View>
-      <HelperText type="error" visible={msg}>
-        {msg}
-      </HelperText>
       {info.map((item) => (
         <View key={item.field}>
           <Text style={styles.label}>{item.label}</Text>

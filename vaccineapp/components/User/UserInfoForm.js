@@ -23,6 +23,7 @@ import LoadingPage from "../common/LoadingOverlay";
 import { format, parseISO } from "date-fns";
 import { MyDispatchContext } from "../contexts/Contexts";
 import { useLoading } from "../contexts/LoadingContext";
+import Toast from "react-native-toast-message";
 
 const UserInfoForm = ({ title, onSubmit }) => {
   const currentUser = useUser();
@@ -91,13 +92,17 @@ const UserInfoForm = ({ title, onSubmit }) => {
   };
 
   const validate = () => {
+    if (Object.values(user).length === 0) {
+      setMsg({ type: "error", msg: "Vui lòng nhập thông tin!" });
+      return false;
+    }
+
     for (let i of info)
       if (user[i.field] === null) {
-        setMsg(`Vui lòng nhập ${i.label}`);
+        setMsg({ type: "error", msg: `Vui lòng nhập ${i.label}` });
         return false;
       }
 
-    setMsg("");
     return true;
   };
 
@@ -158,18 +163,32 @@ const UserInfoForm = ({ title, onSubmit }) => {
             },
           }
         );
+        Toast.show({
+          type: "success",
+          text1: title + " thành công!",
+        });
         dispatch({
           type: "update",
           payload: res.data,
         });
       } catch (ex) {
-        setMsg(ex.message);
-        console.error(ex.response);
+        setMsg({
+          type: "error",
+          msg: ex.message,
+        });
       } finally {
         hideLoading();
       }
     }
   };
+
+  useEffect(() => {
+    if (msg)
+      Toast.show({
+        type: msg.type,
+        text1: msg.msg,
+      });
+  }, [msg]);
 
   return !user ? (
     <LoadingPage />

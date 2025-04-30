@@ -19,6 +19,8 @@ export const logo = {
   icon_name2:
     "https://res.cloudinary.com/dpmek7kuc/image/upload/v1745747859/logo_name_iqeu0d.png",
   name: "https://res.cloudinary.com/dpmek7kuc/image/upload/v1745747858/name_odjnan.png",
+  not_found:
+    "https://res.cloudinary.com/dpmek7kuc/image/upload/v1746029472/not_found_hek9ye.png",
 };
 
 export default StyleSheet.create({

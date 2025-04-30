@@ -1,5 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Styles, { color, logo } from "../../styles/Styles";
 import MyTextInput from "../common/MyTextInput";
 import { Button, HelperText } from "react-native-paper";
@@ -9,6 +9,7 @@ import { CLIENT_ID, CLIENT_SECRET } from "@env";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import qs from "qs";
+import Toast from "react-native-toast-message";
 
 const Login = () => {
   const info = [
@@ -35,17 +36,15 @@ const Login = () => {
 
   const validate = () => {
     if (Object.values(user).length === 0) {
-      setMsg("Vui lòng nhập thông tin!");
+      setMsg({ type: "error", msg: "Vui lòng nhập thông tin!" });
       return false;
     }
 
     for (let i of info)
-      if (user[i.field] === "") {
-        setMsg(`Vui lòng nhập ${i.label}`);
+      if (!user[i.field]) {
+        setMsg({ type: "error", msg: `Vui lòng nhập ${i.label}` });
         return false;
       }
-
-    setMsg("");
     return true;
   };
 
@@ -72,6 +71,10 @@ const Login = () => {
         let u = await authApis(res.data.access_token).get(
           endpoints["current-user"](user.username)
         );
+        Toast.show({
+          type: "success",
+          text1: "Đăng nhập thành công",
+        });
 
         dispatch({
           type: "login",
@@ -90,13 +93,21 @@ const Login = () => {
           });
         }
       } catch (ex) {
-        setMsg(ex.message);
-        console.error(ex.response?.data);
+        console.log(ex.message);
+        setMsg({ type: "error", msg: ex.response?.data?.error_description });
       } finally {
         setLoading(false);
       }
     }
   };
+
+  useEffect(() => {
+    if (msg)
+      Toast.show({
+        type: msg.type,
+        text1: msg.msg,
+      });
+  }, [msg]);
 
   return (
     <View style={[Styles.flex, Styles.p20, Styles.bgWhite]}>
@@ -107,9 +118,6 @@ const Login = () => {
           resizeMode="cover"
         ></Image>
       </View>
-      <HelperText type="error" visible={msg}>
-        {msg}
-      </HelperText>
       {info.map((item) => (
         <View key={item.field}>
           <Text style={styles.label}>{item.label}</Text>

@@ -110,14 +110,16 @@ const styles = StyleSheet.create({
   body: {
     paddingHorizontal: 20,
     overflow: "scroll",
+    flex: 1,
   },
   modalContainer: {
     backgroundColor: color.white,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     justifyContent: "space-between",
-    flex: 1,
-    paddingBottom: 140,
+    // flex: 1,
+    paddingBottom: 100,
+    height: "90%",
   },
   title: {
     fontSize: 18,

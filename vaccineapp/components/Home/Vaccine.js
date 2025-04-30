@@ -1,14 +1,15 @@
 import {
   FlatList,
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Searchbar } from "react-native-paper";
-import Styles, { color } from "../../styles/Styles";
+import Styles, { color, logo } from "../../styles/Styles";
 import { useLoading } from "../contexts/LoadingContext";
 import VaccineCard from "../common/VaccineCard";
 import Apis, { endpoints } from "../../configs/Apis";
@@ -21,11 +22,25 @@ const Vaccine = () => {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState();
   const [count, setCount] = useState(0);
+  const [text, setText] = useState("");
 
   const handleSort = () => {
     if (!sort) setSort("price_asc");
     else if (sort === "price_asc") setSort("price_desc");
     else setSort();
+  };
+
+  const queryTimer = useRef();
+
+  const handleQuery = (q) => {
+    setText(q);
+    if (queryTimer.current) {
+      clearTimeout(queryTimer.current);
+    }
+
+    queryTimer.current = setTimeout(() => {
+      setQuery(q);
+    }, 500);
   };
 
   const loadData = async () => {
@@ -35,12 +50,21 @@ const Vaccine = () => {
         let url = endpoints.vaccines + "?page=" + page;
         if (query) url += `&q=${query}`;
         if (sort) url += `&sort_by=${sort}`;
+        console.log(url);
         let res = await Apis.get(url);
-        setVaccines([...vaccines, ...res.data.results]);
+        if (page === 1) {
+          setVaccines(res.data.results);
+        } else {
+          setVaccines((prev) => [...prev, ...res.data.results]);
+        }
+
         setCount(res.data.count);
-        if (res.data.next === null) setPage(0);
+        if (res.data.next === null) {
+          setPage(0);
+          console.log("ok");
+        }
       } catch (ex) {
-        console.error(ex.message);
+        console.log(ex.message);
       } finally {
         setLoading(false);
       }
@@ -48,21 +72,18 @@ const Vaccine = () => {
   };
 
   useEffect(() => {
-    setPage(1);
     setVaccines([]);
+    setPage(1);
   }, [query, sort]);
 
   useEffect(() => {
-    const delay = setTimeout(() => {
-      if (page !== 0) {
-        loadData();
-      }
-    }, 500);
-    return () => clearTimeout(delay);
+    if (page > 0) loadData();
   }, [page, query, sort]);
 
   const loadMore = () => {
-    if (!loading && page > 0) setPage(page + 1);
+    if (!loading && page > 0) {
+      setPage(page + 1);
+    }
   };
 
   return (
@@ -70,8 +91,8 @@ const Vaccine = () => {
       <View style={styles.header}>
         <Searchbar
           placeholder="Tìm kiếm theo tên vắc xin..."
-          value={query}
-          onChangeText={setQuery}
+          value={text}
+          onChangeText={handleQuery}
           iconColor="white"
           placeholderTextColor={"white"}
           style={styles.searchBar}
@@ -112,9 +133,9 @@ const Vaccine = () => {
       <View style={[Styles.ph20, Styles.bgWhite, Styles.flex]}>
         <FlatList
           onEndReached={loadMore}
-          // onEndReachedThreshold={0.5}
+          onEndReachedThreshold={0.6}
           data={vaccines}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           showsVerticalScrollIndicator={false}
           initialNumToRender={5}
           maxToRenderPerBatch={5}
@@ -127,7 +148,29 @@ const Vaccine = () => {
             </View>
           }
           ListFooterComponent={
-            loading && <ActivityIndicator size="small" color={color.primary} />
+            loading && (
+              <ActivityIndicator
+                size="20"
+                color={color.primary}
+                style={Styles.mv20}
+              />
+            )
+          }
+          ListEmptyComponent={
+            !loading && (
+              <View
+                style={[Styles.alignCenter, Styles.flexCenter, Styles.mt20]}
+              >
+                <Image
+                  source={{ uri: logo.not_found }}
+                  resizeMode="cover"
+                  style={styles.notFound}
+                />
+                <Text style={[Styles.fontBold, Styles.fz18, { color: "gray" }]}>
+                  Không tìm thấy dữ liệu
+                </Text>
+              </View>
+            )
           }
           renderItem={({ item }) => (
             <VaccineCard
@@ -158,5 +201,9 @@ const styles = StyleSheet.create({
     backgroundColor: color.primary,
     paddingHorizontal: 20,
     paddingVertical: 10,
+  },
+  notFound: {
+    width: 300,
+    height: 300,
   },
 });

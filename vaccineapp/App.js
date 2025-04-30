@@ -38,6 +38,7 @@ import useUser from "./hooks/useUser";
 import ProfileSetting from "./components/User/ProfileSetting";
 import ChangePassword from "./components/User/ChangePassword";
 import { LoadingProvider } from "./components/contexts/LoadingContext";
+import Toast from "react-native-toast-message";
 
 const Stack = createNativeStackNavigator();
 const RegisterProfileStack = () => (
@@ -239,23 +240,26 @@ const TabNavigator = () => {
 const App = () => {
   const [user, dispatch] = useReducer(UserReducer, null);
   return (
-    <MyUserContext.Provider value={user}>
-      <MyDispatchContext.Provider value={dispatch}>
-        <LoadingProvider>
-          <CartModalProvider>
-            <SafeAreaProvider>
-              <NavigationContainer>
-                {!user || user.is_completed_profile ? (
-                  <TabNavigator />
-                ) : (
-                  <RegisterProfileStack />
-                )}
-              </NavigationContainer>
-            </SafeAreaProvider>
-          </CartModalProvider>
-        </LoadingProvider>
-      </MyDispatchContext.Provider>
-    </MyUserContext.Provider>
+    <>
+      <MyUserContext.Provider value={user}>
+        <MyDispatchContext.Provider value={dispatch}>
+          <LoadingProvider>
+            <CartModalProvider>
+              <SafeAreaProvider>
+                <NavigationContainer>
+                  {!user || user.is_completed_profile ? (
+                    <TabNavigator />
+                  ) : (
+                    <RegisterProfileStack />
+                  )}
+                </NavigationContainer>
+              </SafeAreaProvider>
+            </CartModalProvider>
+          </LoadingProvider>
+        </MyDispatchContext.Provider>
+      </MyUserContext.Provider>
+      <Toast />
+    </>
   );
 };
 
