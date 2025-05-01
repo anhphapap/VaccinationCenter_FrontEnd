@@ -1,6 +1,8 @@
 import {
   FlatList,
   Image,
+  Modal,
+  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -14,6 +16,7 @@ import { useLoading } from "../contexts/LoadingContext";
 import VaccineCard from "../common/VaccineCard";
 import Apis, { endpoints } from "../../configs/Apis";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import FilterModal from "../common/FilterModal";
 
 const Vaccine = () => {
   const [query, setQuery] = useState();
@@ -23,6 +26,7 @@ const Vaccine = () => {
   const [sort, setSort] = useState();
   const [count, setCount] = useState(0);
   const [text, setText] = useState("");
+  const [filterVisible, setFilterVisible] = useState(false);
 
   const handleSort = () => {
     if (!sort) setSort("price_asc");
@@ -50,7 +54,6 @@ const Vaccine = () => {
         let url = endpoints.vaccines + "?page=" + page;
         if (query) url += `&q=${query}`;
         if (sort) url += `&sort_by=${sort}`;
-        console.log(url);
         let res = await Apis.get(url);
         if (page === 1) {
           setVaccines(res.data.results);
@@ -87,103 +90,114 @@ const Vaccine = () => {
   };
 
   return (
-    <View style={Styles.flex}>
-      <View style={styles.header}>
-        <Searchbar
-          placeholder="Tìm kiếm theo tên vắc xin..."
-          value={text}
-          onChangeText={handleQuery}
-          iconColor="white"
-          placeholderTextColor={"white"}
-          style={styles.searchBar}
-          inputStyle={{ color: "white", marginLeft: -8 }}
-          cursorColor={"white"}
-        ></Searchbar>
-      </View>
-      <View
-        style={[
-          Styles.flexRow,
-          Styles.spaceBetween,
-          Styles.ph20,
-          Styles.pv10,
-          { backgroundColor: "#f7f8fd" },
-        ]}
-      >
-        <TouchableOpacity
-          style={[Styles.flexRow, Styles.alignCenter]}
-          onPress={handleSort}
+    <>
+      <View style={[Styles.flex]}>
+        <View style={styles.header}>
+          <Searchbar
+            placeholder="Tìm kiếm theo tên vắc xin..."
+            value={text}
+            onChangeText={handleQuery}
+            iconColor="white"
+            placeholderTextColor={"white"}
+            style={styles.searchBar}
+            inputStyle={{ color: "white", marginLeft: -8 }}
+            cursorColor={"white"}
+          ></Searchbar>
+        </View>
+        <View
+          style={[
+            Styles.flexRow,
+            Styles.spaceBetween,
+            Styles.ph20,
+            Styles.pv10,
+            { backgroundColor: "#f7f8fd" },
+          ]}
         >
-          <Text style={[Styles.ph10, { color: "gray" }]}>Giá</Text>
-          <FontAwesome5
-            name={
-              !sort
-                ? "sort"
-                : sort === "price_asc"
-                ? "sort-amount-up"
-                : "sort-amount-down-alt"
-            }
-            color={"gray"}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity style={[Styles.flexRow, Styles.alignCenter]}>
-          <FontAwesome5 name="filter" color={color.primary} />
-          <Text style={[Styles.ph10, { color: "gray" }]}>Lọc</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={[Styles.ph20, Styles.bgWhite, Styles.flex]}>
-        <FlatList
-          onEndReached={loadMore}
-          onEndReachedThreshold={0.6}
-          data={vaccines}
-          keyExtractor={(item) => item.id.toString()}
-          showsVerticalScrollIndicator={false}
-          initialNumToRender={5}
-          maxToRenderPerBatch={5}
-          windowSize={5}
-          ListHeaderComponent={
-            <View
-              style={[Styles.mb20, Styles.mt10, { alignItems: "flex-end" }]}
-            >
-              <Text style={{ color: "gray" }}>Có {count} kết quả</Text>
-            </View>
-          }
-          ListFooterComponent={
-            loading && (
-              <ActivityIndicator
-                size="20"
-                color={color.primary}
-                style={Styles.mv20}
-              />
-            )
-          }
-          ListEmptyComponent={
-            !loading && (
-              <View
-                style={[Styles.alignCenter, Styles.flexCenter, Styles.mt20]}
-              >
-                <Image
-                  source={{ uri: logo.not_found }}
-                  resizeMode="cover"
-                  style={styles.notFound}
-                />
-                <Text style={[Styles.fontBold, Styles.fz18, { color: "gray" }]}>
-                  Không tìm thấy dữ liệu
-                </Text>
-              </View>
-            )
-          }
-          renderItem={({ item }) => (
-            <VaccineCard
-              name={item.name}
-              disease={item.disease}
-              image={item.image}
-              price={item.price}
-              btnSell
+          <TouchableOpacity
+            style={[Styles.flexRow, Styles.alignCenter]}
+            onPress={handleSort}
+          >
+            <Text style={[Styles.ph10, { color: "gray" }]}>Giá</Text>
+            <FontAwesome5
+              name={
+                !sort
+                  ? "sort"
+                  : sort === "price_asc"
+                  ? "sort-amount-up"
+                  : "sort-amount-down-alt"
+              }
+              color={"gray"}
             />
-          )}
-        />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[Styles.flexRow, Styles.alignCenter]}
+            onPress={() => setFilterVisible(true)}
+          >
+            <FontAwesome5 name="filter" color={color.primary} />
+            <Text style={[Styles.ph10, { color: "gray" }]}>Lọc</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={[Styles.ph20, Styles.bgWhite, Styles.flex]}>
+          <FlatList
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.6}
+            data={vaccines}
+            keyExtractor={(item) => item.id.toString()}
+            showsVerticalScrollIndicator={false}
+            initialNumToRender={5}
+            maxToRenderPerBatch={5}
+            windowSize={5}
+            ListHeaderComponent={
+              <View
+                style={[Styles.mb20, Styles.mt10, { alignItems: "flex-end" }]}
+              >
+                <Text style={{ color: "gray" }}>Có {count} kết quả</Text>
+              </View>
+            }
+            ListFooterComponent={
+              loading && (
+                <ActivityIndicator
+                  size="20"
+                  color={color.primary}
+                  style={Styles.mv20}
+                />
+              )
+            }
+            ListEmptyComponent={
+              !loading && (
+                <View
+                  style={[Styles.alignCenter, Styles.flexCenter, Styles.mt20]}
+                >
+                  <Image
+                    source={{ uri: logo.not_found }}
+                    resizeMode="cover"
+                    style={styles.notFound}
+                  />
+                  <Text
+                    style={[Styles.fontBold, Styles.fz18, { color: "gray" }]}
+                  >
+                    Không tìm thấy dữ liệu
+                  </Text>
+                </View>
+              )
+            }
+            renderItem={({ item }) => (
+              <VaccineCard
+                name={item.name}
+                disease={item.disease}
+                image={item.image}
+                price={item.price}
+                btnSell
+              />
+            )}
+          />
+        </View>
       </View>
-    </View>
+      <FilterModal
+        visible={filterVisible}
+        onClose={() => setFilterVisible(false)}
+      />
+    </>
   );
 };
 
