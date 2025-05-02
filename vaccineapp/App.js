@@ -9,10 +9,6 @@ import React, { useReducer } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./components/Home/Home";
 import Book from "./components/Home/Book";
-import Cart, {
-  CartModalProvider,
-  useCartModal,
-} from "./components/contexts/CartModalContext";
 import History from "./components/Home/History";
 import Vaccine from "./components/Home/Vaccine";
 import Order from "./components/Home/Order";
@@ -21,6 +17,7 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
+  useNavigation,
 } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Button, PaperProvider, Portal } from "react-native-paper";
@@ -39,6 +36,8 @@ import ProfileSetting from "./components/User/ProfileSetting";
 import ChangePassword from "./components/User/ChangePassword";
 import { LoadingProvider } from "./components/contexts/LoadingContext";
 import Toast from "react-native-toast-message";
+import VaccineDetails from "./components/Home/VaccineDetails";
+import Cart from "./components/Home/Cart";
 
 const Stack = createNativeStackNavigator();
 const RegisterProfileStack = () => (
@@ -66,10 +65,10 @@ const RegisterProfileStack = () => (
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator = () => {
-  const { openCart } = useCartModal();
   return (
     <HomeStack.Navigator
       screenOptions={({ navigation }) => ({
+        presentation: "transparentModal",
         headerStyle: {
           backgroundColor: color.primary,
         },
@@ -102,15 +101,28 @@ const HomeStackNavigator = () => {
       <HomeStack.Screen
         name="vaccine"
         component={Vaccine}
-        options={{
+        options={({ navigation }) => ({
           title: "Danh mục vắc xin",
           headerShadowVisible: false,
           headerRight: () => (
-            <Button onPress={openCart}>
+            <Button onPress={() => navigation.navigate("cart")}>
               <FontAwesome5 name="shopping-bag" size={20} color={"white"} />
             </Button>
           ),
-        }}
+        })}
+      />
+      <HomeStack.Screen
+        name="vaccineDetails"
+        component={VaccineDetails}
+        options={({ navigation }) => ({
+          title: "Chi tiết vắc xin",
+          headerShadowVisible: false,
+          headerRight: () => (
+            <Button onPress={() => navigation.navigate("cart")}>
+              <FontAwesome5 name="shopping-bag" size={20} color={"white"} />
+            </Button>
+          ),
+        })}
       />
       <HomeStack.Screen
         name="history"
@@ -121,6 +133,14 @@ const HomeStackNavigator = () => {
         name="order"
         component={Order}
         options={{ title: "Đặt mua vắc xin" }}
+      />
+      <HomeStack.Screen
+        name="cart"
+        component={Cart}
+        options={{
+          headerShown: false,
+          animation: "slide_from_bottom",
+        }}
       />
     </HomeStack.Navigator>
   );
@@ -244,17 +264,15 @@ const App = () => {
       <MyUserContext.Provider value={user}>
         <MyDispatchContext.Provider value={dispatch}>
           <LoadingProvider>
-            <CartModalProvider>
-              <SafeAreaProvider>
-                <NavigationContainer>
-                  {!user || user.is_completed_profile ? (
-                    <TabNavigator />
-                  ) : (
-                    <RegisterProfileStack />
-                  )}
-                </NavigationContainer>
-              </SafeAreaProvider>
-            </CartModalProvider>
+            <SafeAreaProvider>
+              <NavigationContainer>
+                {!user || user.is_completed_profile ? (
+                  <TabNavigator />
+                ) : (
+                  <RegisterProfileStack />
+                )}
+              </NavigationContainer>
+            </SafeAreaProvider>
           </LoadingProvider>
         </MyDispatchContext.Provider>
       </MyUserContext.Provider>

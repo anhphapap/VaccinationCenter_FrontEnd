@@ -4,32 +4,34 @@ import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button } from "react-native-paper";
 
-const VaccineCard = ({ image, name, disease, price, btnDel, btnSell }) => {
+const VaccineCard = ({ image, name, disease, price, btnDel, btnSell, nav }) => {
   return (
     <View style={styles.iContainer}>
-      <View style={[Styles.rowSpaceCenter, { justifyContent: "flex-start" }]}>
-        <Image
-          source={{ uri: image }}
-          resizeMode="cover"
-          style={styles.img}
-        ></Image>
-        <View style={Styles.flexShink}>
-          <Text
-            style={{
-              textTransform: "uppercase",
-              fontWeight: "500",
-              fontSize: 16,
-              flexWrap: "wrap",
-            }}
-          >
-            {name}
-          </Text>
+      <TouchableOpacity onPress={nav}>
+        <View style={[Styles.rowSpaceCenter, { justifyContent: "flex-start" }]}>
+          <Image
+            source={{ uri: image }}
+            resizeMode="cover"
+            style={styles.img}
+          ></Image>
+          <View style={Styles.flexShink}>
+            <Text
+              style={{
+                textTransform: "uppercase",
+                fontWeight: "500",
+                fontSize: 16,
+                flexWrap: "wrap",
+              }}
+            >
+              {name}
+            </Text>
+          </View>
         </View>
-      </View>
-      <View style={[Styles.flexRow, Styles.mt20, Styles.wrap]}>
-        <Text style={{ fontWeight: "bold" }}>Phòng bệnh: </Text>
-        <Text>{disease === "" ? "Đang cập nhập..." : disease}</Text>
-      </View>
+        <View style={[Styles.flexRow, Styles.mt20, Styles.wrap]}>
+          <Text style={{ fontWeight: "bold" }}>Phòng bệnh: </Text>
+          <Text>{disease === "" ? "Đang cập nhập..." : disease}</Text>
+        </View>
+      </TouchableOpacity>
       <View style={[Styles.rowSpaceCenter, Styles.mt10]}>
         <Text style={styles.price}>{price.toLocaleString()} VNĐ</Text>
         {btnDel && (

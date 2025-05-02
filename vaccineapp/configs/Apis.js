@@ -4,6 +4,7 @@ const BASE_URL = "https://vaccinationcenter-backend.onrender.com/";
 
 export const endpoints = {
   vaccines: "/vaccines/",
+  vaccineDetails: (vaccineId) => `/vaccines/${vaccineId}/`,
   categories: "/categories/",
   vac_cate: (cateId) => `/categories/${cateId}/vaccines/`,
   register: "/user/",

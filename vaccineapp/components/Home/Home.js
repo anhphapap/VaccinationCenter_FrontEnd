@@ -5,10 +5,10 @@ import { Avatar, Button } from "react-native-paper";
 import Styles, { color, defaultAvatar, logo } from "../../styles/Styles";
 import Carousel from "./Carousel";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { useCartModal } from "../contexts/CartModalContext";
 import EventBanner from "../common/EventBanner";
 import FeatureButton from "../common/FeatureButton";
 import useUser from "../../hooks/useUser";
+import { useNavigation } from "@react-navigation/native";
 
 const listItem = [
   {
@@ -34,8 +34,8 @@ const listItem = [
 ];
 
 const Home = () => {
+  const nav = useNavigation();
   const user = useUser();
-  const { openCart } = useCartModal();
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Image
@@ -82,7 +82,7 @@ const Home = () => {
               style={styles.logo}
             ></Image>
           )}
-          <Button onPress={openCart}>
+          <Button onPress={() => nav.navigate("cart")}>
             <FontAwesome5
               name="shopping-bag"
               color="white"

@@ -17,6 +17,7 @@ import VaccineCard from "../common/VaccineCard";
 import Apis, { endpoints } from "../../configs/Apis";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import FilterModal from "../common/FilterModal";
+import { useNavigation } from "@react-navigation/native";
 
 const Vaccine = () => {
   const [query, setQuery] = useState();
@@ -27,6 +28,7 @@ const Vaccine = () => {
   const [count, setCount] = useState(0);
   const [text, setText] = useState("");
   const [filterVisible, setFilterVisible] = useState(false);
+  const nav = useNavigation();
 
   const handleSort = () => {
     if (!sort) setSort("price_asc");
@@ -187,6 +189,9 @@ const Vaccine = () => {
                 disease={item.disease}
                 image={item.image}
                 price={item.price}
+                nav={() =>
+                  nav.navigate("vaccineDetails", { vaccineId: item.id })
+                }
                 btnSell
               />
             )}
