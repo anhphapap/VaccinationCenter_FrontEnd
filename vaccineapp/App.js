@@ -38,6 +38,14 @@ import { LoadingProvider } from "./components/contexts/LoadingContext";
 import Toast from "react-native-toast-message";
 import VaccineDetails from "./components/Home/VaccineDetails";
 import Cart from "./components/Home/Cart";
+import { LogBox } from "react-native";
+import AddVaccine from "./components/Home/AddVaccine";
+import { VaccineProvider } from "./components/contexts/VaccineContext";
+
+LogBox.ignoreLogs([
+  "Support for defaultProps will be removed from function components",
+  "Support for defaultProps will be removed from memo components",
+]);
 
 const Stack = createNativeStackNavigator();
 const RegisterProfileStack = () => (
@@ -133,6 +141,11 @@ const HomeStackNavigator = () => {
         name="order"
         component={Order}
         options={{ title: "Đặt mua vắc xin" }}
+      />
+      <HomeStack.Screen
+        name="addVaccines"
+        component={AddVaccine}
+        options={{ title: "Thêm mới vắc xin", headerShadowVisible: false }}
       />
       <HomeStack.Screen
         name="cart"
@@ -264,15 +277,17 @@ const App = () => {
       <MyUserContext.Provider value={user}>
         <MyDispatchContext.Provider value={dispatch}>
           <LoadingProvider>
-            <SafeAreaProvider>
-              <NavigationContainer>
-                {!user || user.is_completed_profile ? (
-                  <TabNavigator />
-                ) : (
-                  <RegisterProfileStack />
-                )}
-              </NavigationContainer>
-            </SafeAreaProvider>
+            <VaccineProvider>
+              <SafeAreaProvider>
+                <NavigationContainer>
+                  {!user || user.is_completed_profile ? (
+                    <TabNavigator />
+                  ) : (
+                    <RegisterProfileStack />
+                  )}
+                </NavigationContainer>
+              </SafeAreaProvider>
+            </VaccineProvider>
           </LoadingProvider>
         </MyDispatchContext.Provider>
       </MyUserContext.Provider>

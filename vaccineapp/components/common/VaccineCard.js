@@ -4,13 +4,23 @@ import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button } from "react-native-paper";
 
-const VaccineCard = ({ image, name, disease, price, btnDel, btnSell, nav }) => {
+const VaccineCard = ({
+  item,
+  btnDel,
+  btnSell,
+  nav,
+  addForm,
+  select,
+  remove,
+  selected,
+  onTrash,
+}) => {
   return (
     <View style={styles.iContainer}>
       <TouchableOpacity onPress={nav}>
         <View style={[Styles.rowSpaceCenter, { justifyContent: "flex-start" }]}>
           <Image
-            source={{ uri: image }}
+            source={{ uri: item.image }}
             resizeMode="cover"
             style={styles.img}
           ></Image>
@@ -23,19 +33,19 @@ const VaccineCard = ({ image, name, disease, price, btnDel, btnSell, nav }) => {
                 flexWrap: "wrap",
               }}
             >
-              {name}
+              {item.name}
             </Text>
           </View>
         </View>
         <View style={[Styles.flexRow, Styles.mt20, Styles.wrap]}>
           <Text style={{ fontWeight: "bold" }}>Phòng bệnh: </Text>
-          <Text>{disease === "" ? "Đang cập nhập..." : disease}</Text>
+          <Text>{item.disease === "" ? "Đang cập nhập..." : item.disease}</Text>
         </View>
       </TouchableOpacity>
       <View style={[Styles.rowSpaceCenter, Styles.mt10]}>
-        <Text style={styles.price}>{price.toLocaleString()} VNĐ</Text>
+        <Text style={styles.price}>{item.price.toLocaleString()} VNĐ</Text>
         {btnDel && (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onTrash}>
             <FontAwesome5 name="trash" color={"red"} size={16}></FontAwesome5>
           </TouchableOpacity>
         )}
@@ -58,6 +68,22 @@ const VaccineCard = ({ image, name, disease, price, btnDel, btnSell, nav }) => {
           </Button>
         </View>
       )}
+      {addForm &&
+        (selected ? (
+          <Button
+            style={[styles.btn12, Styles.mt20]}
+            onPress={() => remove(item.id)}
+          >
+            <Text style={[Styles.fontBold, { color: "white" }]}>Bỏ chọn</Text>
+          </Button>
+        ) : (
+          <Button
+            style={[styles.btn1, Styles.mt20]}
+            onPress={() => select(item)}
+          >
+            <Text style={[Styles.fontBold, { color: "white" }]}>Chọn</Text>
+          </Button>
+        ))}
     </View>
   );
 };
@@ -68,9 +94,11 @@ const areEqual = (prev, next) =>
   prev.disease === next.disease &&
   prev.price === next.price &&
   prev.btnDel === next.btnDel &&
-  prev.btnSell === next.btnSell;
+  prev.btnSell === next.btnSell &&
+  prev.selected === next.selected;
 
-export default React.memo(VaccineCard, areEqual);
+// export default React.memo(VaccineCard, areEqual);
+export default VaccineCard; // Tạm thời bỏ memo()
 
 const styles = StyleSheet.create({
   img: {
@@ -93,6 +121,11 @@ const styles = StyleSheet.create({
   },
   btn1: {
     backgroundColor: color.primary,
+    borderRadius: 10,
+    flex: 1,
+  },
+  btn12: {
+    backgroundColor: "red",
     borderRadius: 10,
     flex: 1,
   },

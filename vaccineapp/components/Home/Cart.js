@@ -61,10 +61,7 @@ const Cart = () => {
           renderItem={({ item }) => (
             <VaccineCard
               btnDel
-              image={item.image}
-              name={item.name}
-              price={item.price}
-              disease={item.disease}
+              item={item}
               nav={() =>
                 navigation.navigate("vaccineDetails", { vaccineId: item.id })
               }

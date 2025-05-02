@@ -1,5 +1,4 @@
 import {
-  FlatList,
   Image,
   ScrollView,
   StyleSheet,
@@ -7,29 +6,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
-import Styles, { color } from "../../styles/Styles";
+import React, { useContext, useState } from "react";
+import Styles, { color, logo } from "../../styles/Styles";
 import { Button } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { addDays } from "date-fns";
 import DatePicker from "../common/DatePicker";
-
-const cartItems = [
-  {
-    id: "vac-xin-qdenga",
-    name: "Vắc xin Qdenga",
-    price: 1390000,
-    disease: "Sốt xuất huyết",
-    img: "https://vnvc.vn/wp-content/uploads/2024/09/vaccine-qdenga-1.jpg",
-  },
-  {
-    id: "vac-xin-shingrix",
-    name: "Vắc xin Shingrix",
-    price: 3890000,
-    disease: "Zona thần kinh",
-    img: "https://vnvc.vn/wp-content/uploads/2023/11/vacxin-shingrix.jpg",
-  },
-];
+import { useNavigation } from "@react-navigation/native";
+import { VaccineContext } from "../contexts/VaccineContext";
+import VaccineCard from "../common/VaccineCard";
 
 const user = {
   name: "Phạm Anh Pha",
@@ -75,6 +59,8 @@ const listInfo = [
 const Order = () => {
   const [date, setDate] = useState();
   const [showInfo, setShowInfo] = useState(false);
+  const { selectedVaccines, removeVaccine } = useContext(VaccineContext);
+  const nav = useNavigation();
 
   return (
     <View
@@ -82,6 +68,7 @@ const Order = () => {
         position: "relative",
         backgroundColor: "white",
         paddingBottom: 63,
+        flex: 1,
       }}
     >
       <ScrollView showsVerticalScrollIndicator={false} style={Styles.p20}>
@@ -129,47 +116,33 @@ const Order = () => {
             <Text style={[Styles.fontPreBold, Styles.mv10]}>
               Chọn vắc xin *
             </Text>
-            {cartItems.map((item) => (
-              <View style={styles.iContainer} key={item.id}>
-                <View
-                  style={[
-                    Styles.rowSpaceCenter,
-                    { justifyContent: "flex-start" },
-                  ]}
+            {selectedVaccines.length > 0 ? (
+              selectedVaccines.map((item) => (
+                <VaccineCard
+                  item={item}
+                  btnDel
+                  onTrash={() => removeVaccine(item.id)}
+                  key={item.id}
+                />
+              ))
+            ) : (
+              <View style={[Styles.alignCenter]}>
+                <Image
+                  source={{ uri: logo.not_found }}
+                  style={styles.imgNotFound}
+                  resizeMode="cover"
+                />
+                <Text
+                  style={{
+                    color: "gray",
+                    fontWeight: "bold",
+                    marginBottom: 20,
+                  }}
                 >
-                  <Image
-                    source={{ uri: item.img }}
-                    resizeMode="cover"
-                    style={styles.img}
-                  ></Image>
-                  <Text
-                    style={{
-                      textTransform: "uppercase",
-                      fontWeight: "500",
-                      fontSize: 16,
-                    }}
-                  >
-                    {item.name}
-                  </Text>
-                </View>
-                <View style={[Styles.flexRow, Styles.mv20]}>
-                  <Text style={{ fontWeight: "bold" }}>Phòng bệnh: </Text>
-                  <Text>{item.disease}</Text>
-                </View>
-                <View style={Styles.rowSpaceCenter}>
-                  <Text style={styles.price}>
-                    {item.price.toLocaleString()} VNĐ
-                  </Text>
-                  <TouchableOpacity>
-                    <FontAwesome5
-                      name="trash"
-                      color={"red"}
-                      size={16}
-                    ></FontAwesome5>
-                  </TouchableOpacity>
-                </View>
+                  Danh sách vắc xin chọn mua trống
+                </Text>
               </View>
-            ))}
+            )}
             <View style={[Styles.rowSpaceCenter, Styles.mv10, { gap: 10 }]}>
               <Button style={styles.btn1}>
                 <FontAwesome5
@@ -182,7 +155,10 @@ const Order = () => {
                   Thêm từ giỏ
                 </Text>
               </Button>
-              <Button style={styles.btn2}>
+              <Button
+                style={styles.btn2}
+                onPress={() => nav.navigate("addVaccines")}
+              >
                 <Text style={{ color: "#0a56df" }}>Thêm mới vắc xin</Text>
               </Button>
             </View>
@@ -267,5 +243,9 @@ const styles = StyleSheet.create({
   },
   locate: {
     padding: 10,
+  },
+  imgNotFound: {
+    width: "60%",
+    aspectRatio: 1,
   },
 });
