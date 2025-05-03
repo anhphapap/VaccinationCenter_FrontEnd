@@ -9,6 +9,8 @@ export const endpoints = {
   vac_cate: (cateId) => `/categories/${cateId}/vaccines/`,
   register: "/user/",
   login: "/o/token/",
+  campaigns: "/campaigns/",
+  injections: "/injections/",
   "current-user": (username) => `user/${username}/`,
 };
 

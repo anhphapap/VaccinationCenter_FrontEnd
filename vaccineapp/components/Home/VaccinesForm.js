@@ -19,6 +19,8 @@ import { useNavigation } from "@react-navigation/native";
 
 import VaccineCard from "../common/VaccineCard";
 import { VaccineContext } from "../contexts/VaccineContext";
+import FloatBottomButton from "../common/FloatBottomButton";
+import Toast from "react-native-toast-message";
 
 const VaccinesForm = ({ addForm }) => {
   const [query, setQuery] = useState();
@@ -31,6 +33,7 @@ const VaccinesForm = ({ addForm }) => {
   const [filterVisible, setFilterVisible] = useState(false);
   const { selectedVaccines, addVaccine, removeVaccine } =
     useContext(VaccineContext);
+  const [preSelect, setPreSelect] = useState(selectedVaccines);
   const nav = useNavigation();
 
   const handleSort = () => {
@@ -69,7 +72,6 @@ const VaccinesForm = ({ addForm }) => {
         setCount(res.data.count);
         if (res.data.next === null) {
           setPage(0);
-          console.log("ok");
         }
       } catch (ex) {
         console.log(ex.message);
@@ -77,6 +79,11 @@ const VaccinesForm = ({ addForm }) => {
         setLoading(false);
       }
     }
+  };
+
+  const handleConfirm = () => {
+    addVaccine(preSelect);
+    nav.goBack();
   };
 
   useEffect(() => {
@@ -141,7 +148,14 @@ const VaccinesForm = ({ addForm }) => {
             <Text style={[Styles.ph10, { color: "gray" }]}>Lọc</Text>
           </TouchableOpacity>
         </View>
-        <View style={[Styles.ph20, Styles.bgWhite, Styles.flex]}>
+        <View
+          style={[
+            Styles.ph20,
+            Styles.bgWhite,
+            Styles.flex,
+            [addForm && { marginBottom: 100 }],
+          ]}
+        >
           <FlatList
             onEndReached={loadMore}
             onEndReachedThreshold={0.6}
@@ -190,9 +204,11 @@ const VaccinesForm = ({ addForm }) => {
                 <VaccineCard
                   item={item}
                   addForm
-                  select={addVaccine}
-                  remove={removeVaccine}
-                  selected={selectedVaccines.some((v) => v.id === item.id)}
+                  select={(item) => setPreSelect([...preSelect, item])}
+                  remove={(id) =>
+                    setPreSelect((prev) => prev.filter((p) => p.id !== id))
+                  }
+                  selected={preSelect.some((v) => v.id === item.id)}
                 />
               ) : (
                 <VaccineCard
@@ -206,11 +222,22 @@ const VaccinesForm = ({ addForm }) => {
             }
           />
         </View>
+        {addForm && (
+          <FloatBottomButton
+            label={"Xác nhận (" + preSelect.length + ")"}
+            press={
+              preSelect.length === 0
+                ? () =>
+                    Toast.show({
+                      type: "info",
+                      text1: "Vui lòng chọn vắc xin!",
+                    })
+                : handleConfirm
+            }
+          />
+        )}
       </View>
-      <FilterModal
-        visible={filterVisible}
-        onClose={() => setFilterVisible(false)}
-      />
+      <FilterModal visible={filterVisible} onClose={handleConfirm} />
     </>
   );
 };

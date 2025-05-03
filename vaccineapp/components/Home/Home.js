@@ -9,6 +9,7 @@ import EventBanner from "../common/EventBanner";
 import FeatureButton from "../common/FeatureButton";
 import useUser from "../../hooks/useUser";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 const listItem = [
   {
@@ -98,7 +99,15 @@ const Home = () => {
             <FeatureButton
               icon={item.icon}
               label={item.label}
-              page={item.page}
+              press={
+                !user && item.page !== "vaccine"
+                  ? () =>
+                      Toast.show({
+                        type: "info",
+                        text1: "Vui lòng đăng nhập để sử dụng chức năng!",
+                      })
+                  : () => nav.navigate(item.page)
+              }
               key={item.page}
             ></FeatureButton>
           ))}

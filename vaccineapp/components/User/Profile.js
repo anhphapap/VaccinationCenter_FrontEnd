@@ -114,7 +114,8 @@ const Profile = () => {
               {user.last_name + " " + user.first_name}
             </Text>
             <Text style={Styles.textWhite}>
-              {user.phone} - {user.gender ? "Nam" : "Nữ"}, {user.birth_date}
+              {user.phone} - {user.gender ? "Nam" : "Nữ"},{" "}
+              {new Date(user.birth_date).toLocaleDateString("vi-VN")}
             </Text>
           </View>
         ) : (

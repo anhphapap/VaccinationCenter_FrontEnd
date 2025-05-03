@@ -6,7 +6,7 @@ export const VaccineProvider = ({ children }) => {
   const [selectedVaccines, setSelectedVaccines] = useState([]);
 
   const addVaccine = (product) => {
-    setSelectedVaccines((prev) => [...prev, product]);
+    setSelectedVaccines([...product]);
   };
 
   const removeVaccine = (id) => {
@@ -15,7 +15,12 @@ export const VaccineProvider = ({ children }) => {
 
   return (
     <VaccineContext.Provider
-      value={{ selectedVaccines, addVaccine, removeVaccine }}
+      value={{
+        selectedVaccines,
+        addVaccine,
+        removeVaccine,
+        setSelectedVaccines,
+      }}
     >
       {children}
     </VaccineContext.Provider>

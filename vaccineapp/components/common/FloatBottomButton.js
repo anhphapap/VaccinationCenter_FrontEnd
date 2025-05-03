@@ -4,14 +4,20 @@ import React from "react";
 import Styles, { color } from "../../styles/Styles";
 import { Button } from "react-native-paper";
 
-const FloatBottomButton = ({ label, icon, press, loading = false }) => {
+const FloatBottomButton = ({
+  label,
+  icon,
+  press,
+  loading = false,
+  disabled,
+}) => {
   return (
     <View style={styles.iBottom}>
       <Button
         style={styles.closeBtn}
         onPress={press}
         loading={loading}
-        disabled={loading}
+        disabled={disabled}
         textColor="white"
         contentStyle={styles.contentBtn}
         labelStyle={styles.btnTxt}

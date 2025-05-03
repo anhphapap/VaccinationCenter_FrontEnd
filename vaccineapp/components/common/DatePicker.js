@@ -7,9 +7,15 @@ import {
   Provider as PaperProvider,
   MD3LightTheme as DefaultTheme,
 } from "react-native-paper";
-import { addDays } from "date-fns";
+import { addDays, max, subDays } from "date-fns";
 
-const DatePicker = ({ date, setDate, type = "forward" }) => {
+const DatePicker = ({
+  date,
+  setDate,
+  type = "forward",
+  startDate,
+  endDate,
+}) => {
   registerTranslation("vi", {
     save: "Lưu",
     selectSingle: "Chọn ngày mong muốn",
@@ -40,8 +46,14 @@ const DatePicker = ({ date, setDate, type = "forward" }) => {
   };
   const validRange =
     type === "back"
-      ? { endDate: addDays(new Date(), -1) }
-      : { startDate: addDays(new Date(), 0) };
+      ? { endDate: subDays(new Date(), 1) }
+      : type === "foward"
+      ? { startDate: addDays(new Date(), 0) }
+      : {
+          startDate:
+            new Date().getTime() > startDate.getTime() ? new Date() : startDate,
+          endDate: subDays(endDate, 1),
+        };
 
   return (
     <PaperProvider theme={theme}>

@@ -4,11 +4,10 @@ import Styles, { color } from "../../styles/Styles";
 import { useNavigation } from "@react-navigation/native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
-const FeatureButton = ({ label, icon, page }) => {
-  const nav = useNavigation();
+const FeatureButton = ({ label, icon, press }) => {
   return (
     <View style={Styles.alignCenter}>
-      <TouchableOpacity style={styles.btn} onPress={() => nav.navigate(page)}>
+      <TouchableOpacity style={styles.btn} onPress={press}>
         <FontAwesome5
           name={icon}
           size={30}
