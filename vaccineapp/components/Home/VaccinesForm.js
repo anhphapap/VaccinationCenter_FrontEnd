@@ -86,6 +86,17 @@ const VaccinesForm = ({ addForm }) => {
     nav.goBack();
   };
 
+  const handlePreSelect = (item) => {
+    if (preSelect.length === 3) {
+      Toast.show({
+        text1: "Một người tiêm chỉ được chọn tối đa 3 vắc xin lẻ",
+        type: "info",
+      });
+    } else {
+      setPreSelect([...preSelect, item]);
+    }
+  };
+
   useEffect(() => {
     setVaccines([]);
     setPage(1);
@@ -204,7 +215,7 @@ const VaccinesForm = ({ addForm }) => {
                 <VaccineCard
                   item={item}
                   addForm
-                  select={(item) => setPreSelect([...preSelect, item])}
+                  select={handlePreSelect}
                   remove={(id) =>
                     setPreSelect((prev) => prev.filter((p) => p.id !== id))
                   }

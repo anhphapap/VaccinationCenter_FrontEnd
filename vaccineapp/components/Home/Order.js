@@ -21,6 +21,8 @@ import Apis, { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DropDownPicker from "react-native-dropdown-picker";
 import RenderHTML from "react-native-render-html";
+import Toast from "react-native-toast-message";
+import { format } from "date-fns";
 
 const listInfo = [
   {
@@ -94,6 +96,63 @@ const Order = () => {
       console.log(ex);
     } finally {
       hideLoading();
+    }
+  };
+
+  const validate = () => {
+    if (selectedVaccines.length === 0) {
+      Toast.show({ type: "error", text1: "Vui lòng chọn vắc xin" });
+      return false;
+    }
+    if (!date) {
+      Toast.show({ type: "error", text1: "Vui lòng chọn ngày tiêm" });
+      return false;
+    }
+    return true;
+  };
+
+  const handleConfirm = async () => {
+    if (validate()) {
+      try {
+        showLoading();
+        let listDose = [];
+        for (let x of selectedVaccines) {
+          let res = await Apis.get(endpoints.vaccineDetails(x.id));
+          if (res.data.doses.length === 0) {
+            Toast.show({
+              type: "error",
+              text1: `Hiện chưa thể đặt mua ${res.data.name}!!!`,
+            });
+            return;
+          } else listDose.push(res.data.doses[0].id);
+        }
+        const token = await AsyncStorage.getItem("token");
+        for (let x of listDose) {
+          const data = {
+            injection_time: format(new Date(date), "yyyy-MM-dd"),
+            user: user.id,
+            vaccination_campaign: selectedCampaign,
+            dose: x,
+          };
+          console.log(data);
+          let res = await authApis(token).post(endpoints.injections, data, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+        }
+        Toast.show({
+          type: "success",
+          text1: "Đặt mua thành công",
+        });
+        setSelectedCampaign(1);
+        setSelectedVaccines([]);
+        setDate();
+      } catch (ex) {
+        console.log(ex);
+      } finally {
+        hideLoading();
+      }
     }
   };
 
@@ -315,7 +374,7 @@ const Order = () => {
               VNĐ
             </Text>
           </View>
-          <Button style={[styles.btn1, { flex: 0 }]}>
+          <Button style={[styles.btn1, { flex: 0 }]} onPress={handleConfirm}>
             <Text style={[Styles.textWhite, Styles.p10]}>Xác nhận</Text>
           </Button>
         </View>
