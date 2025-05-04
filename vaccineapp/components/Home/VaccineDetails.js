@@ -87,7 +87,7 @@ const VaccineDetails = ({ route }) => {
           <Text style={Styles.fontBold}>Nguồn gốc: </Text>
           <Text>{vaccine.country}</Text>
         </View>
-        <View style={[Styles.flexRow, { marginVertical: 3 }]}>
+        <View style={[Styles.flexRow, Styles.wrap, { marginVertical: 3 }]}>
           <Text style={Styles.fontBold}>Phòng bệnh: </Text>
           <Text>{vaccine.disease}</Text>
         </View>

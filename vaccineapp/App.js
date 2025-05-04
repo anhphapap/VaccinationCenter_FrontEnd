@@ -41,6 +41,7 @@ import Cart from "./components/Home/Cart";
 import { LogBox } from "react-native";
 import AddVaccine from "./components/Home/AddVaccine";
 import { VaccineProvider } from "./components/contexts/VaccineContext";
+import Injections from "./components/Home/Injections";
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
@@ -246,11 +247,35 @@ const TabNavigator = () => {
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
               name="home"
-              size={30}
+              size={24}
               color={focused ? color.primary : "black"}
             />
           ),
         }}
+      />
+      <Tab.Screen
+        name="NHẮC LỊCH TIÊM"
+        component={Injections}
+        options={({ navigation }) => ({
+          tabBarIcon: ({ focused }) => (
+            <FontAwesome5
+              name="calendar-check"
+              size={24}
+              color={focused ? color.primary : "black"}
+            />
+          ),
+          headerStyle: {
+            backgroundColor: color.primary,
+          },
+          headerTintColor: "#fff",
+          headerTitleAlign: "center",
+          headerShown: true,
+          headerLeft: () => (
+            <Button onPress={() => navigation.goBack()}>
+              <FontAwesome5 name="arrow-left" size={20} color={"white"} />
+            </Button>
+          ),
+        })}
       />
       <Tab.Screen
         name="TÀI KHOẢN"
@@ -259,7 +284,7 @@ const TabNavigator = () => {
           tabBarIcon: ({ focused }) => (
             <FontAwesome5
               name="user"
-              size={30}
+              size={24}
               solid
               color={focused ? color.primary : "black"}
             />

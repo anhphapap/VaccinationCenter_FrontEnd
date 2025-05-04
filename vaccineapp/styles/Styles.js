@@ -3,6 +3,8 @@ import { StyleSheet } from "react-native";
 export const defaultAvatar =
   "https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png";
 
+export const maxFilterPrice = 5000000;
+
 export const color = {
   // primary: "#0a56df",
   primary: "#0462d7",

@@ -12,8 +12,8 @@ import {
 import React, { useContext, useEffect, useRef, useState } from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import FilterModal from "../common/FilterModal";
-import { ActivityIndicator, Searchbar } from "react-native-paper";
-import Styles, { color, logo } from "../../styles/Styles";
+import { ActivityIndicator, Badge, Searchbar } from "react-native-paper";
+import Styles, { color, logo, maxFilterPrice } from "../../styles/Styles";
 import Apis, { endpoints } from "../../configs/Apis";
 import { useNavigation } from "@react-navigation/native";
 
@@ -35,6 +35,9 @@ const VaccinesForm = ({ addForm }) => {
     useContext(VaccineContext);
   const [preSelect, setPreSelect] = useState(selectedVaccines);
   const nav = useNavigation();
+  const [filterCates, setFilterCates] = useState([]);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(maxFilterPrice);
 
   const handleSort = () => {
     if (!sort) setSort("price_asc");
@@ -62,6 +65,13 @@ const VaccinesForm = ({ addForm }) => {
         let url = endpoints.vaccines + "?page=" + page;
         if (query) url += `&q=${query}`;
         if (sort) url += `&sort_by=${sort}`;
+        if (minPrice !== 0) url += `&min_price=${minPrice}`;
+        if (maxPrice !== maxFilterPrice) url += `&max_price=${maxPrice}`;
+        if (filterCates && filterCates.length > 0) {
+          filterCates.forEach((id) => {
+            url += `&cate=${id}`;
+          });
+        }
         let res = await Apis.get(url);
         if (page === 1) {
           setVaccines(res.data.results);
@@ -100,11 +110,11 @@ const VaccinesForm = ({ addForm }) => {
   useEffect(() => {
     setVaccines([]);
     setPage(1);
-  }, [query, sort]);
+  }, [query, sort, maxPrice, minPrice, filterCates]);
 
   useEffect(() => {
     loadData();
-  }, [page, query, sort]);
+  }, [page, query, sort, maxPrice, minPrice, filterCates]);
 
   const loadMore = () => {
     if (!loading && page > 0) {
@@ -155,7 +165,16 @@ const VaccinesForm = ({ addForm }) => {
             style={[Styles.flexRow, Styles.alignCenter]}
             onPress={() => setFilterVisible(true)}
           >
-            <FontAwesome5 name="filter" color={color.primary} />
+            <View style={{ position: "relative" }}>
+              <FontAwesome5 name="filter" color={color.primary} />
+              {(filterCates.length !== 0 ||
+                minPrice != 0 ||
+                maxPrice != maxFilterPrice) && (
+                <Badge size={10} style={styles.badge}>
+                  <FontAwesome5 name="check" color={color.primary} size={4} />
+                </Badge>
+              )}
+            </View>
             <Text style={[Styles.ph10, { color: "gray" }]}>Lọc</Text>
           </TouchableOpacity>
         </View>
@@ -248,7 +267,16 @@ const VaccinesForm = ({ addForm }) => {
           />
         )}
       </View>
-      <FilterModal visible={filterVisible} onClose={handleConfirm} />
+      <FilterModal
+        visible={filterVisible}
+        onClose={() => setFilterVisible(false)}
+        filterCates={filterCates}
+        maxPrice={maxPrice}
+        minPrice={minPrice}
+        setFilterCates={setFilterCates}
+        setMaxPrice={setMaxPrice}
+        setMinPrice={setMinPrice}
+      />
     </>
   );
 };
@@ -271,5 +299,11 @@ const styles = StyleSheet.create({
   notFound: {
     width: 300,
     height: 300,
+  },
+  badge: {
+    position: "absolute",
+    right: -5,
+    bottom: -5,
+    backgroundColor: color.primary2,
   },
 });

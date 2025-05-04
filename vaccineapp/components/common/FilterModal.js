@@ -9,19 +9,28 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button, Checkbox } from "react-native-paper";
-import Styles, { color } from "../../styles/Styles";
+import Styles, { color, maxFilterPrice } from "../../styles/Styles";
 import Apis, { endpoints } from "../../configs/Apis";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import LoadingOverlay from "./LoadingOverlay";
 import RangeSlider from "react-native-range-slider-expo";
 
-const FilterModal = ({ visible, onClose }) => {
+const FilterModal = ({
+  visible,
+  onClose,
+  setMaxPrice,
+  setMinPrice,
+  setFilterCates,
+  maxPrice,
+  minPrice,
+  filterCates,
+}) => {
   const [cate, setCate] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [checkedIds, setCheckedIds] = useState([]);
   const [fromValue, setFromValue] = useState(0);
-  const [toValue, setToValue] = useState(10000000);
+  const [toValue, setToValue] = useState(maxFilterPrice);
 
   const toggleCheck = (id) => {
     setCheckedIds((prev) =>
@@ -53,6 +62,26 @@ const FilterModal = ({ visible, onClose }) => {
   const loadMore = () => {
     if (page > 0) setPage(page + 1);
   };
+
+  const handleConfirm = () => {
+    setMinPrice(fromValue);
+    setMaxPrice(toValue);
+    setFilterCates(checkedIds);
+    onClose();
+  };
+
+  const handleDelete = () => {
+    setMinPrice(0);
+    setMaxPrice(maxFilterPrice);
+    setFilterCates([]);
+    onClose();
+  };
+
+  useEffect(() => {
+    setFromValue(minPrice);
+    setToValue(maxPrice);
+    setCheckedIds(filterCates);
+  }, [visible]);
 
   useEffect(() => {
     loadCate();
@@ -123,7 +152,7 @@ const FilterModal = ({ visible, onClose }) => {
               </View>
               <RangeSlider
                 min={0}
-                max={10000000}
+                max={maxFilterPrice}
                 fromValueOnChange={setFromValue}
                 toValueOnChange={setToValue}
                 initialFromValue={fromValue}
@@ -148,12 +177,12 @@ const FilterModal = ({ visible, onClose }) => {
               Styles.pv20,
             ]}
           >
-            <Button style={styles.btn1}>
+            <Button style={styles.btn1} onPress={handleDelete}>
               <Text style={[Styles.fontBold, { color: color.primary }]}>
                 Xóa lọc
               </Text>
             </Button>
-            <Button style={styles.btn2}>
+            <Button style={styles.btn2} onPress={handleConfirm}>
               <FontAwesome5
                 name="filter"
                 color={"white"}

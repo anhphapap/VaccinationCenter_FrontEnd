@@ -134,7 +134,6 @@ const Order = () => {
             vaccination_campaign: selectedCampaign,
             dose: x,
           };
-          console.log(data);
           let res = await authApis(token).post(endpoints.injections, data, {
             headers: {
               "Content-Type": "application/json",

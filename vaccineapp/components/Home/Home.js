@@ -14,7 +14,7 @@ import Toast from "react-native-toast-message";
 const listItem = [
   {
     label: "Đặt lịch",
-    icon: "calendar",
+    icon: "calendar-alt",
     page: "book",
   },
   {
