@@ -16,7 +16,6 @@ import { ActivityIndicator, Badge, Searchbar } from "react-native-paper";
 import Styles, { color, logo, maxFilterPrice } from "../../styles/Styles";
 import Apis, { endpoints } from "../../configs/Apis";
 import { useNavigation } from "@react-navigation/native";
-
 import VaccineCard from "../common/VaccineCard";
 import { VaccineContext } from "../contexts/VaccineContext";
 import FloatBottomButton from "../common/FloatBottomButton";

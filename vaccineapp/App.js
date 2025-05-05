@@ -222,14 +222,17 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => {
-        const routeName = getFocusedRouteNameFromRoute(route) ?? "";
+        const routeName = getFocusedRouteNameFromRoute(route) ?? ""; // Lấy tên của route hiện tại
 
         let tabBarStyle = {};
         if (
-          (route.name === "TRANG CHỦ" && routeName && routeName !== "home") ||
-          (route.name === "TÀI KHOẢN" && routeName && routeName !== "profile")
+          (route.name === "TRANG CHỦ" && routeName && routeName !== "home") || // Nếu không phải là "home"
+          (route.name === "TÀI KHOẢN" &&
+            routeName &&
+            routeName !== "profile") || // Nếu không phải là "profile"
+          route.name === "NHẮC LỊCH TIÊM"
         ) {
-          tabBarStyle = { display: "none" };
+          tabBarStyle = { display: "none" }; // Ẩn tab khi không cần thiết
         }
 
         return {
