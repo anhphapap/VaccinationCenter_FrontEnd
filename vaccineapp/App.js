@@ -262,6 +262,7 @@ const TabNavigator = () => {
               name="calendar-check"
               size={24}
               color={focused ? color.primary : "black"}
+              solid
             />
           ),
           headerStyle: {

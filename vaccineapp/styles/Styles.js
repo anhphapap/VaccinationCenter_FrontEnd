@@ -23,6 +23,8 @@ export const logo = {
   name: "https://res.cloudinary.com/dpmek7kuc/image/upload/v1745747858/name_odjnan.png",
   not_found:
     "https://res.cloudinary.com/dpmek7kuc/image/upload/v1746029472/not_found_hek9ye.png",
+  injection_bg:
+    "https://res.cloudinary.com/dpmek7kuc/image/upload/v1746357625/injection_bg_tzb0gc.png",
 };
 
 export default StyleSheet.create({
