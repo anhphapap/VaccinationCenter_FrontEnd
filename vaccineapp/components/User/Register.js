@@ -119,14 +119,7 @@ const Register = () => {
       ))}
       <Button
         mode="contained"
-        style={[
-          {
-            backgroundColor: color.primary,
-            borderRadius: 10,
-            padding: 5,
-            marginTop: 20,
-          },
-        ]}
+        style={styles.btn}
         labelStyle={{ fontSize: 16 }}
         disabled={loading}
         loading={loading}
@@ -157,5 +150,11 @@ const styles = StyleSheet.create({
   logo: {
     width: 150,
     height: 150,
+  },
+  btn: {
+    backgroundColor: color.primary,
+    borderRadius: 10,
+    padding: 5,
+    marginTop: 20,
   },
 });

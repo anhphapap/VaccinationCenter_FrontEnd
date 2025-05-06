@@ -121,6 +121,9 @@ export default StyleSheet.create({
   fz18: {
     fontSize: 18,
   },
+  fz20: {
+    fontSize: 20,
+  },
   border1: {
     borderWidth: 1,
     borderColor: color.border,
@@ -166,5 +169,8 @@ export default StyleSheet.create({
   },
   underline: {
     textDecorationLine: "underline",
+  },
+  uppercase: {
+    textTransform: "uppercase",
   },
 });

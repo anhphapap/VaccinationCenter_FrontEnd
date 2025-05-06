@@ -27,9 +27,12 @@ const HeaderUserInfo = () => {
           },
         ]}
       >
-        Phạm Anh Pha
+        {user.last_name + " " + user.first_name}
       </Text>
-      <Text style={{ color: color.primary }}>Nam - 17/09/2004</Text>
+      <Text style={{ color: color.primary }}>
+        {user.gender ? "Nam" : "Nữ"} -{" "}
+        {new Date(user.birth_date).toLocaleDateString("vi-VN")}
+      </Text>
     </View>
   );
 };
