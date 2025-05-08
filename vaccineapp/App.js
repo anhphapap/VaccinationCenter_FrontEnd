@@ -27,20 +27,17 @@ import Login from "./components/User/Login";
 import Register from "./components/User/Register";
 import RegisterProfile from "./components/User/RegisterProfile";
 import UserReducer from "./reducers/UserReducer";
-import {
-  MyDispatchContext,
-  MyUserContext,
-} from "./components/contexts/Contexts";
+import { MyDispatchContext, MyUserContext } from "./contexts/Contexts";
 import useUser from "./hooks/useUser";
 import ProfileSetting from "./components/User/ProfileSetting";
 import ChangePassword from "./components/User/ChangePassword";
-import { LoadingProvider } from "./components/contexts/LoadingContext";
+import { LoadingProvider } from "./contexts/LoadingContext";
 import Toast from "react-native-toast-message";
 import VaccineDetails from "./components/Home/VaccineDetails";
 import Cart from "./components/Home/Cart";
 import { LogBox } from "react-native";
 import AddVaccine from "./components/Home/AddVaccine";
-import { VaccineProvider } from "./components/contexts/VaccineContext";
+import { VaccineProvider } from "./contexts/VaccineContext";
 import Injections from "./components/Home/Injections";
 
 LogBox.ignoreLogs([

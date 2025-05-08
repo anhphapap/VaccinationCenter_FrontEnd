@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 40,
-    height: "100%",
+    paddingBottom: "25%",
   },
   noneTxt: {
     textAlign: "center",

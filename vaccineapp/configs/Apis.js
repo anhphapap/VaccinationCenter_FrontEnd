@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const BASE_URL = "https://vaccinationcenter-backend.onrender.com/";
+import { BASE_URL } from "@env";
 
 export const endpoints = {
   vaccines: "/vaccines/",
@@ -11,7 +10,10 @@ export const endpoints = {
   login: "/o/token/",
   campaigns: "/campaigns/",
   injections: "/injections/",
-  "current-user": (username) => `user/${username}/`,
+  changePassword: (username) => `/user/${username}/change-password/`,
+  currentUser: (username) => `user/${username}/`,
+  userInjections: (username) => `user/${username}/injections/`,
+  campaignDetails: (campaignId) => `/campaigns/${campaignId}/`,
 };
 
 export const authApis = (token) => {

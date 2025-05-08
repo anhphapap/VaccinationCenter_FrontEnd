@@ -5,7 +5,7 @@ import { Button } from "react-native-paper";
 import Apis, { endpoints } from "../../configs/Apis";
 import FloatBottomButton from "../common/FloatBottomButton";
 import VaccineCard from "../common/VaccineCard";
-import { useLoading } from "../contexts/LoadingContext";
+import { useLoading } from "../../contexts/LoadingContext";
 import { useNavigation } from "@react-navigation/native";
 
 const Cart = () => {

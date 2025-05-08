@@ -9,25 +9,17 @@ import React from "react";
 import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
-const dataTest = {
-  number: 1,
-  injection_date: "2025-02-15",
-  name: "Prevenar 13",
-  disease:
-    "Viêm phổi, viêm màng não, viêm tai giữa cấp tính, nhiễm khuẩn huyết… do phế cầu khuẩn",
-};
-
-const HistoryCard = () => {
+const HistoryCard = ({ item }) => {
   return (
     <View>
       <View style={styles.header}>
-        <Text style={Styles.fontBold}>Phòng bệnh {dataTest.disease}</Text>
+        <Text style={Styles.fontBold}>Phòng bệnh {item.disease}</Text>
       </View>
       <TouchableOpacity
         style={[
           Styles.flexRow,
           Styles.alignCenter,
-          Styles.spaceAround,
+          Styles.justifyBetween,
           {
             borderBottomColor: color.border,
             borderBottomWidth: 1,
@@ -35,37 +27,51 @@ const HistoryCard = () => {
           },
         ]}
       >
-        <View style={{ height: "100%", paddingRight: 10 }}>
-          <Text style={styles.txt1}>MŨI {dataTest.number}</Text>
-          <Text style={styles.txt2}>
-            {new Date(dataTest.injection_date).toLocaleDateString("vi-VN")}
-          </Text>
-        </View>
-        <View style={{ width: "70%" }}>
+        <View style={{ width: "95%" }}>
           <View
-            style={{
-              paddingHorizontal: 10,
-              borderLeftWidth: 1,
-              borderLeftColor: color.border,
-              borderStyle: "dashed",
-              marginBottom: 3,
-            }}
+            style={[Styles.flexRow, Styles.alignCenter, Styles.spaceBetween]}
           >
-            <Text style={styles.txt2}>PVVC Nhà Bè</Text>
-            <Text style={styles.txt1}>{dataTest.name}</Text>
+            <View style={{ height: "100%", paddingRight: 10 }}>
+              <Text style={styles.txt1}>MŨI {item.number}</Text>
+              <Text style={styles.txt2}>
+                {new Date(item.injection_date).toLocaleDateString("vi-VN")}
+              </Text>
+            </View>
+            <View style={{ width: "80%" }}>
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                  borderLeftWidth: 1,
+                  borderLeftColor: color.border,
+                  borderStyle: "dashed",
+                  marginBottom: 3,
+                }}
+              >
+                <Text style={styles.txt2}>PVVC Nhà Bè</Text>
+                <Text style={styles.txt1}>{item.name}</Text>
+              </View>
+              <Text
+                numberOfLines={2}
+                style={[styles.txt2, { paddingLeft: 11, paddingRight: 10 }]}
+              >
+                Phòng bệnh {item.disease}
+              </Text>
+            </View>
           </View>
-          <Text
-            numberOfLines={2}
-            style={[styles.txt2, { paddingLeft: 11, paddingRight: 10 }]}
-          >
-            Phòng bệnh {dataTest.disease}
-          </Text>
+          {item.campaign && (
+            <View style={[Styles.flexRow, Styles.alignCenter, Styles.mt10]}>
+              <Text style={[styles.txt2, Styles.fontPreBold]}>Đợt tiêm: </Text>
+              <Text style={Styles.fontPreBold}>{item.campaign.name}</Text>
+            </View>
+          )}
         </View>
-        <FontAwesome5
-          name="chevron-right"
-          size={16}
-          color={"gray"}
-        ></FontAwesome5>
+        <View style={{ width: 20 }}>
+          <FontAwesome5
+            name="chevron-right"
+            size={16}
+            color={"gray"}
+          ></FontAwesome5>
+        </View>
       </TouchableOpacity>
     </View>
   );
