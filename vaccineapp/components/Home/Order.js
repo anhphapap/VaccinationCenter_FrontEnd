@@ -13,10 +13,10 @@ import { Button } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import DatePicker from "../common/DatePicker";
 import { useNavigation } from "@react-navigation/native";
-import { VaccineContext } from "../contexts/VaccineContext";
+import { VaccineContext } from "../../contexts/VaccineContext";
 import VaccineCard from "../common/VaccineCard";
 import useUser from "../../hooks/useUser";
-import { useLoading } from "../contexts/LoadingContext";
+import { useLoading } from "../../contexts/LoadingContext";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -87,7 +87,7 @@ const Order = () => {
       let id = listCampaign.find((item) => item.id === selectedCampaign);
       setCurCampaign(id);
       setAddMore(true);
-      setSelectedVaccines([]);
+      // setSelectedVaccines([]);
       if (!id || id?.id === 1) return;
       let res = await Apis.get(endpoints.vaccineDetails(id.vaccine));
       setSelectedVaccines([res.data]);
@@ -115,24 +115,14 @@ const Order = () => {
     if (validate()) {
       try {
         showLoading();
-        let listDose = [];
-        for (let x of selectedVaccines) {
-          let res = await Apis.get(endpoints.vaccineDetails(x.id));
-          if (res.data.doses.length === 0) {
-            Toast.show({
-              type: "error",
-              text1: `Hiện chưa thể đặt mua ${res.data.name}!!!`,
-            });
-            return;
-          } else listDose.push(res.data.doses[0].id);
-        }
         const token = await AsyncStorage.getItem("token");
-        for (let x of listDose) {
+        for (let x of selectedVaccines) {
           const data = {
             injection_time: format(new Date(date), "yyyy-MM-dd"),
             user: user.id,
             vaccination_campaign: selectedCampaign,
-            dose: x,
+            vaccine: x.id,
+            number: 1,
           };
           let res = await authApis(token).post(endpoints.injections, data, {
             headers: {
@@ -328,7 +318,10 @@ const Order = () => {
               )}
               {addMore && (
                 <View style={[Styles.rowSpaceCenter, Styles.mv10, { gap: 10 }]}>
-                  <Button style={styles.btn1}>
+                  <Button
+                    style={styles.btn1}
+                    onPress={() => console.log(selectedVaccines)}
+                  >
                     <FontAwesome5
                       name="shopping-cart"
                       color={"white"}

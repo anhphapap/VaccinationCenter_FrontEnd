@@ -6,6 +6,7 @@ import MyTextInput from "../common/MyTextInput";
 import { Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authApis, endpoints } from "../../configs/Apis";
+import Toast from "react-native-toast-message";
 
 const ChangePassword = () => {
   const user = useUser();
@@ -13,15 +14,56 @@ const ChangePassword = () => {
   const [newPass, setNewPass] = useState();
   const [loading, setLoading] = useState(false);
 
-  const validate = () => {};
+  const validate = () => {
+    if (!curPass) {
+      Toast.show({
+        type: "error",
+        text1: "Vui lòng nhập mật khẩu hiện tại",
+      });
+      return false;
+    }
+    if (!newPass) {
+      Toast.show({
+        type: "error",
+        text1: "Vui lòng nhập mật khẩu mới",
+      });
+      return false;
+    }
+    return true;
+  };
 
   const changePassword = async () => {
-    try {
-      setLoading(true);
-    } catch (ex) {
-      console.error(ex.message);
-    } finally {
-      setLoading(false);
+    if (validate()) {
+      try {
+        setLoading(true);
+        const token = await AsyncStorage.getItem("token");
+        let res = await authApis(token).patch(
+          endpoints.changePassword(user.username),
+          {
+            old_password: curPass,
+            new_password: newPass,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (res.status === 200) {
+          Toast.show({
+            type: "success",
+            text1: "Đổi mật khẩu thành công",
+          });
+        }
+      } catch (ex) {
+        Toast.show({
+          type: "error",
+          text1: Object.values(ex.response?.data)[0] || ex.message,
+        });
+      } finally {
+        setLoading(false);
+      }
     }
   };
   return (

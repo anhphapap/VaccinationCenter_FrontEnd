@@ -21,8 +21,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HelperText } from "react-native-paper";
 import LoadingPage from "../common/LoadingOverlay";
 import { format, parseISO } from "date-fns";
-import { MyDispatchContext } from "../contexts/Contexts";
-import { useLoading } from "../contexts/LoadingContext";
+import { MyDispatchContext } from "../../contexts/Contexts";
+import { useLoading } from "../../contexts/LoadingContext";
 import Toast from "react-native-toast-message";
 
 const UserInfoForm = ({ title, onSubmit }) => {
@@ -155,7 +155,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
         form.append("is_completed_profile", true);
         const token = await AsyncStorage.getItem("token");
         let res = await authApis(token).patch(
-          endpoints["current-user"](user?.username),
+          endpoints.currentUser(user?.username),
           form,
           {
             headers: {
@@ -174,7 +174,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
       } catch (ex) {
         setMsg({
           type: "error",
-          msg: ex.message,
+          msg: Object.values(ex.response?.data)[0] || ex.message,
         });
       } finally {
         hideLoading();

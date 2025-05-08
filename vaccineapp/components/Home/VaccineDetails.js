@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import React, { use, useEffect, useState } from "react";
-import { useLoading } from "../contexts/LoadingContext";
+import { useLoading } from "../../contexts/LoadingContext";
 import Apis, { endpoints } from "../../configs/Apis";
 import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";

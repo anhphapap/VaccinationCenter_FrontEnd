@@ -80,8 +80,9 @@ const Register = () => {
       } catch (ex) {
         setMsg({
           type: "error",
-          msg: ex.response?.data?.password || ex.message,
+          msg: Object.values(ex.response?.data)[0] || ex.message,
         });
+        console.log(ex.response?.data);
       } finally {
         setLoading(false);
       }

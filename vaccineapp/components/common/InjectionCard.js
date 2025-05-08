@@ -4,31 +4,28 @@ import Styles, { color, logo } from "../../styles/Styles";
 import { Badge } from "react-native-paper";
 import { differenceInDays } from "date-fns";
 
-const InjectionCard = () => {
-  const dataTest = {
-    date: "2025-03-15",
-    label: "Mũi 1 - Cúm",
-    name: "Vắc xin Vaxigrip Tetra",
-    status: "Lịch tiêm vắc xin đã bị bỏ lỡ.",
-  };
+const InjectionCard = ({ item }) => {
   const [mainColor, setMainColor] = useState(color.primary);
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     const now = new Date();
-    const injection_time = new Date(dataTest.date);
+    const injection_time = new Date(item.injection_date);
     if (injection_time.getTime() < now.getTime()) {
       setMainColor("#FF0000");
-      dataTest.status = "Lịch tiêm vắc xin đã bị bỏ lỡ.";
+      setStatus("Lịch tiêm vắc xin đã bị bỏ lỡ.");
     } else if (injection_time.getTime() === now.getTime()) {
       setMainColor(color.primary2);
-      dataTest.status = "Đã đến ngày tiêm chủng.";
+      setStatus("Đã đến ngày tiêm chủng.");
     } else {
-      dataTest.status = `Còn ${differenceInDays(
-        now,
-        injection_time
-      )} ngày nữa đến lịch tiêm vắc xin này.`;
+      setStatus(
+        `Còn ${
+          differenceInDays(injection_time, now) + 1
+        } ngày nữa đến lịch tiêm vắc xin này.`
+      );
     }
   }, []);
+
   return (
     <View style={styles.container}>
       <Image
@@ -38,17 +35,19 @@ const InjectionCard = () => {
       ></Image>
       <View style={[styles.body, { borderLeftColor: mainColor }]}>
         <Text style={[Styles.fontBold, { color: mainColor, fontSize: 20 }]}>
-          {new Date(dataTest.date).toLocaleDateString("vi-VN")}
+          {new Date(item.injection_date).toLocaleDateString("vi-VN")}
         </Text>
-        <Text style={[Styles.fontBold, Styles.fz16]}>{dataTest.label}</Text>
-        <Text style={Styles.fz16}>{dataTest.name}</Text>
+        <Text style={[Styles.fontBold, Styles.fz16]}>
+          {`MŨI ${item.number} - ${item.disease}`}
+        </Text>
+        <Text style={Styles.fz16}>{item.name}</Text>
         <Text
           style={[
             styles.status,
             { backgroundColor: mainColor + "20", color: mainColor },
           ]}
         >
-          {dataTest.status}
+          {status}
         </Text>
       </View>
       <Badge
@@ -86,6 +85,7 @@ const styles = StyleSheet.create({
     textAlign: "justify",
     width: "100%",
     fontSize: 16,
+    fontWeight: "bold",
   },
   body: {
     borderLeftWidth: 3,
@@ -101,6 +101,6 @@ const styles = StyleSheet.create({
   badge: {
     position: "absolute",
     left: 15,
-    top: "20%",
+    top: "34%",
   },
 });

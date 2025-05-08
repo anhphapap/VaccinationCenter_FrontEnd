@@ -17,7 +17,7 @@ import Styles, { color, logo, maxFilterPrice } from "../../styles/Styles";
 import Apis, { endpoints } from "../../configs/Apis";
 import { useNavigation } from "@react-navigation/native";
 import VaccineCard from "../common/VaccineCard";
-import { VaccineContext } from "../contexts/VaccineContext";
+import { VaccineContext } from "../../contexts/VaccineContext";
 import FloatBottomButton from "../common/FloatBottomButton";
 import Toast from "react-native-toast-message";
 
@@ -30,8 +30,7 @@ const VaccinesForm = ({ addForm }) => {
   const [count, setCount] = useState(0);
   const [text, setText] = useState("");
   const [filterVisible, setFilterVisible] = useState(false);
-  const { selectedVaccines, addVaccine, removeVaccine } =
-    useContext(VaccineContext);
+  const { selectedVaccines, addVaccine } = useContext(VaccineContext);
   const [preSelect, setPreSelect] = useState(selectedVaccines);
   const nav = useNavigation();
   const [filterCates, setFilterCates] = useState([]);
@@ -242,7 +241,7 @@ const VaccinesForm = ({ addForm }) => {
               ) : (
                 <VaccineCard
                   item={item}
-                  nav={() =>
+                  showInfo={() =>
                     nav.navigate("vaccineDetails", { vaccineId: item.id })
                   }
                   btnSell

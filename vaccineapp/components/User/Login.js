@@ -4,7 +4,7 @@ import Styles, { color, logo } from "../../styles/Styles";
 import MyTextInput from "../common/MyTextInput";
 import { Button, HelperText } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import { MyDispatchContext } from "../contexts/Contexts";
+import { MyDispatchContext } from "../../contexts/Contexts";
 import { CLIENT_ID, CLIENT_SECRET } from "@env";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -69,7 +69,7 @@ const Login = () => {
         );
         await AsyncStorage.setItem("token", res.data.access_token);
         let u = await authApis(res.data.access_token).get(
-          endpoints["current-user"](user.username)
+          endpoints.currentUser(user.username)
         );
         Toast.show({
           type: "success",
@@ -93,8 +93,11 @@ const Login = () => {
           });
         }
       } catch (ex) {
-        console.log(ex.message);
-        setMsg({ type: "error", msg: ex.response?.data?.error_description });
+        // console.log(ex.message);
+        setMsg({
+          type: "error",
+          msg: ex.response?.data?.error_description || ex.message,
+        });
       } finally {
         setLoading(false);
       }

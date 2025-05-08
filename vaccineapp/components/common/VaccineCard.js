@@ -1,90 +1,105 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import { VaccineContext } from "../../contexts/VaccineContext";
 
 const VaccineCard = ({
   item,
   btnDel,
   btnSell,
-  nav,
+  showInfo,
   addForm,
   select,
   remove,
   selected,
   onTrash,
 }) => {
+  const nav = useNavigation();
+  const { addVaccine } = useContext(VaccineContext);
+  const handleBuy = (item) => {
+    addVaccine(item);
+    nav.navigate("order");
+  };
+
   return (
-    <View style={styles.iContainer}>
-      <TouchableOpacity onPress={nav}>
-        <View style={[Styles.rowSpaceCenter, { justifyContent: "flex-start" }]}>
-          <Image
-            source={{ uri: item.image }}
-            resizeMode="cover"
-            style={styles.img}
-          ></Image>
-          <View style={Styles.flexShink}>
-            <Text
-              style={{
-                textTransform: "uppercase",
-                fontWeight: "500",
-                fontSize: 16,
-                flexWrap: "wrap",
-              }}
-            >
-              {item.name}
+    item && (
+      <View style={styles.iContainer}>
+        <TouchableOpacity onPress={showInfo}>
+          <View
+            style={[Styles.rowSpaceCenter, { justifyContent: "flex-start" }]}
+          >
+            <Image
+              source={{ uri: item.image }}
+              resizeMode="cover"
+              style={styles.img}
+            ></Image>
+            <View style={Styles.flexShink}>
+              <Text
+                style={{
+                  textTransform: "uppercase",
+                  fontWeight: "500",
+                  fontSize: 16,
+                  flexWrap: "wrap",
+                }}
+              >
+                {item.name}
+              </Text>
+            </View>
+          </View>
+          <View style={[Styles.flexRow, Styles.mt20, Styles.wrap]}>
+            <Text style={{ fontWeight: "bold" }}>Phòng bệnh: </Text>
+            <Text>
+              {item.disease === "" ? "Đang cập nhập..." : item.disease}
             </Text>
           </View>
+        </TouchableOpacity>
+        <View style={[Styles.rowSpaceCenter, Styles.mt10]}>
+          <Text style={styles.price}>{item.price.toLocaleString()} VNĐ</Text>
+          {btnDel && (
+            <TouchableOpacity onPress={onTrash}>
+              <FontAwesome5 name="trash" color={"red"} size={16}></FontAwesome5>
+            </TouchableOpacity>
+          )}
         </View>
-        <View style={[Styles.flexRow, Styles.mt20, Styles.wrap]}>
-          <Text style={{ fontWeight: "bold" }}>Phòng bệnh: </Text>
-          <Text>{item.disease === "" ? "Đang cập nhập..." : item.disease}</Text>
-        </View>
-      </TouchableOpacity>
-      <View style={[Styles.rowSpaceCenter, Styles.mt10]}>
-        <Text style={styles.price}>{item.price.toLocaleString()} VNĐ</Text>
-        {btnDel && (
-          <TouchableOpacity onPress={onTrash}>
-            <FontAwesome5 name="trash" color={"red"} size={16}></FontAwesome5>
-          </TouchableOpacity>
+        {btnSell && (
+          <View style={[Styles.rowSpaceCenter, Styles.mt20, { gap: 10 }]}>
+            <Button style={styles.btn1}>
+              <FontAwesome5
+                name="shopping-cart"
+                color={"white"}
+                size={14}
+              ></FontAwesome5>
+              <Text style={[Styles.fontBold, { color: "white" }]}>
+                {" "}
+                Thêm vào giỏ
+              </Text>
+            </Button>
+            <Button style={styles.btn2} onPress={() => handleBuy([item])}>
+              <Text style={{ color: "#0a56df" }}>Mua ngay</Text>
+            </Button>
+          </View>
         )}
+        {addForm &&
+          (selected ? (
+            <Button
+              style={[styles.btn12, Styles.mt20]}
+              onPress={() => remove(item.id)}
+            >
+              <Text style={[Styles.fontBold, { color: "white" }]}>Bỏ chọn</Text>
+            </Button>
+          ) : (
+            <Button
+              style={[styles.btn1, Styles.mt20]}
+              onPress={() => select(item)}
+            >
+              <Text style={[Styles.fontBold, { color: "white" }]}>Chọn</Text>
+            </Button>
+          ))}
       </View>
-      {btnSell && (
-        <View style={[Styles.rowSpaceCenter, Styles.mt20, { gap: 10 }]}>
-          <Button style={styles.btn1}>
-            <FontAwesome5
-              name="shopping-cart"
-              color={"white"}
-              size={14}
-            ></FontAwesome5>
-            <Text style={[Styles.fontBold, { color: "white" }]}>
-              {" "}
-              Thêm vào giỏ
-            </Text>
-          </Button>
-          <Button style={styles.btn2}>
-            <Text style={{ color: "#0a56df" }}>Mua ngay</Text>
-          </Button>
-        </View>
-      )}
-      {addForm &&
-        (selected ? (
-          <Button
-            style={[styles.btn12, Styles.mt20]}
-            onPress={() => remove(item.id)}
-          >
-            <Text style={[Styles.fontBold, { color: "white" }]}>Bỏ chọn</Text>
-          </Button>
-        ) : (
-          <Button
-            style={[styles.btn1, Styles.mt20]}
-            onPress={() => select(item)}
-          >
-            <Text style={[Styles.fontBold, { color: "white" }]}>Chọn</Text>
-          </Button>
-        ))}
-    </View>
+    )
   );
 };
 
