@@ -39,6 +39,7 @@ import { LogBox } from "react-native";
 import AddVaccine from "./components/Home/AddVaccine";
 import { VaccineProvider } from "./contexts/VaccineContext";
 import Injections from "./components/Home/Injections";
+import Notification from "./components/Home/Notification";
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
@@ -153,6 +154,19 @@ const HomeStackNavigator = () => {
           animation: "slide_from_bottom",
         }}
       />
+      <HomeStack.Screen
+        name="notification"
+        component={Notification}
+        options={() => ({
+          title: "Thông báo",
+          headerShadowVisible: false,
+          headerRight: () => (
+            <Button>
+              <FontAwesome5 name="check-double" size={16} color={"white"} />
+            </Button>
+          ),
+        })}
+      />
     </HomeStack.Navigator>
   );
 };
@@ -219,17 +233,19 @@ const TabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => {
-        const routeName = getFocusedRouteNameFromRoute(route) ?? ""; // Lấy tên của route hiện tại
+        const routeName = getFocusedRouteNameFromRoute(route) ?? "";
 
         let tabBarStyle = {};
         if (
-          (route.name === "TRANG CHỦ" && routeName && routeName !== "home") || // Nếu không phải là "home"
+          (route.name === "TRANG CHỦ" && routeName && routeName !== "home") ||
           (route.name === "TÀI KHOẢN" &&
             routeName &&
-            routeName !== "profile") || // Nếu không phải là "profile"
+            routeName !== "profile") ||
           route.name === "NHẮC LỊCH TIÊM"
         ) {
-          tabBarStyle = { display: "none" }; // Ẩn tab khi không cần thiết
+          tabBarStyle = { display: "none" };
+        } else {
+          tabBarStyle = { display: "flex" };
         }
 
         return {

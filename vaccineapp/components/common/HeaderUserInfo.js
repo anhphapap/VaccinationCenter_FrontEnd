@@ -10,7 +10,7 @@ const HeaderUserInfo = () => {
       <View style={styles.borderAvt}>
         <Image
           source={{
-            uri: defaultAvatar,
+            uri: user.avatar,
           }}
           style={styles.avt}
         ></Image>

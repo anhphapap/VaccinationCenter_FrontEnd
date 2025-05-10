@@ -21,7 +21,7 @@ const Register = () => {
     },
     {
       label: "Xác nhận mật khẩu",
-      field: "confirm",
+      field: "confirm_password",
       secure: true,
     },
   ];
@@ -46,7 +46,7 @@ const Register = () => {
         return false;
       }
 
-    if (user.password !== user.confirm) {
+    if (user.password !== user.confirm_password) {
       setMsg({ type: "error", msg: `Mật khẩu không khớp !` });
       return false;
     }
@@ -59,7 +59,7 @@ const Register = () => {
         setLoading(true);
         let form = new FormData();
         for (let key in user)
-          if (key !== "confirm") form.append(key, user[key]);
+          if (key !== "confirm_password") form.append(key, user[key]);
 
         let res = await Apis.post(endpoints["register"], form, {
           headers: {
@@ -69,7 +69,7 @@ const Register = () => {
 
         Toast.show({
           type: "success",
-          text1: "Đã đăng xuất",
+          text1: "Đăng ký thành công",
         });
 
         if (res.status === 201)
@@ -82,7 +82,6 @@ const Register = () => {
           type: "error",
           msg: Object.values(ex.response?.data)[0] || ex.message,
         });
-        console.log(ex.response?.data);
       } finally {
         setLoading(false);
       }

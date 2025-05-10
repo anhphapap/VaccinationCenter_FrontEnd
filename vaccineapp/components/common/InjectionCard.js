@@ -11,10 +11,11 @@ const InjectionCard = ({ item }) => {
   useEffect(() => {
     const now = new Date();
     const injection_time = new Date(item.injection_date);
-    if (injection_time.getTime() < now.getTime()) {
+    const diff = differenceInDays(injection_time, now);
+    if (diff < 0) {
       setMainColor("#FF0000");
       setStatus("Lịch tiêm vắc xin đã bị bỏ lỡ.");
-    } else if (injection_time.getTime() === now.getTime()) {
+    } else if (diff === 0) {
       setMainColor(color.primary2);
       setStatus("Đã đến ngày tiêm chủng.");
     } else {

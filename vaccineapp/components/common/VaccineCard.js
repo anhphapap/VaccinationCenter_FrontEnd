@@ -18,9 +18,9 @@ const VaccineCard = ({
   onTrash,
 }) => {
   const nav = useNavigation();
-  const { addVaccine } = useContext(VaccineContext);
+  const { initVaccine } = useContext(VaccineContext);
   const handleBuy = (item) => {
-    addVaccine(item);
+    initVaccine(item);
     nav.navigate("order");
   };
 

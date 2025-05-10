@@ -83,12 +83,8 @@ const Home = () => {
               style={styles.logo}
             ></Image>
           )}
-          <Button onPress={() => nav.navigate("cart")}>
-            <FontAwesome5
-              name="shopping-bag"
-              color="white"
-              size={20}
-            ></FontAwesome5>
+          <Button onPress={() => nav.navigate("notification")}>
+            <FontAwesome5 name="bell" color="white" size={20}></FontAwesome5>
           </Button>
         </View>
         <View style={{ height: 200, marginTop: 30 }}>

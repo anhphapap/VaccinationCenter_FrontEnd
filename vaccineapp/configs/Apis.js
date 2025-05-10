@@ -6,13 +6,13 @@ export const endpoints = {
   vaccineDetails: (vaccineId) => `/vaccines/${vaccineId}/`,
   categories: "/categories/",
   vac_cate: (cateId) => `/categories/${cateId}/vaccines/`,
-  register: "/user/",
+  register: "/users/",
   login: "/o/token/",
   campaigns: "/campaigns/",
   injections: "/injections/",
-  changePassword: (username) => `/user/${username}/change-password/`,
-  currentUser: (username) => `user/${username}/`,
-  userInjections: (username) => `user/${username}/injections/`,
+  changePassword: (username) => `/users/${username}/change-password/`,
+  currentUser: (username) => `/users/${username}/`,
+  userInjections: (username) => `/users/${username}/injections/`,
   campaignDetails: (campaignId) => `/campaigns/${campaignId}/`,
 };
 

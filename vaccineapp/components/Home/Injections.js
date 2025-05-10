@@ -8,6 +8,7 @@ import useUser from "../../hooks/useUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
 import { useLoading } from "../../contexts/LoadingContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Injections = () => {
   const [list, setList] = useState([]);
@@ -19,6 +20,7 @@ const Injections = () => {
     try {
       setLoading(true);
       showLoading();
+      setList([]);
       const token = await AsyncStorage.getItem("token");
       const res = await authApis(token).get(
         endpoints.userInjections(user.username)
@@ -38,10 +40,11 @@ const Injections = () => {
     }
   };
 
-  useEffect(() => {
-    setList([]);
-    loadData();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      loadData();
+    }, [])
+  );
 
   return (
     <View style={[Styles.flex, Styles.bgWhite]}>

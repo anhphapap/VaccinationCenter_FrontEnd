@@ -55,8 +55,13 @@ const Order = () => {
   const [date, setDate] = useState();
   const [showInfo, setShowInfo] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState();
-  const { selectedVaccines, removeVaccine, setSelectedVaccines } =
-    useContext(VaccineContext);
+  const {
+    selectedVaccines,
+    removeVaccine,
+    setSelectedVaccines,
+    ignore,
+    setIgnore,
+  } = useContext(VaccineContext);
   const user = useUser();
   const nav = useNavigation();
   const [listCampaign, setListCampaign] = useState([]);
@@ -75,7 +80,7 @@ const Order = () => {
       setListCampaign(res.data);
       setSelectedCampaign(res.data[0].id);
     } catch (ex) {
-      console.log(ex);
+      console.log(ex.response?.data);
     } finally {
       hideLoading();
     }
@@ -87,8 +92,9 @@ const Order = () => {
       let id = listCampaign.find((item) => item.id === selectedCampaign);
       setCurCampaign(id);
       setAddMore(true);
-      // setSelectedVaccines([]);
+      if (!ignore) setSelectedVaccines([]);
       if (!id || id?.id === 1) return;
+      setIgnore(false);
       let res = await Apis.get(endpoints.vaccineDetails(id.vaccine));
       setSelectedVaccines([res.data]);
       setAddMore(false);
@@ -134,11 +140,16 @@ const Order = () => {
           type: "success",
           text1: "Đặt mua thành công",
         });
+        setIgnore(false);
         setSelectedCampaign(1);
         setSelectedVaccines([]);
         setDate();
       } catch (ex) {
-        console.log(ex);
+        Toast.show({
+          type: "error",
+          text1:
+            ex.response?.data.error || ex.response?.data.vaccination_campaign,
+        });
       } finally {
         hideLoading();
       }

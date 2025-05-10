@@ -41,6 +41,11 @@ const History = () => {
           res.data.campaign = campaign.data;
         }
         setListNext((prev) => [...prev, res.data]);
+        // if (x.status === "NOT_VACCINATED") {
+        //   setListNext((prev) => [...prev, res.data]);
+        // } else if (x.status === "VACCINATED") {
+        //   setListHistory((prev) => [...prev, res.data]);
+        // }
       }
     } catch (ex) {
       console.log(ex);
