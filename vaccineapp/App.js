@@ -40,6 +40,7 @@ import AddVaccine from "./components/Home/AddVaccine";
 import { VaccineProvider } from "./contexts/VaccineContext";
 import Injections from "./components/Home/Injections";
 import Notification from "./components/Home/Notification";
+import HistoryDetails from "./components/Home/HistoryDetails";
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
@@ -135,6 +136,11 @@ const HomeStackNavigator = () => {
         name="history"
         component={History}
         options={{ title: "Lịch sử tiêm chủng" }}
+      />
+      <HomeStack.Screen
+        name="historyDetails"
+        component={HistoryDetails}
+        options={{ title: "Chi tiết lịch sử tiêm" }}
       />
       <HomeStack.Screen
         name="order"
@@ -251,7 +257,7 @@ const TabNavigator = () => {
         return {
           headerShown: false,
           tabBarActiveTintColor: color.primary,
-          tabBarInactiveTintColor: "black",
+          tabBarInactiveTintColor: "#a2a4a7",
           tabBarStyle,
         };
       }}
@@ -264,7 +270,7 @@ const TabNavigator = () => {
             <FontAwesome5
               name="home"
               size={24}
-              color={focused ? color.primary : "black"}
+              color={focused ? color.primary : "#a2a4a7"}
             />
           ),
         }}
@@ -277,7 +283,7 @@ const TabNavigator = () => {
             <FontAwesome5
               name="calendar-check"
               size={24}
-              color={focused ? color.primary : "black"}
+              color={focused ? color.primary : "#a2a4a7"}
               solid
             />
           ),
@@ -303,7 +309,7 @@ const TabNavigator = () => {
               name="user"
               size={24}
               solid
-              color={focused ? color.primary : "black"}
+              color={focused ? color.primary : "#a2a4a7"}
             />
           ),
         }}

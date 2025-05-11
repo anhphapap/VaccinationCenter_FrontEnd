@@ -12,6 +12,7 @@ export const color = {
   border: "#c7c8d0",
   secondary: "#e7e9f360",
   white: "#fff",
+  bg: "#f1f5fe",
 };
 
 export const logo = {

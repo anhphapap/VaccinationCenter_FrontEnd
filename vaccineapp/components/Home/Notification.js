@@ -1,15 +1,15 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Styles from "../../styles/Styles";
 import NotificationCard from "../common/NotificationCard";
 
 const Notification = () => {
   return (
-    <View style={[Styles.flex, Styles.bgWhite]}>
+    <ScrollView style={[Styles.flex, Styles.bgWhite]}>
       <NotificationCard />
       <NotificationCard seen />
       <NotificationCard seen />
-    </View>
+    </ScrollView>
   );
 };
 

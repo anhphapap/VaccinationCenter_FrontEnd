@@ -1,16 +1,16 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import Styles, { color, logo } from "../../styles/Styles";
 
 const NotificationCard = ({ seen }) => {
   return (
-    <View
+    <TouchableOpacity
       style={[
         Styles.flexRow,
         Styles.p20,
         Styles.g20,
         {
-          backgroundColor: seen ? "white" : "#f1f5fe",
+          backgroundColor: seen ? "white" : color.bg,
           borderBottomWidth: 2,
           borderColor: color.secondary,
         },
@@ -28,7 +28,7 @@ const NotificationCard = ({ seen }) => {
         </Text>
         <Text style={[styles.time]}>10th June 2025 at 10:00 AM</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

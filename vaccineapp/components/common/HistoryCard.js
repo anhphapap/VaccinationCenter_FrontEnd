@@ -9,11 +9,11 @@ import React from "react";
 import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
-const HistoryCard = ({ item }) => {
+const HistoryCard = ({ item, showDetails }) => {
   return (
     <View>
       <View style={styles.header}>
-        <Text style={Styles.fontBold}>Phòng bệnh {item.disease}</Text>
+        <Text style={Styles.fontBold}>Phòng bệnh {item.vaccine.disease}</Text>
       </View>
       <TouchableOpacity
         style={[
@@ -26,6 +26,7 @@ const HistoryCard = ({ item }) => {
             padding: 15,
           },
         ]}
+        onPress={showDetails}
       >
         <View style={{ width: "95%" }}>
           <View
@@ -34,7 +35,7 @@ const HistoryCard = ({ item }) => {
             <View style={{ height: "100%", paddingRight: 10 }}>
               <Text style={styles.txt1}>MŨI {item.number}</Text>
               <Text style={styles.txt2}>
-                {new Date(item.injection_date).toLocaleDateString("vi-VN")}
+                {new Date(item.injection_time).toLocaleDateString("vi-VN")}
               </Text>
             </View>
             <View style={{ width: "80%" }}>
@@ -48,13 +49,13 @@ const HistoryCard = ({ item }) => {
                 }}
               >
                 <Text style={styles.txt2}>PVVC Nhà Bè</Text>
-                <Text style={styles.txt1}>{item.name}</Text>
+                <Text style={styles.txt1}>{item.vaccine.name}</Text>
               </View>
               <Text
                 numberOfLines={2}
                 style={[styles.txt2, { paddingLeft: 11, paddingRight: 10 }]}
               >
-                Phòng bệnh {item.disease}
+                Phòng bệnh {item.vaccine.disease}
               </Text>
             </View>
           </View>

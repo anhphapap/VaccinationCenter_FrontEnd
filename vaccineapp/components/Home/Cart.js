@@ -57,7 +57,7 @@ const Cart = () => {
               </Text>
             </View>
           }
-          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 120 }}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 110 }}
           renderItem={({ item }) => (
             <VaccineCard
               btnDel

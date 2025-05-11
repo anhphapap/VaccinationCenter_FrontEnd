@@ -13,7 +13,10 @@ export const endpoints = {
   changePassword: (username) => `/users/${username}/change-password/`,
   currentUser: (username) => `/users/${username}/`,
   userInjections: (username) => `/users/${username}/injections/`,
+  userCertificate: (username, injectionId) =>
+    `/users/${username}/injection-certificate/${injectionId}/`,
   campaignDetails: (campaignId) => `/campaigns/${campaignId}/`,
+  historyDetails: (historyId) => `/injections/${historyId}/`,
 };
 
 export const authApis = (token) => {

@@ -14,38 +14,37 @@ import NoneHistory from "../common/NoneHistory";
 import useUser from "../../hooks/useUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLoading } from "../../contexts/LoadingContext";
-
+import { useNavigation } from "@react-navigation/native";
 const History = () => {
   const [tab, setTab] = useState(true);
   const [listHistory, setListHistory] = useState([]);
   const [listNext, setListNext] = useState([]);
   const user = useUser();
   const { showLoading, hideLoading } = useLoading();
+  const nav = useNavigation();
 
   const loadHistory = async () => {
     try {
       showLoading();
       const token = await AsyncStorage.getItem("token");
       const res = await authApis(token).get(
-        endpoints.userInjections(user.username)
+        endpoints.userInjections(user.username) + "?sort_by=date_asc"
       );
       let list = res.data;
       for (let x of list) {
         let res = await Apis.get(endpoints.vaccineDetails(x.vaccine));
-        res.data.number = x.number;
-        res.data.injection_date = x.injection_time;
+        x.vaccine = res.data;
         if (x.vaccination_campaign !== 1) {
           let campaign = await Apis.get(
             endpoints.campaignDetails(x.vaccination_campaign)
           );
-          res.data.campaign = campaign.data;
+          x.campaign = campaign.data;
         }
-        setListNext((prev) => [...prev, res.data]);
-        // if (x.status === "NOT_VACCINATED") {
-        //   setListNext((prev) => [...prev, res.data]);
-        // } else if (x.status === "VACCINATED") {
-        //   setListHistory((prev) => [...prev, res.data]);
-        // }
+        if (x.status === "NOT_VACCINATED") {
+          setListNext((prev) => [...prev, x]);
+        } else if (x.status === "VACCINATED") {
+          setListHistory((prev) => [...prev, x]);
+        }
       }
     } catch (ex) {
       console.log(ex);
@@ -92,6 +91,11 @@ const History = () => {
               <HistoryCard
                 key={"history" + item.id + index}
                 item={item}
+                showDetails={() =>
+                  nav.navigate("historyDetails", {
+                    data: item,
+                  })
+                }
               ></HistoryCard>
             ))}
           </ScrollView>
@@ -106,6 +110,11 @@ const History = () => {
             <HistoryCard
               key={"history" + item.id + index}
               item={item}
+              showDetails={() =>
+                nav.navigate("historyDetails", {
+                  data: item,
+                })
+              }
             ></HistoryCard>
           ))}
         </ScrollView>
