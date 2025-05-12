@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useReducer } from "react";
+import React, { useContext, useReducer } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./components/Home/Home";
 import Book from "./components/Home/Book";
@@ -20,9 +20,9 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Button, PaperProvider, Portal } from "react-native-paper";
+import { Badge, Button, PaperProvider, Portal } from "react-native-paper";
 import Profile from "./components/User/Profile";
-import { color } from "./styles/Styles";
+import Styles, { color } from "./styles/Styles";
 import Login from "./components/User/Login";
 import Register from "./components/User/Register";
 import RegisterProfile from "./components/User/RegisterProfile";
@@ -41,6 +41,7 @@ import { VaccineProvider } from "./contexts/VaccineContext";
 import Injections from "./components/Home/Injections";
 import Notification from "./components/Home/Notification";
 import HistoryDetails from "./components/Home/HistoryDetails";
+import { CartContext, CartProvider } from "./contexts/CartContext";
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
@@ -73,6 +74,7 @@ const RegisterProfileStack = () => (
 const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator = () => {
+  const { cartItems } = useContext(CartContext);
   return (
     <HomeStack.Navigator
       screenOptions={({ navigation }) => ({
@@ -113,9 +115,25 @@ const HomeStackNavigator = () => {
           title: "Danh mục vắc xin",
           headerShadowVisible: false,
           headerRight: () => (
-            <Button onPress={() => navigation.navigate("cart")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("cart")}
+              style={Styles.ph20}
+            >
               <FontAwesome5 name="shopping-bag" size={20} color={"white"} />
-            </Button>
+              {cartItems.length > 0 && (
+                <Badge
+                  size={15}
+                  style={{
+                    backgroundColor: "red",
+                    position: "absolute",
+                    right: 13,
+                    bottom: -7,
+                  }}
+                >
+                  {cartItems.length}
+                </Badge>
+              )}
+            </TouchableOpacity>
           ),
         })}
       />
@@ -126,9 +144,25 @@ const HomeStackNavigator = () => {
           title: "Chi tiết vắc xin",
           headerShadowVisible: false,
           headerRight: () => (
-            <Button onPress={() => navigation.navigate("cart")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("cart")}
+              style={Styles.ph20}
+            >
               <FontAwesome5 name="shopping-bag" size={20} color={"white"} />
-            </Button>
+              {cartItems.length > 0 && (
+                <Badge
+                  size={15}
+                  style={{
+                    backgroundColor: "red",
+                    position: "absolute",
+                    right: 13,
+                    bottom: -7,
+                  }}
+                >
+                  {cartItems.length}
+                </Badge>
+              )}
+            </TouchableOpacity>
           ),
         })}
       />
@@ -326,15 +360,17 @@ const App = () => {
         <MyDispatchContext.Provider value={dispatch}>
           <LoadingProvider>
             <VaccineProvider>
-              <SafeAreaProvider>
-                <NavigationContainer>
-                  {!user || user.is_completed_profile ? (
-                    <TabNavigator />
-                  ) : (
-                    <RegisterProfileStack />
-                  )}
-                </NavigationContainer>
-              </SafeAreaProvider>
+              <CartProvider>
+                <SafeAreaProvider>
+                  <NavigationContainer>
+                    {!user || user.is_completed_profile ? (
+                      <TabNavigator />
+                    ) : (
+                      <RegisterProfileStack />
+                    )}
+                  </NavigationContainer>
+                </SafeAreaProvider>
+              </CartProvider>
             </VaccineProvider>
           </LoadingProvider>
         </MyDispatchContext.Provider>

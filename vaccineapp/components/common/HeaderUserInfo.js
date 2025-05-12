@@ -6,34 +6,36 @@ import useUser from "../../hooks/useUser";
 const HeaderUserInfo = () => {
   const user = useUser();
   return (
-    <View style={styles.header}>
-      <View style={styles.borderAvt}>
-        <Image
-          source={{
-            uri: user.avatar,
-          }}
-          style={styles.avt}
-        ></Image>
+    user && (
+      <View style={styles.header}>
+        <View style={styles.borderAvt}>
+          <Image
+            source={{
+              uri: user.avatar,
+            }}
+            style={styles.avt}
+          ></Image>
+        </View>
+        <Text
+          style={[
+            Styles.fontBold,
+            Styles.mt10,
+            {
+              textTransform: "uppercase",
+              color: color.primary,
+              width: "100%",
+              textAlign: "center",
+            },
+          ]}
+        >
+          {user.last_name + " " + user.first_name}
+        </Text>
+        <Text style={{ color: color.primary }}>
+          {user.gender ? "Nam" : "Nữ"} -{" "}
+          {new Date(user.birth_date).toLocaleDateString("vi-VN")}
+        </Text>
       </View>
-      <Text
-        style={[
-          Styles.fontBold,
-          Styles.mt10,
-          {
-            textTransform: "uppercase",
-            color: color.primary,
-            width: "100%",
-            textAlign: "center",
-          },
-        ]}
-      >
-        {user.last_name + " " + user.first_name}
-      </Text>
-      <Text style={{ color: color.primary }}>
-        {user.gender ? "Nam" : "Nữ"} -{" "}
-        {new Date(user.birth_date).toLocaleDateString("vi-VN")}
-      </Text>
-    </View>
+    )
   );
 };
 

@@ -20,6 +20,8 @@ import VaccineCard from "../common/VaccineCard";
 import { VaccineContext } from "../../contexts/VaccineContext";
 import FloatBottomButton from "../common/FloatBottomButton";
 import Toast from "react-native-toast-message";
+import NoneVaccine from "../common/NoneVaccine";
+import { CartContext } from "../../contexts/CartContext";
 
 const VaccinesForm = ({ addForm }) => {
   const [query, setQuery] = useState();
@@ -36,6 +38,15 @@ const VaccinesForm = ({ addForm }) => {
   const [filterCates, setFilterCates] = useState([]);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(maxFilterPrice);
+  const { addToCart } = useContext(CartContext);
+
+  const handleAddToCart = (item) => {
+    addToCart(item);
+    Toast.show({
+      type: "success",
+      text1: "Đã thêm vắc xin vào giỏ hàng",
+    });
+  };
 
   const handleSort = () => {
     if (!sort) setSort("price_asc");
@@ -211,20 +222,7 @@ const VaccinesForm = ({ addForm }) => {
             }
             ListEmptyComponent={
               !loading && (
-                <View
-                  style={[Styles.alignCenter, Styles.flexCenter, Styles.mt20]}
-                >
-                  <Image
-                    source={{ uri: logo.not_found }}
-                    resizeMode="cover"
-                    style={styles.notFound}
-                  />
-                  <Text
-                    style={[Styles.fontBold, Styles.fz18, { color: "gray" }]}
-                  >
-                    Không tìm thấy dữ liệu
-                  </Text>
-                </View>
+                <NoneVaccine title="Không tìm thấy dữ liệu"></NoneVaccine>
               )
             }
             renderItem={({ item }) =>
@@ -244,6 +242,7 @@ const VaccinesForm = ({ addForm }) => {
                   showInfo={() =>
                     nav.navigate("vaccineDetails", { vaccineId: item.id })
                   }
+                  addToCart={() => handleAddToCart(item)}
                   btnSell
                 />
               )
@@ -294,10 +293,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
-  notFound: {
-    width: 300,
-    height: 300,
-  },
+
   badge: {
     position: "absolute",
     right: -5,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, Pressable } from "react-native";
 import Styles, { color } from "../../styles/Styles";
 import { Button } from "react-native-paper";
@@ -7,26 +7,12 @@ import FloatBottomButton from "../common/FloatBottomButton";
 import VaccineCard from "../common/VaccineCard";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useNavigation } from "@react-navigation/native";
+import { CartContext } from "../../contexts/CartContext";
+import NoneVaccine from "../common/NoneVaccine";
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
-  const { showLoading, hideLoading } = useLoading();
+  const { cartItems, removeFromCart } = useContext(CartContext);
   const navigation = useNavigation();
-
-  const loadItem = async () => {
-    showLoading();
-    try {
-      const res = await Apis.get(endpoints.vaccines);
-      setCartItems(res.data.results);
-    } catch (err) {
-      console.error(err);
-    }
-    hideLoading();
-  };
-
-  useEffect(() => {
-    loadItem();
-  }, []);
 
   return (
     <View style={styles.overlay}>
@@ -57,7 +43,10 @@ const Cart = () => {
               </Text>
             </View>
           }
-          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 110 }}
+          contentContainerStyle={{
+            paddingHorizontal: 20,
+            paddingBottom: 110,
+          }}
           renderItem={({ item }) => (
             <VaccineCard
               btnDel
@@ -65,8 +54,12 @@ const Cart = () => {
               nav={() =>
                 navigation.navigate("vaccineDetails", { vaccineId: item.id })
               }
+              onTrash={() => removeFromCart(item.id)}
             />
           )}
+          ListEmptyComponent={
+            <NoneVaccine title="Không có vắc xin nào trong giỏ hàng"></NoneVaccine>
+          }
         />
 
         <FloatBottomButton label={`Đăng ký mũi tiêm (${cartItems.length})`} />

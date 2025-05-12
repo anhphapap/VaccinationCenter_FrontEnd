@@ -6,13 +6,17 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import React, { use, useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import { useLoading } from "../../contexts/LoadingContext";
 import Apis, { endpoints } from "../../configs/Apis";
 import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button } from "react-native-paper";
 import RenderHTML from "react-native-render-html";
+import { useNavigation } from "@react-navigation/native";
+import { VaccineContext } from "../../contexts/VaccineContext";
+import { CartContext } from "../../contexts/CartContext";
+import useUser from "../../hooks/useUser";
 
 const listInfo = [
   {
@@ -46,10 +50,22 @@ const listInfo = [
 ];
 
 const VaccineDetails = ({ route }) => {
+  const user = useUser();
   const [vaccine, setVaccine] = useState();
   const vaccineId = route.params?.vaccineId;
   const { showLoading, hideLoading } = useLoading();
   const { width } = useWindowDimensions();
+  const nav = useNavigation();
+  const { initVaccine } = useContext(VaccineContext);
+  const handleBuy = (item) => {
+    if (user) {
+      initVaccine(item);
+      nav.navigate("order");
+    } else {
+      nav.navigate("TÀI KHOẢN", { screen: "login" });
+    }
+  };
+  const { addToCart, isVaccineInCart } = useContext(CartContext);
 
   const loadData = async () => {
     showLoading();
@@ -102,18 +118,24 @@ const VaccineDetails = ({ route }) => {
           {vaccine.price.toLocaleString() + " VNĐ"}
         </Text>
         <View style={[Styles.rowSpaceCenter, Styles.mv10, { gap: 10 }]}>
-          <Button style={styles.btn1}>
-            <FontAwesome5
-              name="shopping-cart"
-              color={"white"}
-              size={14}
-            ></FontAwesome5>
-            <Text style={[Styles.fontBold, { color: "white" }]}>
-              {" "}
-              Thêm vào giỏ
-            </Text>
-          </Button>
-          <Button style={styles.btn2}>
+          {isVaccineInCart(vaccine.id) ? (
+            <Button style={styles.btn3}>
+              <Text style={{ color: "white" }}>Đã chọn</Text>
+            </Button>
+          ) : (
+            <Button style={styles.btn1} onPress={() => addToCart(vaccine)}>
+              <FontAwesome5
+                name="shopping-cart"
+                color={"white"}
+                size={14}
+              ></FontAwesome5>
+              <Text style={[Styles.fontBold, { color: "white" }]}>
+                {" "}
+                Thêm vào giỏ
+              </Text>
+            </Button>
+          )}
+          <Button style={styles.btn2} onPress={() => handleBuy([vaccine])}>
             <Text style={{ color: "#0a56df" }}>Mua ngay</Text>
           </Button>
         </View>
@@ -175,6 +197,11 @@ const styles = StyleSheet.create({
     borderColor: color.primary,
     fontWeight: "bold",
     borderWidth: 1,
+    borderRadius: 10,
+    flex: 1,
+  },
+  btn3: {
+    backgroundColor: color.primary2,
     borderRadius: 10,
     flex: 1,
   },

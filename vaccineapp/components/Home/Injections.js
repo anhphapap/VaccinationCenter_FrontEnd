@@ -1,4 +1,11 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import InjectionCard from "../common/InjectionCard";
 import Styles, { color, defaultAvatar, logo } from "../../styles/Styles";
@@ -9,12 +16,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useFocusEffect } from "@react-navigation/native";
+import { Button } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 
 const Injections = () => {
   const [list, setList] = useState([]);
   const user = useUser();
   const { showLoading, hideLoading } = useLoading();
   const [loading, setLoading] = useState(false);
+  const nav = useNavigation();
 
   const loadData = async () => {
     try {
@@ -23,7 +33,7 @@ const Injections = () => {
       setList([]);
       const token = await AsyncStorage.getItem("token");
       const res = await authApis(token).get(
-        endpoints.userInjections(user.username)
+        endpoints.userInjections(user.username) + "?sort_by=date_asc"
       );
       let list = res.data;
       for (let x of list) {
@@ -42,17 +52,29 @@ const Injections = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      loadData();
+      if (user) loadData();
     }, [])
   );
 
   return (
     <View style={[Styles.flex, Styles.bgWhite]}>
-      <HeaderUserInfo></HeaderUserInfo>
+      {user && <HeaderUserInfo></HeaderUserInfo>}
       {!loading &&
         (list.length === 0 ? (
           <View style={[Styles.flex, Styles.alignCenter, Styles.flexCenter]}>
             <NoneHistory></NoneHistory>
+            {!user && (
+              <View style={[Styles.flexRow, Styles.alignCenter]}>
+                <TouchableOpacity
+                  onPress={() => nav.navigate("TÀI KHOẢN", { screen: "login" })}
+                >
+                  <Text style={[Styles.fontBold, Styles.underline]}>
+                    Đăng nhập
+                  </Text>
+                </TouchableOpacity>
+                <Text> để xem lịch tiêm của bạn</Text>
+              </View>
+            )}
           </View>
         ) : (
           <ScrollView>
@@ -70,4 +92,10 @@ const Injections = () => {
 
 export default Injections;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  btn1: {
+    backgroundColor: color.primary,
+    borderRadius: 10,
+    marginVertical: 10,
+  },
+});

@@ -5,7 +5,8 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { VaccineContext } from "../../contexts/VaccineContext";
-
+import { CartContext } from "../../contexts/CartContext";
+import useUser from "../../hooks/useUser";
 const VaccineCard = ({
   item,
   btnDel,
@@ -16,13 +17,20 @@ const VaccineCard = ({
   remove,
   selected,
   onTrash,
+  addToCart,
 }) => {
+  const user = useUser();
   const nav = useNavigation();
   const { initVaccine } = useContext(VaccineContext);
   const handleBuy = (item) => {
-    initVaccine(item);
-    nav.navigate("order");
+    if (user) {
+      initVaccine(item);
+      nav.navigate("order");
+    } else {
+      nav.navigate("TÀI KHOẢN", { screen: "login" });
+    }
   };
+  const { isVaccineInCart } = useContext(CartContext);
 
   return (
     item && (
@@ -66,17 +74,23 @@ const VaccineCard = ({
         </View>
         {btnSell && (
           <View style={[Styles.rowSpaceCenter, Styles.mt20, { gap: 10 }]}>
-            <Button style={styles.btn1}>
-              <FontAwesome5
-                name="shopping-cart"
-                color={"white"}
-                size={14}
-              ></FontAwesome5>
-              <Text style={[Styles.fontBold, { color: "white" }]}>
-                {" "}
-                Thêm vào giỏ
-              </Text>
-            </Button>
+            {isVaccineInCart(item.id) ? (
+              <Button style={styles.btn3}>
+                <Text style={{ color: "white" }}>Đã chọn</Text>
+              </Button>
+            ) : (
+              <Button style={styles.btn1} onPress={addToCart}>
+                <FontAwesome5
+                  name="shopping-cart"
+                  color={"white"}
+                  size={14}
+                ></FontAwesome5>
+                <Text style={[Styles.fontBold, { color: "white" }]}>
+                  {" "}
+                  Thêm vào giỏ
+                </Text>
+              </Button>
+            )}
             <Button style={styles.btn2} onPress={() => handleBuy([item])}>
               <Text style={{ color: "#0a56df" }}>Mua ngay</Text>
             </Button>
@@ -112,8 +126,7 @@ const areEqual = (prev, next) =>
   prev.btnSell === next.btnSell &&
   prev.selected === next.selected;
 
-// export default React.memo(VaccineCard, areEqual);
-export default VaccineCard; // Tạm thời bỏ memo()
+export default VaccineCard;
 
 const styles = StyleSheet.create({
   img: {
@@ -136,6 +149,11 @@ const styles = StyleSheet.create({
   },
   btn1: {
     backgroundColor: color.primary,
+    borderRadius: 10,
+    flex: 1,
+  },
+  btn3: {
+    backgroundColor: color.primary2,
     borderRadius: 10,
     flex: 1,
   },
