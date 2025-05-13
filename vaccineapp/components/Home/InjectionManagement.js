@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const Book = () => {
+const InjectionManagement = () => {
   return (
     <View>
-      <Text>Book</Text>
+      <Text>InjectionManagement</Text>
     </View>
   );
 };
 
-export default Book;
+export default InjectionManagement;
 
 const styles = StyleSheet.create({});

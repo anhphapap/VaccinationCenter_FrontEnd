@@ -192,7 +192,7 @@ const VaccinesForm = ({ addForm }) => {
             Styles.ph20,
             Styles.bgWhite,
             Styles.flex,
-            [addForm && { marginBottom: 100 }],
+            [addForm && { marginBottom: 85 }],
           ]}
         >
           <FlatList

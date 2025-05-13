@@ -16,11 +16,15 @@ export const color = {
 };
 
 export const logo = {
-  icon: "https://res.cloudinary.com/dpmek7kuc/image/upload/t_logo2/v1745747860/logo_m2c3di.png",
+  icon: "https://res.cloudinary.com/dpmek7kuc/image/upload/v1747119660/logo_e1g3ay.png",
   icon_name:
     "https://res.cloudinary.com/dpmek7kuc/image/upload/t_logo2/v1745747860/logo_name2_ca9hh7.png",
   icon_name2:
     "https://res.cloudinary.com/dpmek7kuc/image/upload/v1745747859/logo_name_iqeu0d.png",
+  icon_line:
+    "https://res.cloudinary.com/dpmek7kuc/image/upload/v1747119659/line_logo_pfqxpz.png",
+  icon_line_lightgray:
+    "https://res.cloudinary.com/dpmek7kuc/image/upload/v1747131315/logo_line_lightgray_vfh2xb.png",
   name: "https://res.cloudinary.com/dpmek7kuc/image/upload/v1745747858/name_odjnan.png",
   not_found:
     "https://res.cloudinary.com/dpmek7kuc/image/upload/v1746029472/not_found_hek9ye.png",

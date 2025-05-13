@@ -12,6 +12,7 @@ const FeatureButton = ({ label, icon, press }) => {
           name={icon}
           size={30}
           color={color.primary}
+          solid
         ></FontAwesome5>
       </TouchableOpacity>
       <Text style={styles.txtLabel}>{label}</Text>
@@ -25,8 +26,8 @@ const styles = StyleSheet.create({
   btn: {
     width: 60,
     height: 60,
-    borderRadius: 15,
-    backgroundColor: color.secondary,
+    borderRadius: 20,
+    backgroundColor: color.bg,
     alignItems: "center",
     justifyContent: "center",
   },

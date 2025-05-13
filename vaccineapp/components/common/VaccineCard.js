@@ -4,7 +4,6 @@ import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button, Checkbox } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import { VaccineContext } from "../../contexts/VaccineContext";
 import { CartContext } from "../../contexts/CartContext";
 import useUser from "../../hooks/useUser";
 const VaccineCard = ({
@@ -22,10 +21,8 @@ const VaccineCard = ({
 }) => {
   const user = useUser();
   const nav = useNavigation();
-  const { initVaccine } = useContext(VaccineContext);
   const handleBuy = (item) => {
     if (user) {
-      initVaccine(item);
       nav.navigate("TRANG CHỦ", { screen: "order" });
     } else {
       nav.navigate("TÀI KHOẢN", {

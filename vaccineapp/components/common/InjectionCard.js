@@ -11,7 +11,10 @@ const InjectionCard = ({ item }) => {
   useEffect(() => {
     const now = new Date();
     const injection_time = new Date(item.injection_date);
-    const diff = differenceInDays(injection_time, now);
+    const diff = differenceInDays(
+      injection_time.setHours(0, 0, 0, 0),
+      now.setHours(0, 0, 0, 0)
+    );
     if (diff < 0) {
       setMainColor("#FF0000");
       setStatus("Lịch tiêm vắc xin đã bị bỏ lỡ.");
@@ -20,9 +23,10 @@ const InjectionCard = ({ item }) => {
       setStatus("Đã đến ngày tiêm chủng.");
     } else {
       setStatus(
-        `Còn ${
-          differenceInDays(injection_time, now) + 1
-        } ngày nữa đến lịch tiêm vắc xin này.`
+        `Còn ${differenceInDays(
+          injection_time,
+          now
+        )} ngày nữa đến lịch tiêm vắc xin này.`
       );
     }
   }, []);

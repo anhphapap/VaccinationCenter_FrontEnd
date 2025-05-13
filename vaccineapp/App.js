@@ -1,4 +1,5 @@
 import {
+  Image,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -8,7 +9,6 @@ import {
 import React, { useContext, useReducer } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./components/Home/Home";
-import Book from "./components/Home/Book";
 import History from "./components/Home/History";
 import Vaccine from "./components/Home/Vaccine";
 import Order from "./components/Home/Order";
@@ -22,7 +22,7 @@ import {
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Badge, Button, PaperProvider, Portal } from "react-native-paper";
 import Profile from "./components/User/Profile";
-import Styles, { color } from "./styles/Styles";
+import Styles, { color, logo } from "./styles/Styles";
 import Login from "./components/User/Login";
 import Register from "./components/User/Register";
 import RegisterProfile from "./components/User/RegisterProfile";
@@ -43,6 +43,7 @@ import Notification from "./components/Home/Notification";
 import HistoryDetails from "./components/Home/HistoryDetails";
 import { CartContext, CartProvider } from "./contexts/CartContext";
 import AddFromCart from "./components/Home/AddFromCart";
+import InjectionManagement from "./components/Home/InjectionManagement";
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
@@ -98,15 +99,10 @@ const HomeStackNavigator = () => {
         options={{ headerShown: false }}
       />
       <HomeStack.Screen
-        name="book"
-        component={Book}
+        name="injectionManagement"
+        component={InjectionManagement}
         options={{
-          title: "Đặt lịch",
-          headerRight: () => (
-            <Button>
-              <FontAwesome5 name="plus" size={20} color={"white"} />
-            </Button>
-          ),
+          title: "Quản lý lịch tiêm",
         }}
       />
       <HomeStack.Screen
@@ -306,13 +302,20 @@ const TabNavigator = () => {
         name="TRANG CHỦ"
         component={HomeStackNavigator}
         options={{
-          tabBarIcon: ({ focused }) => (
-            <FontAwesome5
-              name="home"
-              size={24}
-              color={focused ? color.primary : "#a2a4a7"}
-            />
-          ),
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <Image
+                source={{ uri: logo.icon }}
+                style={{ width: 24, height: 24 }}
+              />
+            ) : (
+              <Image
+                source={{
+                  uri: logo.icon_line_lightgray,
+                }}
+                style={{ width: 24, height: 24 }}
+              />
+            ),
         }}
       />
       <Tab.Screen
@@ -324,7 +327,7 @@ const TabNavigator = () => {
               name="calendar-check"
               size={24}
               color={focused ? color.primary : "#a2a4a7"}
-              solid
+              solid={focused}
             />
           ),
           headerStyle: {
@@ -348,7 +351,7 @@ const TabNavigator = () => {
             <FontAwesome5
               name="user"
               size={24}
-              solid
+              solid={focused}
               color={focused ? color.primary : "#a2a4a7"}
             />
           ),

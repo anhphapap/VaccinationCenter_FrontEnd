@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, Button } from "react-native-paper";
@@ -11,32 +11,45 @@ import useUser from "../../hooks/useUser";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
 
-const listItem = [
-  {
-    label: "Đặt lịch",
-    icon: "calendar-alt",
-    page: "book",
-  },
-  {
-    label: "Lịch sử tiêm chủng",
-    icon: "history",
-    page: "history",
-  },
-  {
-    label: "Danh mục vắc xin",
-    icon: "list",
-    page: "vaccine",
-  },
-  {
-    label: "Đặt mua vắc xin",
-    icon: "syringe",
-    page: "order",
-  },
-];
-
 const Home = () => {
   const nav = useNavigation();
   const user = useUser();
+  const listItem = [
+    {
+      label: "Danh mục vắc xin",
+      icon: "list",
+      page: "vaccine",
+    },
+    {
+      label: "Đặt mua vắc xin",
+      icon: "syringe",
+      page: "order",
+    },
+    {
+      label: "Lịch sử tiêm chủng",
+      icon: "history",
+      page: "history",
+    },
+    {
+      label: "Hóa đơn",
+      icon: "receipt",
+      page: "receipt",
+    },
+  ];
+  if (user?.is_staff) {
+    listItem.push(
+      {
+        label: "Quản lý lịch tiêm",
+        icon: "calendar-alt",
+        page: "injectionManagement",
+      },
+      {
+        label: "Quản lý bệnh nhân",
+        icon: "hospital-user",
+        page: "userManagement",
+      }
+    );
+  }
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
       <Image
@@ -46,9 +59,12 @@ const Home = () => {
         style={styles.bgBanner}
         resizeMode="cover"
       />
-      <View style={Styles.container}>
+      <ScrollView style={[Styles.container, { padding: 0 }]}>
         <View
-          style={[Styles.rowSpaceCenter, { paddingLeft: 10, marginTop: 10 }]}
+          style={[
+            Styles.rowSpaceCenter,
+            { paddingLeft: 20, marginTop: 20, paddingRight: 10 },
+          ]}
         >
           {user ? (
             <View style={Styles.flexRow}>
@@ -72,7 +88,7 @@ const Home = () => {
                     { fontWeight: "bold", textTransform: "uppercase" },
                   ]}
                 >
-                  {user.last_name + " " + user.first_name}
+                  {user?.last_name + " " + user?.first_name}
                 </Text>
               </View>
             </View>
@@ -87,10 +103,20 @@ const Home = () => {
             <FontAwesome5 name="bell" color="white" size={20}></FontAwesome5>
           </Button>
         </View>
-        <View style={{ height: 200, marginTop: 30 }}>
+        <View style={[Styles.ph10, { height: 200, marginTop: 30 }]}>
           <Carousel></Carousel>
         </View>
-        <View style={[Styles.flexRow, Styles.mv20, Styles.spaceAround]}>
+        <View
+          style={[
+            Styles.flexRow,
+            Styles.pv20,
+            Styles.ph10,
+            Styles.spaceAround,
+            Styles.bgWhite,
+            user?.is_staff && Styles.g20,
+            { flexWrap: "wrap" },
+          ]}
+        >
           {listItem.map((item) => (
             <FeatureButton
               icon={item.icon}
@@ -108,23 +134,27 @@ const Home = () => {
             ></FeatureButton>
           ))}
         </View>
-        <View style={[Styles.mv10, Styles.ph10]}>
+        <View style={[Styles.pv10, Styles.ph20, Styles.bgWhite]}>
           <EventBanner></EventBanner>
         </View>
-        <View style={[styles.adrsContainer, Styles.mv20]}>
-          <Image
-            source={{
-              uri: "https://cdn-icons-png.flaticon.com/512/1865/1865269.png",
-            }}
-            style={styles.adrsImg}
-            resizeMode="cover"
-          ></Image>
-          <View>
-            <Text style={Styles.fontBold}>Trụ sở chính</Text>
-            <Text style={{ color: "gray" }}>Nhà Bè, Thành phố Hồ Chí Minh</Text>
+        <View style={[Styles.pb20, Styles.ph10, Styles.bgWhite]}>
+          <View style={[styles.adrsContainer, Styles.pv20, Styles.ph20]}>
+            <Image
+              source={{
+                uri: "https://cdn-icons-png.flaticon.com/512/1865/1865269.png",
+              }}
+              style={styles.adrsImg}
+              resizeMode="cover"
+            ></Image>
+            <View>
+              <Text style={Styles.fontBold}>Trụ sở chính</Text>
+              <Text style={{ color: "gray" }}>
+                Nhà Bè, Thành phố Hồ Chí Minh
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

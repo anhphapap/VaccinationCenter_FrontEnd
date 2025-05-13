@@ -16,7 +16,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useFocusEffect } from "@react-navigation/native";
-import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
 const Injections = () => {
@@ -33,7 +32,8 @@ const Injections = () => {
       setList([]);
       const token = await AsyncStorage.getItem("token");
       const res = await authApis(token).get(
-        endpoints.userInjections(user.username) + "?sort_by=date_asc"
+        endpoints.userInjections(user.username) +
+          "?status=MISSED&status=NOT_VACCINATED&sort_by=date_asc"
       );
       let list = res.data;
       for (let x of list) {

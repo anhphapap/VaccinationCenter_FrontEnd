@@ -49,9 +49,17 @@ const HistoryDetails = ({ route }) => {
         });
       } else {
         console.error("Failed to download file", res.data);
+        Toast.show({
+          text1: "Tải chứng nhận không thành công",
+          type: "error",
+        });
       }
     } catch (error) {
       console.error("An error occurred during download", error);
+      Toast.show({
+        text1: "Lỗi khi tải chứng nhận",
+        type: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -79,11 +87,17 @@ const HistoryDetails = ({ route }) => {
       header: "Thông tin ngày tiêm",
       fields: [
         {
-          label: "Tiêm ngày",
+          label: "Trạng thái",
           value:
             data.status === "VACCINATED"
-              ? new Date(data.injection_time).toLocaleDateString("vi-VN")
-              : "Chưa cập nhập",
+              ? "Đã tiêm"
+              : data.status === "MISSED"
+              ? "Bỏ lỡ"
+              : "Chưa tiêm",
+        },
+        {
+          label: "Tiêm ngày",
+          value: new Date(data.injection_time).toLocaleDateString("vi-VN"),
         },
         { label: "Trung tâm tiêm", value: "PVVC Nhà Bè" },
         { label: "Địa chỉ", value: "Khu dân cư Nhơn Đức, Nhà Bè, TP.HCM" },
@@ -130,7 +144,7 @@ const HistoryDetails = ({ route }) => {
         {data.status === "VACCINATED" && (
           <FloatBottomButton
             disabled={loading}
-            label={loading ? "Đang tải..." : "Tải chứng chỉ"}
+            label={loading ? "Đang tải..." : "Tải chứng nhận tiêm "}
             press={handleDownload}
             icon={"file-download"}
           ></FloatBottomButton>
