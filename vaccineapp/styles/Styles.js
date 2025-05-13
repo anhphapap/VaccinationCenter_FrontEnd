@@ -68,6 +68,12 @@ export default StyleSheet.create({
   p20: {
     padding: 20,
   },
+  pb10: {
+    paddingBottom: 10,
+  },
+  pb20: {
+    paddingBottom: 20,
+  },
   pv10: {
     paddingVertical: 10,
   },

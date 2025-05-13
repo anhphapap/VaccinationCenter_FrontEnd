@@ -331,7 +331,7 @@ const Order = () => {
                 <View style={[Styles.rowSpaceCenter, Styles.mv10, { gap: 10 }]}>
                   <Button
                     style={styles.btn1}
-                    onPress={() => console.log(selectedVaccines)}
+                    onPress={() => nav.navigate("addFromCart")}
                   >
                     <FontAwesome5
                       name="shopping-cart"

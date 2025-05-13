@@ -21,6 +21,10 @@ export const VaccineProvider = ({ children }) => {
     setIgnore(false);
   };
 
+  const isSelectedVaccine = (id) => {
+    return selectedVaccines.some((p) => p.id === id);
+  };
+
   return (
     <VaccineContext.Provider
       value={{
@@ -31,6 +35,7 @@ export const VaccineProvider = ({ children }) => {
         ignore,
         initVaccine,
         setIgnore,
+        isSelectedVaccine,
       }}
     >
       {children}

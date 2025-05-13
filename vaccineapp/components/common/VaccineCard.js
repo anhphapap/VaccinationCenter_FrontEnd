@@ -1,8 +1,8 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Styles, { color } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { Button } from "react-native-paper";
+import { Button, Checkbox } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { VaccineContext } from "../../contexts/VaccineContext";
 import { CartContext } from "../../contexts/CartContext";
@@ -18,6 +18,7 @@ const VaccineCard = ({
   selected,
   onTrash,
   addToCart,
+  btnCheck,
 }) => {
   const user = useUser();
   const nav = useNavigation();
@@ -25,9 +26,12 @@ const VaccineCard = ({
   const handleBuy = (item) => {
     if (user) {
       initVaccine(item);
-      nav.navigate("order");
+      nav.navigate("TRANG CHỦ", { screen: "order" });
     } else {
-      nav.navigate("TÀI KHOẢN", { screen: "login" });
+      nav.navigate("TÀI KHOẢN", {
+        screen: "login",
+        params: { redirect: "order" },
+      });
     }
   };
   const { isVaccineInCart } = useContext(CartContext);
@@ -70,6 +74,14 @@ const VaccineCard = ({
             <TouchableOpacity onPress={onTrash}>
               <FontAwesome5 name="trash" color={"red"} size={16}></FontAwesome5>
             </TouchableOpacity>
+          )}
+          {btnCheck && (
+            <Checkbox
+              status={selected ? "checked" : "unchecked"}
+              onPress={() => select(item, selected)}
+              color={color.primary}
+              uncheckedColor={color.border}
+            />
           )}
         </View>
         {btnSell && (

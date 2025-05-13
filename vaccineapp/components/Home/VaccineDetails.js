@@ -20,24 +20,12 @@ import useUser from "../../hooks/useUser";
 
 const listInfo = [
   {
-    field: "origin",
-    title: "Nguồn gốc",
+    field: "description",
+    title: "Thông tin chi tiết",
   },
   {
     field: "injection",
-    title: "Đường tiêm",
-  },
-  {
-    field: "recommend",
-    title: "Chống chỉ định",
-  },
-  {
-    field: "manual",
-    title: "Thận trọng khi sử dụng",
-  },
-  {
-    field: "preserve",
-    title: "Bảo quản",
+    title: "Phác đồ tiêm",
   },
   {
     field: "patient",
@@ -139,27 +127,45 @@ const VaccineDetails = ({ route }) => {
             <Text style={{ color: "#0a56df" }}>Mua ngay</Text>
           </Button>
         </View>
-        <RenderHTML
-          contentWidth={width}
-          source={{ html: vaccine.description }}
-        ></RenderHTML>
-        <View style={Styles.mb20}>
+        <View style={Styles.mb10}>
           <Image source={{ uri: vaccine.image }} style={styles.img}></Image>
         </View>
-        {listInfo.map(
-          (item) =>
-            vaccine[item.field] && (
-              <View key={item.field}>
-                <Text style={[Styles.fontBold, Styles.fz16, { color: "gray" }]}>
-                  {item.title}
-                </Text>
-                <RenderHTML
-                  contentWidth={width}
-                  source={{ html: vaccine[item.field] }}
-                ></RenderHTML>
-              </View>
-            )
-        )}
+        <View style={Styles.mb20}>
+          {listInfo.map(
+            (item) =>
+              vaccine[item.field] && (
+                <View key={item.field}>
+                  <Text style={[Styles.fontBold, Styles.fz16, Styles.mv10]}>
+                    {item.title}
+                  </Text>
+                  <RenderHTML
+                    contentWidth={width}
+                    source={{ html: vaccine[item.field] }}
+                    tagsStyles={{
+                      p: {
+                        margin: 0,
+                        padding: 0,
+                        lineHeight: 22,
+                      },
+                      ul: {
+                        marginVertical: 0,
+                        paddingVertical: 0,
+                        lineHeight: 22,
+                      },
+                      li: {
+                        marginLeft: 10,
+                        padding: 0,
+                        lineHeight: 22,
+                      },
+                      strong: {
+                        fontWeight: "bold",
+                      },
+                    }}
+                  ></RenderHTML>
+                </View>
+              )
+          )}
+        </View>
       </ScrollView>
     )
   );

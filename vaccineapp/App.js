@@ -42,6 +42,7 @@ import Injections from "./components/Home/Injections";
 import Notification from "./components/Home/Notification";
 import HistoryDetails from "./components/Home/HistoryDetails";
 import { CartContext, CartProvider } from "./contexts/CartContext";
+import AddFromCart from "./components/Home/AddFromCart";
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
@@ -193,6 +194,11 @@ const HomeStackNavigator = () => {
           headerShown: false,
           animation: "slide_from_bottom",
         }}
+      />
+      <HomeStack.Screen
+        name="addFromCart"
+        component={AddFromCart}
+        options={{ headerShown: false, animation: "slide_from_bottom" }}
       />
       <HomeStack.Screen
         name="notification"

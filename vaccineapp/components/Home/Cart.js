@@ -9,10 +9,37 @@ import { useLoading } from "../../contexts/LoadingContext";
 import { useNavigation } from "@react-navigation/native";
 import { CartContext } from "../../contexts/CartContext";
 import NoneVaccine from "../common/NoneVaccine";
-
-const Cart = () => {
+import { VaccineContext } from "../../contexts/VaccineContext";
+import Toast from "react-native-toast-message";
+const Cart = ({ addMode = false }) => {
   const { cartItems, removeFromCart } = useContext(CartContext);
   const navigation = useNavigation();
+  const { selectedVaccines, addVaccine } = useContext(VaccineContext);
+  const [preSelect, setPreSelect] = useState(selectedVaccines);
+  const handlePreSelect = (item, selected) => {
+    if (!selected) {
+      if (preSelect.length >= 3) {
+        Toast.show({
+          text1: "Một người tiêm chỉ được chọn tối đa 3 vắc xin lẻ",
+          type: "info",
+        });
+      } else setPreSelect([...preSelect, item]);
+    } else {
+      setPreSelect(preSelect.filter((v) => v.id !== item.id));
+    }
+  };
+  const handleConfirm = () => {
+    if (addMode) {
+      addVaccine(preSelect);
+      navigation.goBack();
+    } else {
+      if (cartItems.length === 0) {
+        navigation.goBack();
+      } else {
+        navigation.navigate("order");
+      }
+    }
+  };
 
   return (
     <View style={styles.overlay}>
@@ -22,7 +49,9 @@ const Cart = () => {
       />
       <View style={styles.container}>
         <View style={[Styles.rowSpaceCenter, styles.header]}>
-          <Text style={styles.title}>Danh sách vắc xin chọn mua</Text>
+          <Text style={styles.title}>
+            {addMode ? "Chọn từ giỏ hàng" : "Danh sách vắc xin chọn mua"}
+          </Text>
           <Button
             mode="text"
             onPress={() => navigation.goBack()}
@@ -49,12 +78,15 @@ const Cart = () => {
           }}
           renderItem={({ item }) => (
             <VaccineCard
-              btnDel
+              btnDel={!addMode}
+              btnCheck={addMode}
               item={item}
               nav={() =>
                 navigation.navigate("vaccineDetails", { vaccineId: item.id })
               }
               onTrash={() => removeFromCart(item.id)}
+              select={handlePreSelect}
+              selected={preSelect.some((v) => v.id === item.id)}
             />
           )}
           ListEmptyComponent={
@@ -62,7 +94,19 @@ const Cart = () => {
           }
         />
 
-        <FloatBottomButton label={`Đăng ký mũi tiêm (${cartItems.length})`} />
+        <FloatBottomButton
+          disabled={addMode && selectedVaccines.length === 0}
+          label={
+            addMode
+              ? `Xác nhận ${
+                  preSelect.length ? "(" + preSelect.length + ")" : ""
+                }`
+              : cartItems.length === 0
+              ? "Thêm vắc xin"
+              : `Đăng ký mũi tiêm (${cartItems.length})`
+          }
+          press={handleConfirm}
+        />
       </View>
     </View>
   );

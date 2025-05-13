@@ -261,6 +261,7 @@ const VaccinesForm = ({ addForm }) => {
                     })
                 : handleConfirm
             }
+            disabled={preSelect.length === 0}
           />
         )}
       </View>

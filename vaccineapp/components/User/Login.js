@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import Styles, { color, logo } from "../../styles/Styles";
 import MyTextInput from "../common/MyTextInput";
 import { Button, HelperText } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { MyDispatchContext } from "../../contexts/Contexts";
 import { CLIENT_ID, CLIENT_SECRET } from "@env";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
@@ -29,6 +29,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useContext(MyDispatchContext);
   const nav = useNavigation();
+  const route = useRoute();
 
   const setState = (value, field) => {
     setUser({ ...user, [field]: value });
@@ -87,10 +88,16 @@ const Login = () => {
             routes: [{ name: "registerProfile" }],
           });
         } else {
-          nav.reset({
-            index: 0,
-            routes: [{ name: "TRANG CHỦ" }],
-          });
+          if (route.params?.redirect) {
+            nav.navigate("TRANG CHỦ", {
+              screen: route.params.redirect,
+            });
+          } else {
+            nav.reset({
+              index: 0,
+              routes: [{ name: "TRANG CHỦ" }],
+            });
+          }
         }
       } catch (ex) {
         // console.log(ex.message);

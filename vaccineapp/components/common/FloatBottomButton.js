@@ -14,7 +14,10 @@ const FloatBottomButton = ({
   return (
     <View style={styles.iBottom}>
       <Button
-        style={styles.closeBtn}
+        style={[
+          styles.closeBtn,
+          { backgroundColor: disabled ? `${color.primary}90` : color.primary },
+        ]}
         onPress={press}
         loading={loading}
         disabled={disabled}
