@@ -21,7 +21,7 @@ import Apis, { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import DropDownPicker from "react-native-dropdown-picker";
 import RenderHTML from "react-native-render-html";
-import Toast from "react-native-toast-message";
+import { showToast } from "../common/ShowToast";
 import { format } from "date-fns";
 
 const listInfo = [
@@ -87,7 +87,7 @@ const Order = () => {
       let id = listCampaign.find((item) => item.id === selectedCampaign);
       setCurCampaign(id);
       setAddMore(true);
-      setSelectedVaccines([]);
+      if (curCampaign && curCampaign.id !== 1) setSelectedVaccines([]);
       if (!id || id?.id === 1) return;
       let res = await Apis.get(endpoints.vaccineDetails(id.vaccine));
       setSelectedVaccines([res.data]);
@@ -101,17 +101,24 @@ const Order = () => {
 
   const validate = () => {
     if (selectedVaccines.length === 0) {
-      Toast.show({ type: "error", text1: "Vui lòng chọn vắc xin" });
+      showToast({ type: "error", text1: "Vui lòng chọn vắc xin" });
       return false;
     }
     if (!date) {
-      Toast.show({ type: "error", text1: "Vui lòng chọn ngày tiêm" });
+      showToast({ type: "error", text1: "Vui lòng chọn ngày tiêm" });
       return false;
     }
     return true;
   };
 
   const handleConfirm = async () => {
+    if (!user) {
+      nav.navigate("TÀI KHOẢN", {
+        screen: "login",
+        params: { redirect: "order" },
+      });
+      return;
+    }
     if (validate()) {
       try {
         showLoading();
@@ -130,7 +137,7 @@ const Order = () => {
             },
           });
         }
-        Toast.show({
+        showToast({
           type: "success",
           text1: "Đặt mua thành công",
         });
@@ -138,7 +145,7 @@ const Order = () => {
         setSelectedVaccines([]);
         setDate();
       } catch (ex) {
-        Toast.show({
+        showToast({
           type: "error",
           text1:
             ex.response?.data.error || ex.response?.data.vaccination_campaign,
@@ -158,224 +165,220 @@ const Order = () => {
   }, []);
 
   return (
-    user && (
-      <View
-        style={{
-          // position: "relative",
-          backgroundColor: "white",
-          paddingBottom: 63,
-          flex: 1,
-        }}
-      >
-        <ScrollView showsVerticalScrollIndicator={false} style={Styles.p20}>
-          <View style={[styles.container, { marginBottom: 40 }]}>
-            <View style={styles.header}>
-              <Text
-                style={[
-                  Styles.fontBold,
-                  Styles.fz16,
-                  { textTransform: "uppercase" },
-                ]}
-              >
-                {user.last_name + " " + user.first_name}
+    <View
+      style={{
+        // position: "relative",
+        backgroundColor: "white",
+        paddingBottom: 63,
+        flex: 1,
+      }}
+    >
+      <ScrollView showsVerticalScrollIndicator={false} style={Styles.p20}>
+        <View style={[styles.container, { marginBottom: 40 }]}>
+          <View style={styles.header}>
+            <Text
+              style={[
+                Styles.fontBold,
+                Styles.fz16,
+                { textTransform: "uppercase" },
+              ]}
+            >
+              {user ? user.last_name + " " + user.first_name : "Khách hàng"}
+            </Text>
+          </View>
+          <View style={Styles.p10}>
+            <TouchableOpacity onPress={() => setShowInfo(!showInfo)}>
+              <Text style={[{ color: color.primary }, Styles.fontPreBold]}>
+                Chi tiết người tiêm{" "}
+                <FontAwesome5
+                  name={showInfo ? "chevron-up" : "chevron-down"}
+                  color={color.primary}
+                />
+              </Text>
+            </TouchableOpacity>
+            {user && showInfo && (
+              <View style={[{ gap: 10 }, Styles.mv10]}>
+                <View style={Styles.rowSpaceCenter}>
+                  <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
+                    Họ và tên
+                  </Text>
+                  <Text style={Styles.fontPreBold}>
+                    {user.last_name + " " + user.first_name}
+                  </Text>
+                </View>
+                {listInfo.map((item) => (
+                  <View style={Styles.rowSpaceCenter} key={item.field}>
+                    <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
+                      {item.label}
+                    </Text>
+                    <Text style={Styles.fontPreBold}>
+                      {item.field === "gender"
+                        ? user[item.field] === true
+                          ? "Nam"
+                          : "Nữ"
+                        : item.field === "birth_date"
+                        ? new Date(user[item.field]).toLocaleDateString("vi-VN")
+                        : user[item.field]}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            )}
+            <Text style={[Styles.fontPreBold, Styles.mv10, Styles.mt20]}>
+              Địa điểm tiêm
+            </Text>
+            <View
+              style={[
+                Styles.border1,
+                Styles.rounded10,
+                Styles.ph10,
+                { backgroundColor: color.secondary, paddingVertical: 15 },
+              ]}
+            >
+              <Text style={Styles.fontPreBold}>
+                Nhà Bè, Thành phố Hồ Chí Minh
               </Text>
             </View>
-            <View style={Styles.p10}>
-              <TouchableOpacity onPress={() => setShowInfo(!showInfo)}>
+            <Text style={[Styles.fontPreBold, Styles.mv10]}>
+              Chọn đợt tiêm *
+            </Text>
+            <View style={{ zIndex: open ? 1000 : 1 }}>
+              <DropDownPicker
+                open={open}
+                value={selectedCampaign}
+                items={listCampaign.map((c) => ({
+                  label: c.name,
+                  value: c.id,
+                }))}
+                setOpen={setOpen}
+                setValue={setSelectedCampaign}
+                setItems={setListCampaign}
+                placeholder="Chọn đợt tiêm"
+                listMode="SCROLLVIEW"
+                style={[Styles.rounded10, { borderColor: color.border }]}
+                dropDownContainerStyle={{ borderColor: color.border }}
+                selectedItemContainerStyle={{
+                  backgroundColor: color.border,
+                }}
+              />
+            </View>
+            {curCampaign?.id !== 1 && (
+              <TouchableOpacity
+                onPress={() => setShowInfoCamp(!showInfoCamp)}
+                style={Styles.mt10}
+              >
                 <Text style={[{ color: color.primary }, Styles.fontPreBold]}>
-                  Chi tiết người tiêm{" "}
+                  Thông tin đợt tiêm{" "}
                   <FontAwesome5
-                    name={showInfo ? "chevron-up" : "chevron-down"}
+                    name={showInfoCamp ? "chevron-up" : "chevron-down"}
                     color={color.primary}
                   />
                 </Text>
               </TouchableOpacity>
-              {showInfo && (
-                <View style={[{ gap: 10 }, Styles.mv10]}>
-                  <View style={Styles.rowSpaceCenter}>
-                    <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
-                      Họ và tên
-                    </Text>
-                    <Text style={Styles.fontPreBold}>
-                      {user.last_name + " " + user.first_name}
-                    </Text>
-                  </View>
-                  {listInfo.map((item) => (
-                    <View style={Styles.rowSpaceCenter} key={item.field}>
-                      <Text style={[{ color: "gray" }, Styles.fontPreBold]}>
-                        {item.label}
-                      </Text>
-                      <Text style={Styles.fontPreBold}>
-                        {item.field === "gender"
-                          ? user[item.field] === true
-                            ? "Nam"
-                            : "Nữ"
-                          : item.field === "birth_date"
-                          ? new Date(user[item.field]).toLocaleDateString(
-                              "vi-VN"
-                            )
-                          : user[item.field]}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              )}
-              <Text style={[Styles.fontPreBold, Styles.mv10, Styles.mt20]}>
-                Địa điểm tiêm
-              </Text>
-              <View
-                style={[
-                  Styles.border1,
-                  Styles.rounded10,
-                  Styles.ph10,
-                  { backgroundColor: color.secondary, paddingVertical: 15 },
-                ]}
-              >
-                <Text style={Styles.fontPreBold}>
-                  Nhà Bè, Thành phố Hồ Chí Minh
+            )}
+            {showInfoCamp && (
+              <View style={Styles.mt10}>
+                <RenderHTML
+                  contentWidth={width}
+                  source={{ html: curCampaign.description }}
+                  tagsStyles={{
+                    p: {
+                      margin: 0,
+                      padding: 0,
+                      lineHeight: 22,
+                    },
+                    strong: {
+                      fontWeight: "bold",
+                    },
+                  }}
+                ></RenderHTML>
+              </View>
+            )}
+            <Text style={[Styles.fontPreBold, Styles.mv10]}>
+              Chọn vắc xin *
+            </Text>
+            {selectedVaccines.length > 0 ? (
+              selectedVaccines.map((item) => (
+                <VaccineCard
+                  item={item}
+                  onTrash={() => removeVaccine(item.id)}
+                  key={item.id}
+                  btnDel={addMore}
+                />
+              ))
+            ) : (
+              <View style={[Styles.alignCenter]}>
+                <Image
+                  source={{ uri: logo.not_found }}
+                  style={styles.imgNotFound}
+                  resizeMode="cover"
+                />
+                <Text
+                  style={{
+                    color: "gray",
+                    fontWeight: "bold",
+                    marginBottom: 20,
+                  }}
+                >
+                  Danh sách vắc xin chọn mua trống
                 </Text>
               </View>
-              <Text style={[Styles.fontPreBold, Styles.mv10]}>
-                Chọn đợt tiêm *
-              </Text>
-              <View style={{ zIndex: open ? 1000 : 1 }}>
-                <DropDownPicker
-                  open={open}
-                  value={selectedCampaign}
-                  items={listCampaign.map((c) => ({
-                    label: c.name,
-                    value: c.id,
-                  }))}
-                  setOpen={setOpen}
-                  setValue={setSelectedCampaign}
-                  setItems={setListCampaign}
-                  placeholder="Chọn đợt tiêm"
-                  listMode="SCROLLVIEW"
-                  style={[Styles.rounded10, { borderColor: color.border }]}
-                  dropDownContainerStyle={{ borderColor: color.border }}
-                  selectedItemContainerStyle={{
-                    backgroundColor: color.border,
-                  }}
-                />
-              </View>
-              {curCampaign?.id !== 1 && (
-                <TouchableOpacity
-                  onPress={() => setShowInfoCamp(!showInfoCamp)}
-                  style={Styles.mt10}
+            )}
+            {addMore && (
+              <View style={[Styles.rowSpaceCenter, Styles.mv10, { gap: 10 }]}>
+                <Button
+                  style={styles.btn1}
+                  onPress={() => nav.navigate("addFromCart")}
                 >
-                  <Text style={[{ color: color.primary }, Styles.fontPreBold]}>
-                    Thông tin đợt tiêm{" "}
-                    <FontAwesome5
-                      name={showInfoCamp ? "chevron-up" : "chevron-down"}
-                      color={color.primary}
-                    />
+                  <FontAwesome5
+                    name="shopping-cart"
+                    color={"white"}
+                    size={14}
+                  ></FontAwesome5>
+                  <Text style={[Styles.fontBold, { color: "white" }]}>
+                    {" "}
+                    Thêm từ giỏ
                   </Text>
-                </TouchableOpacity>
-              )}
-              {showInfoCamp && (
-                <View style={Styles.mt10}>
-                  <RenderHTML
-                    contentWidth={width}
-                    source={{ html: curCampaign.description }}
-                    tagsStyles={{
-                      p: {
-                        margin: 0,
-                        padding: 0,
-                        lineHeight: 22,
-                      },
-                      strong: {
-                        fontWeight: "bold",
-                      },
-                    }}
-                  ></RenderHTML>
-                </View>
-              )}
-              <Text style={[Styles.fontPreBold, Styles.mv10]}>
-                Chọn vắc xin *
-              </Text>
-              {selectedVaccines.length > 0 ? (
-                selectedVaccines.map((item) => (
-                  <VaccineCard
-                    item={item}
-                    onTrash={() => removeVaccine(item.id)}
-                    key={item.id}
-                    btnDel={addMore}
-                  />
-                ))
-              ) : (
-                <View style={[Styles.alignCenter]}>
-                  <Image
-                    source={{ uri: logo.not_found }}
-                    style={styles.imgNotFound}
-                    resizeMode="cover"
-                  />
-                  <Text
-                    style={{
-                      color: "gray",
-                      fontWeight: "bold",
-                      marginBottom: 20,
-                    }}
-                  >
-                    Danh sách vắc xin chọn mua trống
-                  </Text>
-                </View>
-              )}
-              {addMore && (
-                <View style={[Styles.rowSpaceCenter, Styles.mv10, { gap: 10 }]}>
-                  <Button
-                    style={styles.btn1}
-                    onPress={() => nav.navigate("addFromCart")}
-                  >
-                    <FontAwesome5
-                      name="shopping-cart"
-                      color={"white"}
-                      size={14}
-                    ></FontAwesome5>
-                    <Text style={[Styles.fontBold, { color: "white" }]}>
-                      {" "}
-                      Thêm từ giỏ
-                    </Text>
-                  </Button>
-                  <Button
-                    style={styles.btn2}
-                    onPress={() => nav.navigate("addVaccines")}
-                  >
-                    <Text style={{ color: "#0a56df" }}>Thêm mới vắc xin</Text>
-                  </Button>
-                </View>
-              )}
-              <Text style={[Styles.fontPreBold, Styles.mt10]}>
-                Chọn ngày mong muốn tiêm *
-              </Text>
-              <DatePicker
-                date={date}
-                setDate={setDate}
-                type={curCampaign?.id !== 1 ? "custom" : "foward"}
-                startDate={new Date(curCampaign?.start_date)}
-                endDate={new Date(curCampaign?.end_date)}
-              />
-            </View>
-          </View>
-        </ScrollView>
-
-        <View style={[Styles.rowSpaceCenter, styles.footer]}>
-          <View>
-            <Text style={{ color: "gray" }}>Tổng cộng</Text>
-            <Text style={[Styles.fontBold, Styles.fz18]}>
-              {Array.isArray(selectedVaccines) && selectedVaccines.length > 0
-                ? selectedVaccines
-                    .reduce((sum, item) => sum + item.price, 0)
-                    .toLocaleString()
-                : "0"}{" "}
-              VNĐ
+                </Button>
+                <Button
+                  style={styles.btn2}
+                  onPress={() => nav.navigate("addVaccines")}
+                >
+                  <Text style={{ color: "#0a56df" }}>Thêm mới vắc xin</Text>
+                </Button>
+              </View>
+            )}
+            <Text style={[Styles.fontPreBold, Styles.mt10]}>
+              Chọn ngày mong muốn tiêm *
             </Text>
+            <DatePicker
+              date={date}
+              setDate={setDate}
+              type={curCampaign?.id !== 1 ? "custom" : "foward"}
+              startDate={new Date(curCampaign?.start_date)}
+              endDate={new Date(curCampaign?.end_date)}
+            />
           </View>
-          <Button style={[styles.btn1, { flex: 0 }]} onPress={handleConfirm}>
-            <Text style={[Styles.textWhite, Styles.p10]}>Xác nhận</Text>
-          </Button>
         </View>
+      </ScrollView>
+
+      <View style={[Styles.rowSpaceCenter, styles.footer]}>
+        <View>
+          <Text style={{ color: "gray" }}>Tổng cộng</Text>
+          <Text style={[Styles.fontBold, Styles.fz18]}>
+            {Array.isArray(selectedVaccines) && selectedVaccines.length > 0
+              ? selectedVaccines
+                  .reduce((sum, item) => sum + item.price, 0)
+                  .toLocaleString()
+              : "0"}{" "}
+            VNĐ
+          </Text>
+        </View>
+        <Button style={[styles.btn1, { flex: 0 }]} onPress={handleConfirm}>
+          <Text style={[Styles.textWhite, Styles.p10]}>Xác nhận</Text>
+        </Button>
       </View>
-    )
+    </View>
   );
 };
 

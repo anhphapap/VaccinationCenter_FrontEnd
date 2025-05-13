@@ -100,7 +100,12 @@ const Home = () => {
             ></Image>
           )}
           <Button onPress={() => nav.navigate("notification")}>
-            <FontAwesome5 name="bell" color="white" size={20}></FontAwesome5>
+            <FontAwesome5
+              name="bell"
+              color="white"
+              size={20}
+              solid={true}
+            ></FontAwesome5>
           </Button>
         </View>
         <View style={[Styles.ph10, { height: 200, marginTop: 30 }]}>
@@ -121,15 +126,7 @@ const Home = () => {
             <FeatureButton
               icon={item.icon}
               label={item.label}
-              press={
-                !user && item.page !== "vaccine"
-                  ? () =>
-                      Toast.show({
-                        type: "info",
-                        text1: "Vui lòng đăng nhập để sử dụng chức năng!",
-                      })
-                  : () => nav.navigate(item.page)
-              }
+              press={() => nav.navigate(item.page)}
               key={item.page}
             ></FeatureButton>
           ))}

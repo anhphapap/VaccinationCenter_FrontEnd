@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
+import { showToast } from "../components/common/ShowToast";
 // import { VaccineContext } from "./VaccineContext";
 
 export const CartContext = createContext();
@@ -8,7 +9,16 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
   const addToCart = (vaccine) => {
-    setCartItems((prevItems) => [...prevItems, vaccine]);
+    setCartItems((prevItems) => {
+      if (isVaccineInCart(vaccine.id)) {
+        return prevItems;
+      }
+      showToast({
+        type: "success",
+        text1: "Đã thêm vắc xin vào giỏ hàng",
+      });
+      return [...prevItems, vaccine];
+    });
   };
 
   const removeFromCart = (vaccineId) => {

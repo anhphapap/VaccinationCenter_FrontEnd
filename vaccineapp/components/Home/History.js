@@ -24,32 +24,34 @@ const History = () => {
   const nav = useNavigation();
 
   const loadHistory = async () => {
-    try {
-      showLoading();
-      const token = await AsyncStorage.getItem("token");
-      const res = await authApis(token).get(
-        endpoints.userInjections(user.username) + "?sort_by=date_asc"
-      );
-      let list = res.data;
-      for (let x of list) {
-        let res = await Apis.get(endpoints.vaccineDetails(x.vaccine));
-        x.vaccine = res.data;
-        if (x.vaccination_campaign !== 1) {
-          let campaign = await Apis.get(
-            endpoints.campaignDetails(x.vaccination_campaign)
-          );
-          x.campaign = campaign.data;
+    if (user) {
+      try {
+        showLoading();
+        const token = await AsyncStorage.getItem("token");
+        const res = await authApis(token).get(
+          endpoints.userInjections(user?.username) + "?sort_by=date_asc"
+        );
+        let list = res.data;
+        for (let x of list) {
+          let res = await Apis.get(endpoints.vaccineDetails(x.vaccine));
+          x.vaccine = res.data;
+          if (x.vaccination_campaign !== 1) {
+            let campaign = await Apis.get(
+              endpoints.campaignDetails(x.vaccination_campaign)
+            );
+            x.campaign = campaign.data;
+          }
+          if (x.status === "NOT_VACCINATED") {
+            setListNext((prev) => [...prev, x]);
+          } else if (x.status === "VACCINATED") {
+            setListHistory((prev) => [...prev, x]);
+          }
         }
-        if (x.status === "NOT_VACCINATED") {
-          setListNext((prev) => [...prev, x]);
-        } else if (x.status === "VACCINATED") {
-          setListHistory((prev) => [...prev, x]);
-        }
+      } catch (ex) {
+        console.log(ex);
+      } finally {
+        hideLoading();
       }
-    } catch (ex) {
-      console.log(ex);
-    } finally {
-      hideLoading();
     }
   };
 
@@ -59,31 +61,51 @@ const History = () => {
 
   return (
     <View style={[Styles.flex, Styles.bgWhite]}>
-      <HeaderUserInfo></HeaderUserInfo>
-      <View>
-        <View style={[Styles.flexRow]}>
-          <TouchableOpacity
-            style={[styles.tabHeader, tab && styles.onTab]}
-            onPress={() => setTab(!tab)}
-          >
-            <Text style={[Styles.fontBold, tab && { color: color.primary }]}>
-              Lịch sử tiêm chủng
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tabHeader, !tab && styles.onTab]}
-            onPress={() => setTab(!tab)}
-          >
-            <Text style={[Styles.fontBold, !tab && { color: color.primary }]}>
-              Mũi tiêm kế tiếp
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      {user && (
+        <>
+          <HeaderUserInfo></HeaderUserInfo>
+          <View>
+            <View style={[Styles.flexRow]}>
+              <TouchableOpacity
+                style={[styles.tabHeader, tab && styles.onTab]}
+                onPress={() => setTab(!tab)}
+              >
+                <Text
+                  style={[Styles.fontBold, tab && { color: color.primary }]}
+                >
+                  Lịch sử tiêm chủng
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.tabHeader, !tab && styles.onTab]}
+                onPress={() => setTab(!tab)}
+              >
+                <Text
+                  style={[Styles.fontBold, !tab && { color: color.primary }]}
+                >
+                  Mũi tiêm kế tiếp
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </>
+      )}
       {tab ? (
         listHistory.length === 0 ? (
           <View style={[Styles.flex, Styles.alignCenter, Styles.flexCenter]}>
             <NoneHistory />
+            {!user && (
+              <View style={[Styles.flexRow, Styles.alignCenter]}>
+                <TouchableOpacity
+                  onPress={() => nav.navigate("TÀI KHOẢN", { screen: "login" })}
+                >
+                  <Text style={[Styles.fontBold, Styles.underline]}>
+                    Đăng nhập
+                  </Text>
+                </TouchableOpacity>
+                <Text> để xem lịch sử tiêm của bạn</Text>
+              </View>
+            )}
           </View>
         ) : (
           <ScrollView>

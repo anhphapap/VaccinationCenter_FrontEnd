@@ -23,7 +23,7 @@ import LoadingPage from "../common/LoadingOverlay";
 import { format, parseISO } from "date-fns";
 import { MyDispatchContext } from "../../contexts/Contexts";
 import { useLoading } from "../../contexts/LoadingContext";
-import Toast from "react-native-toast-message";
+import { showToast } from "../../components/common/ShowToast";
 
 const UserInfoForm = ({ title, onSubmit }) => {
   const currentUser = useUser();
@@ -163,7 +163,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
             },
           }
         );
-        Toast.show({
+        showToast({
           type: "success",
           text1: title + " thành công!",
         });
@@ -184,7 +184,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
 
   useEffect(() => {
     if (msg)
-      Toast.show({
+      showToast({
         type: msg.type,
         text1: msg.msg,
       });

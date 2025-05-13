@@ -5,7 +5,6 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button, Checkbox } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { CartContext } from "../../contexts/CartContext";
-import useUser from "../../hooks/useUser";
 const VaccineCard = ({
   item,
   btnDel,
@@ -19,17 +18,10 @@ const VaccineCard = ({
   addToCart,
   btnCheck,
 }) => {
-  const user = useUser();
   const nav = useNavigation();
   const handleBuy = (item) => {
-    if (user) {
-      nav.navigate("TRANG CHỦ", { screen: "order" });
-    } else {
-      nav.navigate("TÀI KHOẢN", {
-        screen: "login",
-        params: { redirect: "order" },
-      });
-    }
+    addToCart();
+    nav.navigate("order");
   };
   const { isVaccineInCart } = useContext(CartContext);
 
@@ -66,7 +58,7 @@ const VaccineCard = ({
           </View>
         </TouchableOpacity>
         <View style={[Styles.rowSpaceCenter, Styles.mt10]}>
-          <Text style={styles.price}>{item.price.toLocaleString()} VNĐ</Text>
+          <Text style={styles.price}>{item.price?.toLocaleString()} VNĐ</Text>
           {btnDel && (
             <TouchableOpacity onPress={onTrash}>
               <FontAwesome5 name="trash" color={"red"} size={16}></FontAwesome5>

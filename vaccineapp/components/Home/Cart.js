@@ -10,7 +10,8 @@ import { useNavigation } from "@react-navigation/native";
 import { CartContext } from "../../contexts/CartContext";
 import NoneVaccine from "../common/NoneVaccine";
 import { VaccineContext } from "../../contexts/VaccineContext";
-import Toast from "react-native-toast-message";
+import { showToast } from "../common/ShowToast";
+
 const Cart = ({ addMode = false }) => {
   const { cartItems, removeFromCart } = useContext(CartContext);
   const navigation = useNavigation();
@@ -19,7 +20,7 @@ const Cart = ({ addMode = false }) => {
   const handlePreSelect = (item, selected) => {
     if (!selected) {
       if (preSelect.length >= 3) {
-        Toast.show({
+        showToast({
           text1: "Một người tiêm chỉ được chọn tối đa 3 vắc xin lẻ",
           type: "info",
         });
@@ -95,7 +96,7 @@ const Cart = ({ addMode = false }) => {
         />
 
         <FloatBottomButton
-          disabled={addMode && selectedVaccines.length === 0}
+          disabled={addMode && preSelect.length === 0}
           label={
             addMode
               ? `Xác nhận ${

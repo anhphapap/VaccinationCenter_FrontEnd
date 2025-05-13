@@ -44,6 +44,7 @@ import HistoryDetails from "./components/Home/HistoryDetails";
 import { CartContext, CartProvider } from "./contexts/CartContext";
 import AddFromCart from "./components/Home/AddFromCart";
 import InjectionManagement from "./components/Home/InjectionManagement";
+import Receipt from "./components/Home/Receipt";
 
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
@@ -177,6 +178,11 @@ const HomeStackNavigator = () => {
         name="order"
         component={Order}
         options={{ title: "Đặt mua vắc xin" }}
+      />
+      <HomeStack.Screen
+        name="receipt"
+        component={Receipt}
+        options={{ title: "Hóa đơn" }}
       />
       <HomeStack.Screen
         name="addVaccines"

@@ -6,11 +6,12 @@ export const VaccineProvider = ({ children }) => {
   const [selectedVaccines, setSelectedVaccines] = useState([]);
 
   const addVaccine = (product) => {
-    setSelectedVaccines([...product]);
-  };
-
-  const initVaccine = (product) => {
-    setSelectedVaccines([...product]);
+    setSelectedVaccines((prev) => {
+      const updatedVaccines = prev.filter(
+        (vaccine) => !product.some((p) => p.id === vaccine.id)
+      );
+      return [...updatedVaccines, ...product];
+    });
   };
 
   const removeVaccine = (id) => {
@@ -28,7 +29,6 @@ export const VaccineProvider = ({ children }) => {
         addVaccine,
         removeVaccine,
         setSelectedVaccines,
-        initVaccine,
         isSelectedVaccine,
       }}
     >

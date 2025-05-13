@@ -6,7 +6,7 @@ import MyTextInput from "../common/MyTextInput";
 import { Button } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authApis, endpoints } from "../../configs/Apis";
-import Toast from "react-native-toast-message";
+import { showToast } from "../common/ShowToast";
 
 const ChangePassword = () => {
   const user = useUser();
@@ -16,14 +16,14 @@ const ChangePassword = () => {
 
   const validate = () => {
     if (!curPass) {
-      Toast.show({
+      showToast({
         type: "error",
         text1: "Vui lòng nhập mật khẩu hiện tại",
       });
       return false;
     }
     if (!newPass) {
-      Toast.show({
+      showToast({
         type: "error",
         text1: "Vui lòng nhập mật khẩu mới",
       });
@@ -51,13 +51,13 @@ const ChangePassword = () => {
         );
 
         if (res.status === 200) {
-          Toast.show({
+          showToast({
             type: "success",
             text1: "Đổi mật khẩu thành công",
           });
         }
       } catch (ex) {
-        Toast.show({
+        showToast({
           type: "error",
           text1: Object.values(ex.response?.data)[0] || ex.message,
         });

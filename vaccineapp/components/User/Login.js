@@ -9,7 +9,7 @@ import { CLIENT_ID, CLIENT_SECRET } from "@env";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import qs from "qs";
-import Toast from "react-native-toast-message";
+import { showToast } from "../common/ShowToast";
 
 const Login = () => {
   const info = [
@@ -72,7 +72,7 @@ const Login = () => {
         let u = await authApis(res.data.access_token).get(
           endpoints.currentUser(user.username)
         );
-        Toast.show({
+        showToast({
           type: "success",
           text1: "Đăng nhập thành công",
         });
@@ -113,7 +113,7 @@ const Login = () => {
 
   useEffect(() => {
     if (msg)
-      Toast.show({
+      showToast({
         type: msg.type,
         text1: msg.msg,
       });

@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as FileSystem from "expo-file-system";
 import * as IntentLauncher from "expo-intent-launcher";
 import { Buffer } from "buffer";
+import { showToast } from "../common/ShowToast";
 
 const HistoryDetails = ({ route }) => {
   const { data } = route.params;
@@ -49,14 +50,14 @@ const HistoryDetails = ({ route }) => {
         });
       } else {
         console.error("Failed to download file", res.data);
-        Toast.show({
+        showToast({
           text1: "Tải chứng nhận không thành công",
           type: "error",
         });
       }
     } catch (error) {
       console.error("An error occurred during download", error);
-      Toast.show({
+      showToast({
         text1: "Lỗi khi tải chứng nhận",
         type: "error",
       });

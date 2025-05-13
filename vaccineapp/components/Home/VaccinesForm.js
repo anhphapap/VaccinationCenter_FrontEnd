@@ -19,7 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 import VaccineCard from "../common/VaccineCard";
 import { VaccineContext } from "../../contexts/VaccineContext";
 import FloatBottomButton from "../common/FloatBottomButton";
-import Toast from "react-native-toast-message";
+import { showToast } from "../common/ShowToast";
 import NoneVaccine from "../common/NoneVaccine";
 import { CartContext } from "../../contexts/CartContext";
 
@@ -42,10 +42,6 @@ const VaccinesForm = ({ addForm }) => {
 
   const handleAddToCart = (item) => {
     addToCart(item);
-    Toast.show({
-      type: "success",
-      text1: "Đã thêm vắc xin vào giỏ hàng",
-    });
   };
 
   const handleSort = () => {
@@ -107,7 +103,7 @@ const VaccinesForm = ({ addForm }) => {
 
   const handlePreSelect = (item) => {
     if (preSelect.length === 3) {
-      Toast.show({
+      showToast({
         text1: "Một người tiêm chỉ được chọn tối đa 3 vắc xin lẻ",
         type: "info",
       });
@@ -255,7 +251,7 @@ const VaccinesForm = ({ addForm }) => {
             press={
               preSelect.length === 0
                 ? () =>
-                    Toast.show({
+                    showToast({
                       type: "info",
                       text1: "Vui lòng chọn vắc xin!",
                     })

@@ -5,7 +5,7 @@ import MyTextInput from "../common/MyTextInput";
 import { Button, HelperText } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import Apis, { endpoints } from "../../configs/Apis";
-import Toast from "react-native-toast-message";
+import { showToast } from "../common/ShowToast";
 
 const Register = () => {
   const info = [
@@ -67,7 +67,7 @@ const Register = () => {
           },
         });
 
-        Toast.show({
+        showToast({
           type: "success",
           text1: "Đăng ký thành công",
         });
@@ -90,7 +90,7 @@ const Register = () => {
 
   useEffect(() => {
     if (msg)
-      Toast.show({
+      showToast({
         type: msg.type,
         text1: msg.msg,
       });

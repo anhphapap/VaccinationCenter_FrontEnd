@@ -14,7 +14,6 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button } from "react-native-paper";
 import RenderHTML from "react-native-render-html";
 import { useNavigation } from "@react-navigation/native";
-import { VaccineContext } from "../../contexts/VaccineContext";
 import { CartContext } from "../../contexts/CartContext";
 import useUser from "../../hooks/useUser";
 
@@ -44,16 +43,11 @@ const VaccineDetails = ({ route }) => {
   const { showLoading, hideLoading } = useLoading();
   const { width } = useWindowDimensions();
   const nav = useNavigation();
-  const { initVaccine } = useContext(VaccineContext);
-  const handleBuy = (item) => {
-    if (user) {
-      initVaccine(item);
-      nav.navigate("order");
-    } else {
-      nav.navigate("TÀI KHOẢN", { screen: "login" });
-    }
-  };
   const { addToCart, isVaccineInCart } = useContext(CartContext);
+  const handleBuy = (item) => {
+    addToCart(item);
+    nav.navigate("order");
+  };
 
   const loadData = async () => {
     showLoading();
