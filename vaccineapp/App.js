@@ -104,6 +104,7 @@ const HomeStackNavigator = () => {
         component={InjectionManagement}
         options={{
           title: "Quản lý lịch tiêm",
+          headerShadowVisible: false,
         }}
       />
       <HomeStack.Screen

@@ -2,15 +2,15 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Styles, { logo } from "../../styles/Styles";
 
-const NoneHistory = () => {
+const NoneHistory = ({ title, style }) => {
   return (
-    <View style={styles.noneContainer}>
+    <View style={[styles.noneContainer, style]}>
       <Image
         source={{ uri: logo.none_item }}
         style={styles.noneImg}
         resizeMode="cover"
       ></Image>
-      <Text style={Styles.fontBold}>Bạn chưa có lịch sử tiêm</Text>
+      <Text style={Styles.fontBold}>{title || "Bạn chưa có lịch sử tiêm"}</Text>
       <Text style={styles.noneTxt}>
         Lịch sử tiêm chủng sẽ giúp bạn theo dõi toàn bộ lịch sử tiêm vắc xin của
         khách hàng.

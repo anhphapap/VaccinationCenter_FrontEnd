@@ -9,7 +9,6 @@ import EventBanner from "../common/EventBanner";
 import FeatureButton from "../common/FeatureButton";
 import useUser from "../../hooks/useUser";
 import { useNavigation } from "@react-navigation/native";
-import Toast from "react-native-toast-message";
 
 const Home = () => {
   const nav = useNavigation();

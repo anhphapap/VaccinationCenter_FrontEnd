@@ -49,11 +49,13 @@ const DatePicker = ({
       ? { endDate: subDays(new Date(), 1) }
       : type === "foward"
       ? { startDate: addDays(new Date(), 0) }
-      : {
+      : type === "custom"
+      ? {
           startDate:
             new Date().getTime() > startDate.getTime() ? new Date() : startDate,
           endDate: subDays(endDate, 1),
-        };
+        }
+      : {};
 
   return (
     <PaperProvider theme={theme}>

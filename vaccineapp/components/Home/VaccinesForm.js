@@ -78,6 +78,9 @@ const VaccinesForm = ({ addForm }) => {
           });
         }
         let res = await Apis.get(url);
+        if (res.data.next === null) {
+          setPage(0);
+        }
         if (page === 1) {
           setVaccines(res.data.results);
         } else {
@@ -85,9 +88,6 @@ const VaccinesForm = ({ addForm }) => {
         }
 
         setCount(res.data.count);
-        if (res.data.next === null) {
-          setPage(0);
-        }
       } catch (ex) {
         console.log(ex.message);
       } finally {
