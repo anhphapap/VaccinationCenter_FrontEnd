@@ -4,43 +4,47 @@ import Styles, { color } from "../../styles/Styles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
 import { showToast } from "../common/ShowToast";
+import { useNavigation } from "@react-navigation/native";
 
 const InjectionManagementCard = ({ item }) => {
   const [userData, setUserData] = useState(null);
   const [vaccineData, setVaccineData] = useState(null);
   const [campaignData, setCampaignData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation();
 
   const loadData = async () => {
+    if (!item) return;
     try {
-      //   const token = await AsyncStorage.getItem("token");
-      //   const resUser = await authApis(token).get(
-      //     endpoints.currentUser(item.user)
-      //   );
-      //   setUserData(resUser.data);
+      setLoading(true);
+      const token = await AsyncStorage.getItem("token");
+      const resUser = await authApis(token).get(endpoints.user(item.user));
+      setUserData(resUser.data);
+      item.user = resUser.data;
 
       const resVaccine = await Apis.get(endpoints.vaccineDetails(item.vaccine));
       setVaccineData(resVaccine.data);
+      item.vaccine = resVaccine.data;
 
       if (item.vaccination_campaign !== 1) {
         const resCampaign = await Apis.get(
           endpoints.campaignDetails(item.vaccination_campaign)
         );
+        item.vaccination_campaign = resCampaign.data;
         setCampaignData(resCampaign.data);
       }
     } catch (error) {
-      console.error("Lỗi khi tải dữ liệu:", error);
-      showToast({
-        type: "error",
-        text1: "Lỗi khi tải thông tin",
-      });
+      console.log("Lỗi khi tải dữ liệu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [item]);
 
-  if (!vaccineData) {
+  if (loading) {
     return <View style={[Styles.ph20, Styles.pv10]}></View>;
   }
 
@@ -51,6 +55,11 @@ const InjectionManagementCard = ({ item }) => {
         Styles.pv10,
         { borderBottomWidth: 1, borderColor: color.border + "50" },
       ]}
+      onPress={() => {
+        navigation.navigate("injectionDetails", {
+          data: item,
+        });
+      }}
     >
       <View style={[Styles.flexRow, Styles.spaceBetween]}>
         <View style={{ width: "50%" }}>

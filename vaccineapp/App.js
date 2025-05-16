@@ -1,11 +1,4 @@
-import {
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useContext, useReducer } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./components/Home/Home";
@@ -17,10 +10,9 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import {
   getFocusedRouteNameFromRoute,
   NavigationContainer,
-  useNavigation,
 } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Badge, Button, PaperProvider, Portal } from "react-native-paper";
+import { Badge, Button } from "react-native-paper";
 import Profile from "./components/User/Profile";
 import Styles, { color, logo } from "./styles/Styles";
 import Login from "./components/User/Login";
@@ -47,8 +39,8 @@ import InjectionManagement from "./components/Home/InjectionManagement";
 import Receipt from "./components/Home/Receipt";
 import InjectionDetails from "./components/Home/InjectionDetails";
 import NotificationDetails from "./components/Home/NotificationDetails";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { authApis, endpoints } from "./configs/Apis";
+import UserManagement from "./components/Home/UserManagement";
+import { constructFrom } from "date-fns";
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
   "Support for defaultProps will be removed from memo components",
@@ -81,7 +73,7 @@ const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator = () => {
   const { cartItems } = useContext(CartContext);
-
+  const user = useUser();
   return (
     <HomeStack.Navigator
       screenOptions={({ navigation }) => ({
@@ -227,6 +219,11 @@ const HomeStackNavigator = () => {
           title: "Chi tiết thông báo",
           headerShadowVisible: false,
         })}
+      />
+      <HomeStack.Screen
+        name="userManagement"
+        component={UserManagement}
+        options={{ title: "Quản lý bệnh nhân", headerShadowVisible: false }}
       />
     </HomeStack.Navigator>
   );

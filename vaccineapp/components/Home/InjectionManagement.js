@@ -1,7 +1,5 @@
 import {
-  ActivityIndicator,
   FlatList,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,14 +8,12 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import Styles, { color } from "../../styles/Styles";
 import InjectionManagementCard from "../common/InjectionManagementCard";
-import { Badge, Searchbar } from "react-native-paper";
+import { Searchbar } from "react-native-paper";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useLoading } from "../../contexts/LoadingContext";
 import { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { showToast } from "../common/ShowToast";
 import NoneHistory from "../common/NoneHistory";
-import DatePicker from "../common/DatePicker";
 
 const InjectionManagement = () => {
   const [text, setText] = useState("");
@@ -76,7 +72,7 @@ const InjectionManagement = () => {
         setListInjection((prev) => [...prev, ...res.data.results]);
       }
     } catch (error) {
-      console.error("Lỗi khi tải danh sách tiêm:", error);
+      console.log("Lỗi khi tải danh sách tiêm:", error);
     } finally {
       hideLoading();
       setLoading(false);
@@ -186,15 +182,15 @@ const InjectionManagement = () => {
             <Text style={{ color: "gray" }}>Có {count} lịch tiêm</Text>
           </View>
         }
-        ListFooterComponent={
-          loading && (
-            <ActivityIndicator
-              size="20"
-              color={color.primary}
-              style={Styles.mv20}
-            />
-          )
-        }
+        // ListFooterComponent={
+        //   loading && (
+        //     <ActivityIndicator
+        //       size="20"
+        //       color={color.primary}
+        //       style={Styles.mv20}
+        //     />
+        //   )
+        // }
         ListEmptyComponent={
           !loading && (
             <NoneHistory

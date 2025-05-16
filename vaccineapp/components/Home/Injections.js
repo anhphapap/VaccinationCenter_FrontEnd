@@ -32,7 +32,7 @@ const Injections = () => {
       setList([]);
       const token = await AsyncStorage.getItem("token");
       const res = await authApis(token).get(
-        endpoints.userInjections(user.username) +
+        endpoints.userInjections(user.id) +
           "?status=MISSED&status=NOT_VACCINATED&sort_by=date_asc"
       );
       let list = res.data;

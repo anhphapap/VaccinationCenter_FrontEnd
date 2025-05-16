@@ -10,9 +10,11 @@ export const endpoints = {
   login: "/o/token/",
   campaigns: "/campaigns/",
   injections: "/injections/",
+  updateStatus: (injectionId) => `/injections/${injectionId}/`,
   changePassword: (username) => `/users/${username}/change-password/`,
   currentUser: `/users/current-user/`,
   user: (id) => `/users/${id}/`,
+  userManagement: "/users/",
   userInjections: (username) => `/users/${username}/injections/`,
   userCertificate: (username, injectionId) =>
     `/users/${username}/injection-certificate/${injectionId}/`,
