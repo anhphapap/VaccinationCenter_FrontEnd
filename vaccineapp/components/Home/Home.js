@@ -1,18 +1,39 @@
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Avatar, Button } from "react-native-paper";
+import { Avatar, Badge, Button } from "react-native-paper";
 import Styles, { color, defaultAvatar, logo } from "../../styles/Styles";
 import Carousel from "./Carousel";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import EventBanner from "../common/EventBanner";
 import FeatureButton from "../common/FeatureButton";
 import useUser from "../../hooks/useUser";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authApis, endpoints } from "../../configs/Apis";
 
 const Home = () => {
   const nav = useNavigation();
   const user = useUser();
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  const loadNotificationCount = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const res = await authApis(token).get(endpoints.countNotification);
+      setNotificationCount(res.data?.total_unread);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (user) loadNotificationCount();
+      return () => {};
+    }, [user])
+  );
+
   const listItem = [
     {
       label: "Danh mục vắc xin",
@@ -99,12 +120,27 @@ const Home = () => {
             ></Image>
           )}
           <Button onPress={() => nav.navigate("notification")}>
-            <FontAwesome5
-              name="bell"
-              color="white"
-              size={20}
-              solid={true}
-            ></FontAwesome5>
+            <View style={{ position: "relative" }}>
+              <FontAwesome5
+                name="bell"
+                color="white"
+                size={20}
+                solid={true}
+              ></FontAwesome5>
+              {notificationCount > 0 && (
+                <Badge
+                  size={15}
+                  style={{
+                    backgroundColor: "red",
+                    position: "absolute",
+                    right: -8,
+                    bottom: -7,
+                  }}
+                >
+                  {notificationCount}
+                </Badge>
+              )}
+            </View>
           </Button>
         </View>
         <View style={[Styles.ph10, { height: 200, marginTop: 30 }]}>

@@ -1,8 +1,19 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Styles, { color, logo } from "../../styles/Styles";
 
-const NotificationCard = ({ seen }) => {
+const NotificationCard = ({ item, onPress }) => {
+  const [isRead, setIsRead] = useState();
+  const handlePress = () => {
+    if (!isRead) {
+      setIsRead(true);
+    }
+    onPress();
+  };
+
+  useEffect(() => {
+    setIsRead(item.is_read);
+  }, [item]);
   return (
     <TouchableOpacity
       style={[
@@ -10,23 +21,23 @@ const NotificationCard = ({ seen }) => {
         Styles.p20,
         Styles.g20,
         {
-          backgroundColor: seen ? "white" : color.bg,
+          backgroundColor: isRead ? "white" : color.bg,
           borderBottomWidth: 2,
           borderColor: color.secondary,
         },
       ]}
+      onPress={handlePress}
     >
       <View style={styles.left}>
         <Image source={{ uri: logo.icon }} style={styles.image} />
       </View>
       <View style={styles.right}>
-        <Text style={[styles.title, { color: seen ? "gray" : "black" }]}>
-          Vaccine Reminder
+        <Text style={[styles.title, { color: isRead ? "gray" : "black" }]}>
+          {item.title}
         </Text>
-        <Text style={[styles.description, { color: seen ? "gray" : "black" }]}>
-          You have a vaccine appointment on 10th June 2025 at 10:00 AM
+        <Text style={[styles.time]}>
+          {new Date(item.notification_date).toLocaleString("vi-VN")}
         </Text>
-        <Text style={[styles.time]}>10th June 2025 at 10:00 AM</Text>
       </View>
     </TouchableOpacity>
   );

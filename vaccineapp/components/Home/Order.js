@@ -87,7 +87,7 @@ const Order = () => {
       let id = listCampaign.find((item) => item.id === selectedCampaign);
       setCurCampaign(id);
       setAddMore(true);
-      if (curCampaign && curCampaign.id !== 1) setSelectedVaccines([]);
+      setSelectedVaccines([]);
       if (!id || id?.id === 1) return;
       let res = await Apis.get(endpoints.vaccineDetails(id.vaccine));
       setSelectedVaccines([res.data]);

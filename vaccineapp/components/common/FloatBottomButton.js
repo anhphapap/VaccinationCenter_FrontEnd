@@ -32,6 +32,7 @@ const FloatBottomButton = ({
             size={14}
             color="white"
             style={{ marginLeft: 8 }}
+            solid
           />
         )}
       </Button>

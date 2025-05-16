@@ -70,7 +70,7 @@ const Login = () => {
         );
         await AsyncStorage.setItem("token", res.data.access_token);
         let u = await authApis(res.data.access_token).get(
-          endpoints.currentUser(user.username)
+          endpoints.currentUser
         );
         showToast({
           type: "success",

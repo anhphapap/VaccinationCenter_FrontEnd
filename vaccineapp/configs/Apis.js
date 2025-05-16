@@ -11,12 +11,18 @@ export const endpoints = {
   campaigns: "/campaigns/",
   injections: "/injections/",
   changePassword: (username) => `/users/${username}/change-password/`,
-  currentUser: (username) => `/users/${username}/`,
+  currentUser: `/users/current-user/`,
+  user: (id) => `/users/${id}/`,
   userInjections: (username) => `/users/${username}/injections/`,
   userCertificate: (username, injectionId) =>
     `/users/${username}/injection-certificate/${injectionId}/`,
   campaignDetails: (campaignId) => `/campaigns/${campaignId}/`,
   historyDetails: (historyId) => `/injections/${historyId}/`,
+  notification: "/notifications/all/",
+  updateNotification: (notificationId) =>
+    `/notifications/${notificationId}/mark-read/`,
+  updateAllNotification: "/notifications/mark-all-read/",
+  countNotification: "/notifications/unread-count/",
 };
 
 export const authApis = (token) => {

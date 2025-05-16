@@ -154,15 +154,11 @@ const UserInfoForm = ({ title, onSubmit }) => {
         }
         form.append("is_completed_profile", true);
         const token = await AsyncStorage.getItem("token");
-        let res = await authApis(token).patch(
-          endpoints.currentUser(user?.username),
-          form,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        let res = await authApis(token).patch(endpoints.user(user?.id), form, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
         showToast({
           type: "success",
           text1: title + " thành công!",

@@ -45,7 +45,10 @@ import { CartContext, CartProvider } from "./contexts/CartContext";
 import AddFromCart from "./components/Home/AddFromCart";
 import InjectionManagement from "./components/Home/InjectionManagement";
 import Receipt from "./components/Home/Receipt";
-
+import InjectionDetails from "./components/Home/InjectionDetails";
+import NotificationDetails from "./components/Home/NotificationDetails";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authApis, endpoints } from "./configs/Apis";
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
   "Support for defaultProps will be removed from memo components",
@@ -78,6 +81,7 @@ const HomeStack = createNativeStackNavigator();
 
 const HomeStackNavigator = () => {
   const { cartItems } = useContext(CartContext);
+
   return (
     <HomeStack.Navigator
       screenOptions={({ navigation }) => ({
@@ -176,6 +180,11 @@ const HomeStackNavigator = () => {
         options={{ title: "Chi tiết lịch sử tiêm" }}
       />
       <HomeStack.Screen
+        name="injectionDetails"
+        component={InjectionDetails}
+        options={{ title: "Chi tiết lịch tiêm" }}
+      />
+      <HomeStack.Screen
         name="order"
         component={Order}
         options={{ title: "Đặt mua vắc xin" }}
@@ -209,11 +218,14 @@ const HomeStackNavigator = () => {
         options={() => ({
           title: "Thông báo",
           headerShadowVisible: false,
-          headerRight: () => (
-            <Button>
-              <FontAwesome5 name="check-double" size={16} color={"white"} />
-            </Button>
-          ),
+        })}
+      />
+      <HomeStack.Screen
+        name="notificationDetail"
+        component={NotificationDetails}
+        options={() => ({
+          title: "Chi tiết thông báo",
+          headerShadowVisible: false,
         })}
       />
     </HomeStack.Navigator>
