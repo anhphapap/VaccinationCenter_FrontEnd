@@ -119,7 +119,7 @@ const Home = () => {
               style={styles.logo}
             ></Image>
           )}
-          <Button onPress={() => nav.navigate("notification")}>
+          <Button onPress={() => nav.navigate("paymentResult")}>
             <View style={{ position: "relative" }}>
               <FontAwesome5
                 name="bell"

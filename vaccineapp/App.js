@@ -41,6 +41,8 @@ import InjectionDetails from "./components/Home/InjectionDetails";
 import NotificationDetails from "./components/Home/NotificationDetails";
 import UserManagement from "./components/Home/UserManagement";
 import { constructFrom } from "date-fns";
+import Payment from "./components/Home/Payment";
+import PaymentResult from "./components/Home/PaymentResult";
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
   "Support for defaultProps will be removed from memo components",
@@ -224,6 +226,16 @@ const HomeStackNavigator = () => {
         name="userManagement"
         component={UserManagement}
         options={{ title: "Quản lý bệnh nhân", headerShadowVisible: false }}
+      />
+      <HomeStack.Screen
+        name="payment"
+        component={Payment}
+        options={{ title: "Thanh toán", headerShadowVisible: false }}
+      />
+      <HomeStack.Screen
+        name="paymentResult"
+        component={PaymentResult}
+        options={{ title: "Kết quả thanh toán", headerShadowVisible: false }}
       />
     </HomeStack.Navigator>
   );

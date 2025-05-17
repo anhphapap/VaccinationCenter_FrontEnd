@@ -1,10 +1,8 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Styles, { color, defaultAvatar } from "../../styles/Styles";
-import useUser from "../../hooks/useUser";
 
-const HeaderUserInfo = () => {
-  const user = useUser();
+const HeaderUserInfo = ({ user }) => {
   return (
     user && (
       <View style={styles.header}>
