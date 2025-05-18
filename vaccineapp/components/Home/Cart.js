@@ -64,7 +64,7 @@ const Cart = ({ addMode = false }) => {
 
         <FlatList
           data={cartItems}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item.id?.toString()}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <View style={{ marginVertical: 10, paddingHorizontal: 20 }}>

@@ -87,31 +87,56 @@ const Home = () => {
           ]}
         >
           {user ? (
-            <View style={Styles.flexRow}>
-              <View style={{ marginRight: 10 }}>
-                <Image
-                  source={{
-                    uri:
-                      user?.avatar === "/static/images/avatar.png"
-                        ? defaultAvatar
-                        : user?.avatar,
-                  }}
-                  style={styles.avt}
-                  resizeMode="cover"
-                ></Image>
+            <>
+              <View style={[Styles.flexRow]}>
+                <View style={{ marginRight: 10 }}>
+                  <Image
+                    source={{
+                      uri:
+                        user?.avatar === "/static/images/avatar.png"
+                          ? defaultAvatar
+                          : user?.avatar,
+                    }}
+                    style={styles.avt}
+                    resizeMode="cover"
+                  ></Image>
+                </View>
+                <View style={Styles.flexCol}>
+                  <Text style={Styles.textWhite}>Xin chào,</Text>
+                  <Text
+                    style={[
+                      Styles.textWhite,
+                      { fontWeight: "bold", textTransform: "uppercase" },
+                    ]}
+                  >
+                    {user?.last_name + " " + user?.first_name}
+                  </Text>
+                </View>
               </View>
-              <View style={Styles.flexCol}>
-                <Text style={Styles.textWhite}>Xin chào,</Text>
-                <Text
-                  style={[
-                    Styles.textWhite,
-                    { fontWeight: "bold", textTransform: "uppercase" },
-                  ]}
-                >
-                  {user?.last_name + " " + user?.first_name}
-                </Text>
-              </View>
-            </View>
+              <Button onPress={() => nav.navigate("notification")}>
+                <View style={{ position: "relative" }}>
+                  <FontAwesome5
+                    name="bell"
+                    color="white"
+                    size={20}
+                    solid={true}
+                  ></FontAwesome5>
+                  {notificationCount > 0 && (
+                    <Badge
+                      size={15}
+                      style={{
+                        backgroundColor: "red",
+                        position: "absolute",
+                        right: -8,
+                        bottom: -7,
+                      }}
+                    >
+                      {notificationCount}
+                    </Badge>
+                  )}
+                </View>
+              </Button>
+            </>
           ) : (
             <Image
               source={{ uri: logo.icon_name2 }}
@@ -119,29 +144,6 @@ const Home = () => {
               style={styles.logo}
             ></Image>
           )}
-          <Button onPress={() => nav.navigate("paymentResult")}>
-            <View style={{ position: "relative" }}>
-              <FontAwesome5
-                name="bell"
-                color="white"
-                size={20}
-                solid={true}
-              ></FontAwesome5>
-              {notificationCount > 0 && (
-                <Badge
-                  size={15}
-                  style={{
-                    backgroundColor: "red",
-                    position: "absolute",
-                    right: -8,
-                    bottom: -7,
-                  }}
-                >
-                  {notificationCount}
-                </Badge>
-              )}
-            </View>
-          </Button>
         </View>
         <View style={[Styles.ph10, { height: 200, marginTop: 30 }]}>
           <Carousel></Carousel>

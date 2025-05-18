@@ -72,9 +72,9 @@ const Notification = ({ navigation }) => {
 
   return (
     <ScrollView style={[Styles.flex, Styles.bgWhite]}>
-      {list.map((item) => (
+      {list.map((item, index) => (
         <NotificationCard
-          key={item.id}
+          key={index}
           item={item}
           onPress={() => handlePress(item)}
         />

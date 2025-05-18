@@ -25,6 +25,8 @@ export const endpoints = {
     `/notifications/${notificationId}/mark-read/`,
   updateAllNotification: "/notifications/mark-all-read/",
   countNotification: "/notifications/unread-count/",
+  payment: "/payment/",
+  orderStatus: (orderId) => `/order-status/${orderId}/`,
 };
 
 export const authApis = (token) => {
