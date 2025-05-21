@@ -156,6 +156,80 @@ const Order = () => {
     }
   };
 
+  const handlePayment = async () => {
+    if (!user) {
+      nav.navigate("TÀI KHOẢN", {
+        screen: "login",
+        params: { redirect: "order" },
+      });
+      return;
+    }
+    if (validate()) {
+      try {
+        showLoading();
+        const token = await AsyncStorage.getItem("token");
+        let orderId = Date.now().toString();
+        let res = await authApis(token).post(endpoints.payment, {
+          amount:
+            Array.isArray(selectedVaccines) && selectedVaccines.length > 0
+              ? selectedVaccines.reduce((sum, item) => sum + item.price, 0)
+              : 0,
+          order_id: orderId,
+          order_desc: "Thanh toán PVVC",
+          order_type: "other",
+          bank_code: "NCB",
+          language: "vn",
+          order_detail: selectedVaccines.map((item) => ({
+            vaccine_id: item.id,
+            unit_price: item.price,
+          })),
+        });
+        const data = await res.data;
+        nav.navigate("payment", {
+          paymentUrl: data.payment_url,
+          orderId: orderId,
+        });
+      } catch (ex) {
+        console.log(ex);
+      } finally {
+        hideLoading();
+      }
+    }
+  };
+  const testHandlePayment = async () => {
+    if (!user) {
+      nav.navigate("TÀI KHOẢN", {
+        screen: "login",
+        params: { redirect: "order" },
+      });
+      return;
+    }
+    if (validate()) {
+      try {
+        showLoading();
+        const token = await AsyncStorage.getItem("token");
+        let orderId = Date.now().toString();
+        let res = await authApis(token).patch(endpoints.payment, {
+          id: 40,
+          order_id: orderId,
+          order_desc: "Thanh toán PVVC",
+          order_type: "other",
+          bank_code: "NCB",
+          language: "vn",
+        });
+        const data = await res.data;
+        nav.navigate("payment", {
+          paymentUrl: data.payment_url,
+          orderId: orderId,
+        });
+      } catch (ex) {
+        console.log(ex);
+      } finally {
+        hideLoading();
+      }
+    }
+  };
+
   useEffect(() => {
     handleSelectCampaign();
   }, [selectedCampaign]);
@@ -374,7 +448,7 @@ const Order = () => {
             VNĐ
           </Text>
         </View>
-        <Button style={[styles.btn1, { flex: 0 }]} onPress={handleConfirm}>
+        <Button style={[styles.btn1, { flex: 0 }]} onPress={handlePayment}>
           <Text style={[Styles.textWhite, Styles.p10]}>Xác nhận</Text>
         </Button>
       </View>

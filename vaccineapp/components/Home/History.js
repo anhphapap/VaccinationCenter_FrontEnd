@@ -11,17 +11,17 @@ import Styles, { color } from "../../styles/Styles";
 import HistoryCard from "../common/HistoryCard";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
 import NoneHistory from "../common/NoneHistory";
-import useUser from "../../hooks/useUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLoading } from "../../contexts/LoadingContext";
 import { useNavigation } from "@react-navigation/native";
-const History = () => {
+import useUser from "../../hooks/useUser";
+const History = ({ route }) => {
   const [tab, setTab] = useState(true);
   const [listHistory, setListHistory] = useState([]);
   const [listNext, setListNext] = useState([]);
-  const user = useUser();
   const { showLoading, hideLoading } = useLoading();
   const nav = useNavigation();
+  const user = route?.params?.user || useUser();
 
   const loadHistory = async () => {
     if (user) {
@@ -29,21 +29,22 @@ const History = () => {
         showLoading();
         const token = await AsyncStorage.getItem("token");
         const res = await authApis(token).get(
-          endpoints.userInjections(user?.username) + "?sort_by=date_asc"
+          endpoints.userInjections(user?.id) + "?sort_by=date_asc"
         );
         let list = res.data;
         for (let x of list) {
           let res = await Apis.get(endpoints.vaccineDetails(x.vaccine));
           x.vaccine = res.data;
+          x.user = user;
           if (x.vaccination_campaign !== 1) {
             let campaign = await Apis.get(
               endpoints.campaignDetails(x.vaccination_campaign)
             );
             x.campaign = campaign.data;
           }
-          if (x.status === "NOT_VACCINATED") {
+          if (x.status !== "VACCINATED") {
             setListNext((prev) => [...prev, x]);
-          } else if (x.status === "VACCINATED") {
+          } else {
             setListHistory((prev) => [...prev, x]);
           }
         }
@@ -63,7 +64,7 @@ const History = () => {
     <View style={[Styles.flex, Styles.bgWhite]}>
       {user && (
         <>
-          <HeaderUserInfo></HeaderUserInfo>
+          <HeaderUserInfo user={user}></HeaderUserInfo>
           <View>
             <View style={[Styles.flexRow]}>
               <TouchableOpacity

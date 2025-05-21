@@ -27,6 +27,8 @@ export const endpoints = {
   countNotification: "/notifications/unread-count/",
   payment: "/payment/",
   orderStatus: (orderId) => `/order-status/${orderId}/`,
+  orders: "/orders/",
+  fcmToken: "/users/update-fcm-token/",
 };
 
 export const authApis = (token) => {
