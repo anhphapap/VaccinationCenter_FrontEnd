@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import Styles, { color } from "../../styles/Styles";
+import Styles, { color, defaultAvatar } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useNavigation } from "@react-navigation/native";
 
@@ -21,7 +21,10 @@ const UserManagementCard = ({ item }) => {
       }}
     >
       <View style={[Styles.flexRow, Styles.g20]}>
-        <Image source={{ uri: item.avatar }} style={styles.img}></Image>
+        <Image
+          source={{ uri: item?.avatar || defaultAvatar }}
+          style={styles.img}
+        ></Image>
         <View style={{ justifyContent: "space-around" }}>
           <Text style={Styles.fontBold}>
             {item.last_name + " " + item.first_name}

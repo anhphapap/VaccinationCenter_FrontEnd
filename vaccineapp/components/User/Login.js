@@ -3,7 +3,11 @@ import React, { useContext, useEffect, useState } from "react";
 import Styles, { color, logo } from "../../styles/Styles";
 import MyTextInput from "../common/MyTextInput";
 import { Button, HelperText } from "react-native-paper";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {
+  CommonActions,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { MyDispatchContext } from "../../contexts/Contexts";
 import { CLIENT_ID, CLIENT_SECRET } from "@env";
 import Apis, { authApis, endpoints } from "../../configs/Apis";
@@ -52,8 +56,8 @@ const Login = () => {
   const login = async () => {
     if (validate() === true) {
       try {
+        // console.log(CLIENT_ID, CLIENT_SECRET);
         setLoading(true);
-
         const res = await Apis.post(
           endpoints["login"],
           qs.stringify({
@@ -83,10 +87,16 @@ const Login = () => {
         });
 
         if (!u.data.is_completed_profile) {
-          nav.reset({
-            index: 0,
-            routes: [{ name: "registerProfile" }],
-          });
+          try {
+            nav.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: "registerProfile" }],
+              })
+            );
+          } catch (e) {
+            console.warn("Reset navigation error ignored:", e);
+          }
         } else {
           if (route.params?.redirect) {
             nav.navigate("TRANG CHỦ", {
@@ -100,7 +110,6 @@ const Login = () => {
           }
         }
       } catch (ex) {
-        // console.log(ex.message);
         setMsg({
           type: "error",
           msg: ex.response?.data?.error_description || ex.message,
@@ -112,10 +121,10 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if (msg)
+    if (msg?.msg)
       showToast({
-        type: msg.type,
-        text1: msg.msg,
+        type: msg?.type,
+        text1: msg?.msg,
       });
   }, [msg]);
 

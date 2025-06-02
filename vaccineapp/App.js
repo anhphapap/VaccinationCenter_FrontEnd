@@ -1,4 +1,4 @@
-import { Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import React, { useContext, useReducer } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./components/Home/Home";
@@ -42,6 +42,8 @@ import NotificationDetails from "./components/Home/NotificationDetails";
 import UserManagement from "./components/Home/UserManagement";
 import Payment from "./components/Home/Payment";
 import PaymentResult from "./components/Home/PaymentResult";
+import ChatListScreen from "./components/Chat/ChatListScreen";
+import ChatScreen from "./components/Chat/ChatScreen";
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
   "Support for defaultProps will be removed from memo components",
@@ -234,7 +236,22 @@ const HomeStackNavigator = () => {
       <HomeStack.Screen
         name="paymentResult"
         component={PaymentResult}
-        options={{ title: "Kết quả thanh toán", headerShadowVisible: false }}
+        options={{
+          title: "Kết quả thanh toán",
+          headerShadowVisible: false,
+          headerLeft: null,
+          headerBackVisible: false,
+        }}
+      />
+      <HomeStack.Screen
+        name="ChatList"
+        component={ChatListScreen}
+        options={{ title: "Trung tâm tư vấn" }}
+      />
+      <HomeStack.Screen
+        name="Chat"
+        component={ChatScreen}
+        options={{ title: "Tư vấn" }}
       />
     </HomeStack.Navigator>
   );
@@ -350,12 +367,31 @@ const TabNavigator = () => {
         component={Injections}
         options={({ navigation }) => ({
           tabBarIcon: ({ focused }) => (
-            <FontAwesome5
-              name="calendar-check"
-              size={24}
-              color={focused ? color.primary : "#a2a4a7"}
-              solid={focused}
-            />
+            <View
+              style={{
+                position: "absolute",
+                top: -28,
+                width: 56,
+                height: 56,
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 30,
+                borderWidth: 1,
+                borderColor: color.border,
+                backgroundColor: "white",
+              }}
+            >
+              <Image
+                source={{ uri: logo.injection }}
+                style={{
+                  width: 50,
+                  height: 50,
+                  borderRadius: 25,
+
+                  opacity: 0.95,
+                }}
+              />
+            </View>
           ),
           headerStyle: {
             backgroundColor: color.primary,

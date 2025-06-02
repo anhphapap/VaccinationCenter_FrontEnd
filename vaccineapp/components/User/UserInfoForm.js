@@ -20,7 +20,7 @@ import { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { HelperText } from "react-native-paper";
 import LoadingPage from "../common/LoadingOverlay";
-import { format, parseISO } from "date-fns";
+import { format, formatISO, parseISO } from "date-fns";
 import { MyDispatchContext } from "../../contexts/Contexts";
 import { useLoading } from "../../contexts/LoadingContext";
 import { showToast } from "../../components/common/ShowToast";
@@ -35,6 +35,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
     if (currentUser) {
       setUser({
         ...currentUser,
+        id: parseInt(currentUser.id),
         gender: currentUser.gender ?? true,
         birth_date: currentUser.birth_date
           ? parseISO(currentUser.birth_date)
@@ -69,11 +70,15 @@ const UserInfoForm = ({ title, onSubmit }) => {
     },
     {
       label: "Địa chỉ",
-      field: "adrress",
+      field: "address",
     },
     {
       label: "Email",
       field: "email",
+    },
+    {
+      label: "avatar",
+      field: "avatar",
     },
   ];
   const setState = (value, field) => {
@@ -140,25 +145,33 @@ const UserInfoForm = ({ title, onSubmit }) => {
     if (validate() === true) {
       try {
         showLoading();
-
         let form = new FormData();
-        for (let key in user) {
-          if (key === "avatar") {
+        for (let key of info) {
+          if (key.field === "avatar") {
             if (user.avatar !== currentUser.avatar) {
               let avt = await uploadToCloudinary(user.avatar);
-              form.append(key, avt);
-            } else form.append(key, user.avatar);
-          } else if (key === "birth_date") {
-            form.append(key, format(new Date(user[key]), "yyyy-MM-dd"));
-          } else form.append(key, user[key]);
+              form.append(key.field, avt);
+            } else form.append(key.field, defaultAvatar);
+          } else if (key.field === "birth_date") {
+            form.append(
+              key.field,
+              format(new Date(user[key.field]), "yyyy-MM-dd")
+            );
+          } else if (key.field === "id") {
+            form.append(key.field, parseInt(user[key.field]));
+          } else form.append(key.field, user[key.field]);
         }
         form.append("is_completed_profile", true);
         const token = await AsyncStorage.getItem("token");
-        let res = await authApis(token).patch(endpoints.user(user?.id), form, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        let res = await authApis(token).patch(
+          endpoints.user(parseInt(user?.id)),
+          form,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         showToast({
           type: "success",
           text1: title + " thành công!",
@@ -172,6 +185,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
           type: "error",
           msg: Object.values(ex.response?.data)[0] || ex.message,
         });
+        console.log(Object.values(ex.response?.data) || ex.message);
       } finally {
         hideLoading();
       }
@@ -179,7 +193,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
   };
 
   useEffect(() => {
-    if (msg)
+    if (msg?.msg)
       showToast({
         type: msg.type,
         text1: msg.msg,
@@ -196,10 +210,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
             <View style={styles.borderAvt}>
               <Image
                 source={{
-                  uri:
-                    user?.avatar === "/static/images/avatar.png"
-                      ? defaultAvatar
-                      : user?.avatar,
+                  uri: user?.avatar || defaultAvatar,
                 }}
                 style={styles.avt}
               ></Image>
@@ -216,9 +227,6 @@ const UserInfoForm = ({ title, onSubmit }) => {
       </View>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <View style={{ padding: 20 }}>
-          <HelperText type="error" visible={msg}>
-            {msg}
-          </HelperText>
           <View>
             <Text style={styles.label}>Số điện thoại *</Text>
             <MyTextInput

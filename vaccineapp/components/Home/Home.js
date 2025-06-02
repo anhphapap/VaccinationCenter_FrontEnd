@@ -1,4 +1,11 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, Badge, Button } from "react-native-paper";
@@ -11,11 +18,14 @@ import useUser from "../../hooks/useUser";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authApis, endpoints } from "../../configs/Apis";
+import { collection, query, where, onSnapshot, or } from "firebase/firestore";
+import { firestore } from "../../configs/firebase";
 
 const Home = () => {
   const nav = useNavigation();
   const user = useUser();
   const [notificationCount, setNotificationCount] = useState(0);
+  const [chatCount, setChatCount] = useState(0);
 
   const loadNotificationCount = async () => {
     try {
@@ -26,6 +36,49 @@ const Home = () => {
       console.log(ex);
     }
   };
+
+  const loadChatCount = async () => {
+    try {
+      if (user?.is_staff) {
+        const q = query(
+          collection(firestore, "chats"),
+          or(where("status", "==", "waiting"), where("staff.id", "==", user.id))
+        );
+
+        const unsub = onSnapshot(q, (snapshot) => {
+          let c = 0;
+          const list = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          list.forEach((item) => {
+            c += item.staff.unread;
+          });
+          setChatCount(c);
+        });
+        return unsub;
+      } else {
+        const q = query(
+          collection(firestore, "chats"),
+          where("user.id", "==", user.id)
+        );
+        const unsub = onSnapshot(q, (snapshot) => {
+          const list = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setChatCount(list[0].user.unread);
+        });
+        return unsub;
+      }
+    } catch (error) {
+      console.error("Error fetching unread count:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (user) loadChatCount();
+  }, [user]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -92,10 +145,7 @@ const Home = () => {
                 <View style={{ marginRight: 10 }}>
                   <Image
                     source={{
-                      uri:
-                        user?.avatar === "/static/images/avatar.png"
-                          ? defaultAvatar
-                          : user?.avatar,
+                      uri: user?.avatar || defaultAvatar,
                     }}
                     style={styles.avt}
                     resizeMode="cover"
@@ -189,6 +239,29 @@ const Home = () => {
           </View>
         </View>
       </ScrollView>
+      {user && (
+        <TouchableOpacity
+          style={styles.chatIcon}
+          onPress={() => {
+            user.is_staff ? nav.navigate("ChatList") : nav.navigate("Chat");
+          }}
+        >
+          <FontAwesome5 name="comment-dots" size={30} color="#fff" />
+          {chatCount > 0 && (
+            <Badge
+              size={20}
+              style={{
+                backgroundColor: "red",
+                position: "absolute",
+                right: -5,
+                top: -5,
+              }}
+            >
+              {chatCount}
+            </Badge>
+          )}
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   );
 };
@@ -227,5 +300,14 @@ const styles = StyleSheet.create({
   logo: {
     height: 40,
     width: 100,
+  },
+  chatIcon: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: color.primary,
+    borderRadius: 30,
+    padding: 10,
+    elevation: 5,
   },
 });

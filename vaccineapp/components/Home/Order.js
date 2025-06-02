@@ -112,47 +112,30 @@ const Order = () => {
   };
 
   const handleConfirm = async () => {
-    if (!user) {
-      nav.navigate("TÀI KHOẢN", {
-        screen: "login",
-        params: { redirect: "order" },
-      });
-      return;
-    }
-    if (validate()) {
-      try {
-        showLoading();
-        const token = await AsyncStorage.getItem("token");
-        for (let x of selectedVaccines) {
-          const data = {
-            injection_time: format(new Date(date), "yyyy-MM-dd"),
-            user: user.id,
-            vaccination_campaign: selectedCampaign,
-            vaccine: x.id,
-            number: 1,
-          };
-          let res = await authApis(token).post(endpoints.injections, data, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-        }
-        showToast({
-          type: "success",
-          text1: "Đặt mua thành công",
+    try {
+      showLoading();
+      const token = await AsyncStorage.getItem("token");
+      for (let x of selectedVaccines) {
+        const data = {
+          injection_time: format(new Date(date), "yyyy-MM-dd"),
+          user: user.id,
+          vaccination_campaign: selectedCampaign,
+          vaccine: x.id,
+          number: 1,
+        };
+        await authApis(token).post(endpoints.injections, data, {
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
-        setSelectedCampaign(1);
-        setSelectedVaccines([]);
-        setDate();
-      } catch (ex) {
-        showToast({
-          type: "error",
-          text1:
-            ex.response?.data.error || ex.response?.data.vaccination_campaign,
-        });
-      } finally {
-        hideLoading();
       }
+    } catch (ex) {
+      showToast({
+        type: "error",
+        text1: "Có lỗi xảy ra, vui lòng thử lại",
+      });
+    } finally {
+      hideLoading();
     }
   };
 
@@ -185,39 +168,7 @@ const Order = () => {
           })),
         });
         const data = await res.data;
-        nav.navigate("payment", {
-          paymentUrl: data.payment_url,
-          orderId: orderId,
-        });
-      } catch (ex) {
-        console.log(ex);
-      } finally {
-        hideLoading();
-      }
-    }
-  };
-  const testHandlePayment = async () => {
-    if (!user) {
-      nav.navigate("TÀI KHOẢN", {
-        screen: "login",
-        params: { redirect: "order" },
-      });
-      return;
-    }
-    if (validate()) {
-      try {
-        showLoading();
-        const token = await AsyncStorage.getItem("token");
-        let orderId = Date.now().toString();
-        let res = await authApis(token).patch(endpoints.payment, {
-          id: 40,
-          order_id: orderId,
-          order_desc: "Thanh toán PVVC",
-          order_type: "other",
-          bank_code: "NCB",
-          language: "vn",
-        });
-        const data = await res.data;
+        handleConfirm();
         nav.navigate("payment", {
           paymentUrl: data.payment_url,
           orderId: orderId,

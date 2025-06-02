@@ -92,10 +92,7 @@ const Profile = () => {
         <View style={styles.borderAvt}>
           <Image
             source={{
-              uri:
-                user && user.avatar !== "/static/images/avatar.png"
-                  ? user.avatar
-                  : defaultAvatar,
+              uri: user?.avatar || defaultAvatar,
             }}
             resizeMode="cover"
             style={styles.avt}

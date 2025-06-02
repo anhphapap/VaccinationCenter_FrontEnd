@@ -32,6 +32,8 @@ export const logo = {
     "https://res.cloudinary.com/dpmek7kuc/image/upload/v1746357625/injection_bg_tzb0gc.png",
   none_item:
     "https://res.cloudinary.com/dpmek7kuc/image/upload/v1746426055/none_item_uuu4f7.png",
+  injection:
+    "https://res.cloudinary.com/dpmek7kuc/image/upload/v1748182636/injection_icon_jxsf4d.png",
 };
 
 export default StyleSheet.create({
