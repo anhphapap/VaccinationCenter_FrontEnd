@@ -7,6 +7,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import {
   collection,
@@ -24,6 +25,7 @@ import { firestore } from "../../configs/firebase";
 import useUser from "../../hooks/useUser";
 import { color, defaultAvatar } from "../../styles/Styles";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ChatScreen({ route }) {
   const [chatId, setChatId] = useState(route?.params?.chatId || null);
@@ -31,6 +33,7 @@ export default function ChatScreen({ route }) {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState("");
   const flatListRef = useRef(null);
+  const navigation = useNavigation();
 
   async function createChat() {
     try {
@@ -133,6 +136,27 @@ export default function ChatScreen({ route }) {
     });
   }
 
+  async function resetChat() {
+    const chatDocRef = doc(firestore, "chats", chatId);
+    await updateDoc(chatDocRef, {
+      status: "waiting",
+      staff: {
+        id: null,
+        name: "Nhân viên tư vấn",
+        avatar: defaultAvatar,
+        unread: 0,
+      },
+    });
+    navigation.goBack();
+  }
+
+  async function handleResetChat() {
+    Alert.alert("Xác nhận", "Bạn có muốn kết thúc tư vấn ?", [
+      { text: "Hủy", style: "cancel" },
+      { text: "Kết thúc", onPress: () => resetChat() },
+    ]);
+  }
+
   useEffect(() => {
     if (messages.length > 0) {
       flatListRef.current?.scrollToEnd({ animated: true });
@@ -166,6 +190,14 @@ export default function ChatScreen({ route }) {
         style={styles.messagesList}
       />
       <View style={styles.inputContainer}>
+        {currentUser.is_staff && (
+          <TouchableOpacity
+            style={{ paddingBottom: 8, paddingHorizontal: 8 }}
+            onPress={() => handleResetChat()}
+          >
+            <FontAwesome5 name="times-circle" solid size={24} color={"red"} />
+          </TouchableOpacity>
+        )}
         <TextInput
           style={styles.input}
           placeholder="Nhập tin nhắn..."
@@ -228,7 +260,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: "row",
-    alignItems: "flex-end",
+    alignItems: "center",
     justifyContent: "space-between",
     gap: 5,
     paddingVertical: 10,

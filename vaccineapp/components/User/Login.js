@@ -87,16 +87,7 @@ const Login = () => {
         });
 
         if (!u.data.is_completed_profile) {
-          try {
-            nav.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{ name: "registerProfile" }],
-              })
-            );
-          } catch (e) {
-            console.warn("Reset navigation error ignored:", e);
-          }
+          // nav.navigate("RegisterProfile");
         } else {
           if (route.params?.redirect) {
             nav.navigate("TRANG CHỦ", {

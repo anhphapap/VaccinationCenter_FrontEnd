@@ -15,10 +15,8 @@ import FloatBottomButton from "../common/FloatBottomButton";
 import MyTextInput from "../common/MyTextInput";
 import useUser from "../../hooks/useUser";
 import * as ImagePicker from "expo-image-picker";
-import { useNavigation } from "@react-navigation/native";
 import { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { HelperText } from "react-native-paper";
 import LoadingPage from "../common/LoadingOverlay";
 import { format, formatISO, parseISO } from "date-fns";
 import { MyDispatchContext } from "../../contexts/Contexts";
@@ -32,20 +30,17 @@ const UserInfoForm = ({ title, onSubmit }) => {
   const { showLoading, hideLoading } = useLoading();
   useEffect(() => {
     showLoading();
-    if (currentUser) {
-      setUser({
-        ...currentUser,
-        id: parseInt(currentUser.id),
-        gender: currentUser.gender ?? true,
-        birth_date: currentUser.birth_date
-          ? parseISO(currentUser.birth_date)
-          : null,
-      });
-    }
+    setUser({
+      ...currentUser,
+      id: parseInt(currentUser.id),
+      gender: currentUser.gender ?? true,
+      birth_date: currentUser.birth_date
+        ? parseISO(currentUser.birth_date)
+        : null,
+    });
     hideLoading();
   }, [currentUser]);
   const [msg, setMsg] = useState();
-  const nav = useNavigation();
 
   const info = [
     {
@@ -103,11 +98,10 @@ const UserInfoForm = ({ title, onSubmit }) => {
     }
 
     for (let i of info)
-      if (user[i.field] === null) {
-        setMsg({ type: "error", msg: `Vui lòng nhập ${i.label}` });
+      if (user[i.field] === null || user[i.field] === "") {
+        setMsg({ type: "error", msg: `Vui lòng cập nhập ${i.label}` });
         return false;
       }
-
     return true;
   };
 
@@ -145,13 +139,14 @@ const UserInfoForm = ({ title, onSubmit }) => {
     if (validate() === true) {
       try {
         showLoading();
+        let avt = null;
         let form = new FormData();
         for (let key of info) {
           if (key.field === "avatar") {
             if (user.avatar !== currentUser.avatar) {
-              let avt = await uploadToCloudinary(user.avatar);
+              avt = await uploadToCloudinary(user.avatar);
               form.append(key.field, avt);
-            } else form.append(key.field, defaultAvatar);
+            }
           } else if (key.field === "birth_date") {
             form.append(
               key.field,
@@ -163,27 +158,27 @@ const UserInfoForm = ({ title, onSubmit }) => {
         }
         form.append("is_completed_profile", true);
         const token = await AsyncStorage.getItem("token");
-        let res = await authApis(token).patch(
-          endpoints.user(parseInt(user?.id)),
-          form,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        console.log(form);
+        let res = await authApis(token).patch(endpoints.user(user?.id), form, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
         showToast({
           type: "success",
           text1: title + " thành công!",
         });
         dispatch({
           type: "update",
-          payload: res.data,
+          payload: {
+            ...currentUser,
+            ...res.data,
+          },
         });
       } catch (ex) {
         setMsg({
           type: "error",
-          msg: Object.values(ex.response?.data)[0] || ex.message,
+          msg: "Có lỗi xảy ra, vui lòng thử lại!",
         });
         console.log(Object.values(ex.response?.data) || ex.message);
       } finally {

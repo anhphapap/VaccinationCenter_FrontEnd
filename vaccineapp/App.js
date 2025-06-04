@@ -435,10 +435,10 @@ const App = () => {
               <CartProvider>
                 <SafeAreaProvider>
                   <NavigationContainer>
-                    {!user || user.is_completed_profile ? (
-                      <TabNavigator />
-                    ) : (
+                    {user && !user.is_completed_profile ? (
                       <RegisterProfileStack />
+                    ) : (
+                      <TabNavigator />
                     )}
                   </NavigationContainer>
                 </SafeAreaProvider>

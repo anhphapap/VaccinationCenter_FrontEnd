@@ -18,16 +18,15 @@ import NoneHistory from "../common/NoneHistory";
 const InjectionManagement = () => {
   const [text, setText] = useState("");
   const queryTimer = useRef();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState();
   const [sort, setSort] = useState();
   const [today, setToday] = useState(false);
   const [listInjection, setListInjection] = useState([]);
   const [loading, setLoading] = useState(false);
   const { showLoading, hideLoading } = useLoading();
-  const [filterVisible, setFilterVisible] = useState(false);
+
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(1);
-  const [date, setDate] = useState();
 
   const handleQuery = (q) => {
     setText(q);
@@ -54,7 +53,7 @@ const InjectionManagement = () => {
       const token = await AsyncStorage.getItem("token");
       let url = endpoints.injections + `?page=${page}`;
 
-      // if (query) url += `?q=${query}`;
+      if (query) url += `&name=${query}`;
       if (sort) url += `&sort_by=${sort}`;
       if (today) {
         const todayDate = new Date().toISOString().split("T")[0];
@@ -113,7 +112,7 @@ const InjectionManagement = () => {
           style={[
             Styles.flexRow,
             Styles.spaceBetween,
-            Styles.ph20,
+            Styles.ph10,
             Styles.pv10,
             { backgroundColor: "#f7f8fd" },
           ]}
@@ -150,15 +149,6 @@ const InjectionManagement = () => {
               <Text style={{ color: today ? "white" : "gray" }}>Hôm nay</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={[Styles.flexRow, Styles.alignCenter]}
-            onPress={() => setFilterVisible(!filterVisible)}
-          >
-            <View style={{ position: "relative" }}>
-              <FontAwesome5 name="filter" color={color.primary} />
-            </View>
-            <Text style={[Styles.ph10, { color: "gray" }]}>Lọc</Text>
-          </TouchableOpacity>
         </View>
       </View>
       <FlatList
@@ -212,7 +202,7 @@ export default InjectionManagement;
 const styles = StyleSheet.create({
   header: {
     backgroundColor: color.primary,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 10,
   },
   searchBar: {

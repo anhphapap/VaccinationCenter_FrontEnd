@@ -67,7 +67,7 @@ const Home = () => {
             id: doc.id,
             ...doc.data(),
           }));
-          setChatCount(list[0].user.unread);
+          setChatCount(list[0]?.user?.unread);
         });
         return unsub;
       }

@@ -46,7 +46,7 @@ const UserManagement = () => {
       const token = await AsyncStorage.getItem("token");
       let url = endpoints.userManagement + `?page=${page}`;
 
-      // if (query) url += `?q=${query}`;
+      if (query) url += `&name=${query}`;
 
       const res = await authApis(token).get(url);
       if (res.data.next === null) {
