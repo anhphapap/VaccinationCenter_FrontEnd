@@ -22,12 +22,14 @@ import { format, formatISO, parseISO } from "date-fns";
 import { MyDispatchContext } from "../../contexts/Contexts";
 import { useLoading } from "../../contexts/LoadingContext";
 import { showToast } from "../../components/common/ShowToast";
+import { useNavigation } from "@react-navigation/native";
 
 const UserInfoForm = ({ title, onSubmit }) => {
   const currentUser = useUser();
   const [user, setUser] = useState(null);
   const dispatch = useContext(MyDispatchContext);
   const { showLoading, hideLoading } = useLoading();
+  const navigation = useNavigation();
   useEffect(() => {
     showLoading();
     setUser({
@@ -140,6 +142,7 @@ const UserInfoForm = ({ title, onSubmit }) => {
       try {
         showLoading();
         let avt = null;
+
         let form = new FormData();
         for (let key of info) {
           if (key.field === "avatar") {
@@ -156,14 +159,18 @@ const UserInfoForm = ({ title, onSubmit }) => {
             form.append(key.field, parseInt(user[key.field]));
           } else form.append(key.field, user[key.field]);
         }
-        form.append("is_completed_profile", true);
+        if (title === "Đăng ký") {
+          form.append("is_completed_profile", true);
+        } else {
+          form.delete("email");
+        }
         const token = await AsyncStorage.getItem("token");
-        console.log(form);
         let res = await authApis(token).patch(endpoints.user(user?.id), form, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
+
         showToast({
           type: "success",
           text1: title + " thành công!",
@@ -175,12 +182,15 @@ const UserInfoForm = ({ title, onSubmit }) => {
             ...res.data,
           },
         });
+        if (title === "Đăng ký") {
+          navigation.navigate("VerifyEmail");
+        }
       } catch (ex) {
         setMsg({
           type: "error",
           msg: "Có lỗi xảy ra, vui lòng thử lại!",
         });
-        console.log(Object.values(ex.response?.data) || ex.message);
+        console.log(ex.message);
       } finally {
         hideLoading();
       }
@@ -281,6 +291,8 @@ const UserInfoForm = ({ title, onSubmit }) => {
                 title="Email"
                 value={user.email !== null ? user.email : ""}
                 onChangeText={(text) => setState(text, "email")}
+                editable={title !== "Chỉnh sửa thông tin"}
+                disabled={title === "Chỉnh sửa thông tin"}
               />
             </View>
           </View>

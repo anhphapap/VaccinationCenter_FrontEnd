@@ -9,6 +9,8 @@ const MyTextInput = ({
   secure = false,
   onChangeText,
   value,
+  editable = true,
+  disabled = false,
 }) => {
   const [view, setView] = useState(secure);
   return (
@@ -31,6 +33,8 @@ const MyTextInput = ({
       }
       onChangeText={onChangeText}
       value={value}
+      editable={editable}
+      disabled={disabled}
     ></TextInput>
   );
 };

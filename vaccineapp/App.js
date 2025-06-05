@@ -44,6 +44,7 @@ import Payment from "./components/Home/Payment";
 import PaymentResult from "./components/Home/PaymentResult";
 import ChatListScreen from "./components/Chat/ChatListScreen";
 import ChatScreen from "./components/Chat/ChatScreen";
+import VerifyEmail from "./components/User/VerifyEmail";
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
   "Support for defaultProps will be removed from memo components",
@@ -67,6 +68,16 @@ const RegisterProfileStack = () => (
         headerLeft: null,
         title: "Đăng ký thông tin",
         headerShadowVisible: false,
+      }}
+    />
+    <Stack.Screen
+      name="VerifyEmail"
+      component={VerifyEmail}
+      options={{
+        title: "Xác nhận email",
+        headerShadowVisible: false,
+        headerLeft: null,
+        headerBackVisible: false,
       }}
     />
   </Stack.Navigator>
@@ -435,7 +446,8 @@ const App = () => {
               <CartProvider>
                 <SafeAreaProvider>
                   <NavigationContainer>
-                    {user && !user.is_completed_profile ? (
+                    {user &&
+                    (!user.is_completed_profile || !user.email_verified) ? (
                       <RegisterProfileStack />
                     ) : (
                       <TabNavigator />

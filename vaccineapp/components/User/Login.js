@@ -86,8 +86,8 @@ const Login = () => {
           payload: u.data,
         });
 
-        if (!u.data.is_completed_profile) {
-          // nav.navigate("RegisterProfile");
+        if (!u.data.is_completed_profile || !u.data.email_verified) {
+          // nav.navigate("VerifyEmail");
         } else {
           if (route.params?.redirect) {
             nav.navigate("TRANG CHỦ", {
