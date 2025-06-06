@@ -2,7 +2,7 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Styles, { logo } from "../../styles/Styles";
 
-const NoneHistory = ({ title, style }) => {
+const NoneHistory = ({ title, style, description = true }) => {
   return (
     <View style={[styles.noneContainer, style]}>
       <Image
@@ -11,10 +11,12 @@ const NoneHistory = ({ title, style }) => {
         resizeMode="cover"
       ></Image>
       <Text style={Styles.fontBold}>{title || "Bạn chưa có lịch sử tiêm"}</Text>
-      <Text style={styles.noneTxt}>
-        Lịch sử tiêm chủng sẽ giúp bạn theo dõi toàn bộ lịch sử tiêm vắc xin của
-        khách hàng.
-      </Text>
+      {description && (
+        <Text style={styles.noneTxt}>
+          Lịch sử tiêm chủng sẽ giúp bạn theo dõi toàn bộ lịch sử tiêm vắc xin
+          của khách hàng.
+        </Text>
+      )}
     </View>
   );
 };

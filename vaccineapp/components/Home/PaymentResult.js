@@ -6,10 +6,12 @@ import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authApis, endpoints } from "../../configs/Apis";
+import useUser from "../../hooks/useUser";
 
 const PaymentResult = ({ route }) => {
   const { status, orderId, message } = route.params;
   const nav = useNavigation();
+  const user = useUser();
 
   const handlePayment = async () => {
     if (!user) {
@@ -19,29 +21,25 @@ const PaymentResult = ({ route }) => {
       });
       return;
     }
-    if (validate()) {
-      try {
-        showLoading();
-        const token = await AsyncStorage.getItem("token");
-        let orderId = Date.now().toString();
-        let res = await authApis(token).patch(endpoints.payment, {
-          id: 40,
-          order_id: orderId,
-          order_desc: "Thanh toán PVVC",
-          order_type: "other",
-          bank_code: "NCB",
-          language: "vn",
-        });
-        const data = await res.data;
-        nav.navigate("payment", {
-          paymentUrl: data.payment_url,
-          orderId: orderId,
-        });
-      } catch (ex) {
-        console.log(ex);
-      } finally {
-        hideLoading();
-      }
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const id = await authApis(token).get(endpoints.orderStatus(orderId));
+      let newId = Date.now().toString();
+      let res = await authApis(token).patch(endpoints.payment, {
+        id: id.data.id,
+        order_id: newId,
+        order_desc: "Thanh toán PVVC",
+        order_type: "other",
+        bank_code: "NCB",
+        language: "vn",
+      });
+      const data = await res.data;
+      nav.navigate("payment", {
+        paymentUrl: data.payment_url,
+        orderId: newId,
+      });
+    } catch (ex) {
+      console.log(ex);
     }
   };
   return (

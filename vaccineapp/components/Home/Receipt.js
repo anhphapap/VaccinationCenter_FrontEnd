@@ -12,8 +12,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authApis, endpoints } from "../../configs/Apis";
 import { ActivityIndicator } from "react-native-paper";
 import { useLoading } from "../../contexts/LoadingContext";
-
+import useUser from "../../hooks/useUser";
+import NoneHistory from "../common/NoneHistory";
+import { useNavigation } from "@react-navigation/native";
 const Receipt = () => {
+  const user = useUser();
   const [tab, setTab] = useState("all");
   const [data, setData] = useState({
     all: { list: [], page: 1, loading: false },
@@ -22,6 +25,7 @@ const Receipt = () => {
   });
   const [loading, setLoading] = useState(false);
   const { showLoading, hideLoading } = useLoading();
+  const nav = useNavigation();
   const fetchData = async (page, status) => {
     if (data[status].loading || page === 0) return;
     setLoading(true);
@@ -68,9 +72,11 @@ const Receipt = () => {
   };
 
   useEffect(() => {
-    fetchData(data[tab].page, tab);
+    if (user) {
+      fetchData(data[tab].page, tab);
+    }
   }, [tab]);
-  return (
+  return user ? (
     <View style={[Styles.flex, Styles.pb10, { backgroundColor: "#f6f6f6" }]}>
       <View style={[Styles.bgWhite, Styles.alignCenter]}>
         <View style={[Styles.flexRow]}>
@@ -133,6 +139,29 @@ const Receipt = () => {
           <ReceiptCard key={index} item={item} />
         ))}
       </ScrollView>
+    </View>
+  ) : (
+    <View
+      style={[
+        Styles.flex,
+        Styles.pb10,
+        Styles.alignCenter,
+        Styles.flexCenter,
+        { backgroundColor: "white" },
+      ]}
+    >
+      <NoneHistory
+        title="Bạn chưa có hóa đơn"
+        description={false}
+      ></NoneHistory>
+      <View style={[Styles.flexRow, Styles.alignCenter]}>
+        <TouchableOpacity
+          onPress={() => nav.navigate("TÀI KHOẢN", { screen: "login" })}
+        >
+          <Text style={[Styles.fontBold, Styles.underline]}>Đăng nhập</Text>
+        </TouchableOpacity>
+        <Text> để xem hóa đơn của bạn</Text>
+      </View>
     </View>
   );
 };

@@ -6,10 +6,12 @@ import { authApis, endpoints } from "../../configs/Apis";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { Button } from "react-native-paper";
+import { useLoading } from "../../contexts/LoadingContext";
 
 const Payment = ({ route, navigation }) => {
   const { paymentUrl, orderId } = route.params;
   const [loading, setLoading] = useState(true);
+  const { showLoading, hideLoading } = useLoading();
   const nav = useNavigation();
   const handleWebviewClose = async () => {
     const token = await AsyncStorage.getItem("token");
@@ -50,12 +52,14 @@ const Payment = ({ route, navigation }) => {
         nav.replace("paymentResult", {
           status: "success",
           orderId: txnRef,
+          id: res.data.id,
           message: "Thanh toán thành công",
         });
       } else {
         nav.replace("paymentResult", {
           status: "fail",
           orderId: txnRef,
+          id: res.data.id,
           message: "Thanh toán không thành công",
         });
       }
@@ -101,9 +105,10 @@ const Payment = ({ route, navigation }) => {
     <View style={styles.container}>
       <WebView
         source={{ uri: paymentUrl }}
-        onLoadEnd={() => setLoading(false)}
+        onLoadEnd={() => hideLoading()}
         onNavigationStateChange={handleNavigationChange}
         onClose={handleWebviewClose}
+        onLoad={() => showLoading()}
       />
     </View>
   );
