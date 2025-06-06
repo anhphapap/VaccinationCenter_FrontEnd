@@ -72,7 +72,7 @@ const ChangePassword = () => {
         style={[Styles.flexRow, Styles.alignCenter, Styles.g10, Styles.pv20]}
       >
         <Image
-          source={{ uri: defaultAvatar }}
+          source={{ uri: user.avatar || defaultAvatar }}
           resizeMode="cover"
           style={styles.img}
         ></Image>

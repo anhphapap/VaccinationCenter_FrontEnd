@@ -1,5 +1,5 @@
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
-import React, { useContext, useReducer } from "react";
+import React, { useContext, useEffect, useReducer } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./components/Home/Home";
 import History from "./components/Home/History";
@@ -45,6 +45,7 @@ import PaymentResult from "./components/Home/PaymentResult";
 import ChatListScreen from "./components/Chat/ChatListScreen";
 import ChatScreen from "./components/Chat/ChatScreen";
 import VerifyEmail from "./components/User/VerifyEmail";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 LogBox.ignoreLogs([
   "Support for defaultProps will be removed from function components",
   "Support for defaultProps will be removed from memo components",
@@ -437,6 +438,23 @@ const TabNavigator = () => {
 
 const App = () => {
   const [user, dispatch] = useReducer(UserReducer, null);
+
+  useEffect(() => {
+    const bootstrapAsync = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem("user");
+        if (jsonValue) {
+          const savedUser = JSON.parse(jsonValue);
+          dispatch({ type: "login", payload: savedUser });
+        }
+      } catch (e) {
+        console.log("Failed to load user from storage", e);
+      }
+    };
+
+    bootstrapAsync();
+  }, []);
+
   return (
     <>
       <MyUserContext.Provider value={user}>

@@ -76,6 +76,7 @@ const Login = () => {
         let u = await authApis(res.data.access_token).get(
           endpoints.currentUser
         );
+        await AsyncStorage.setItem("user", JSON.stringify(u.data));
         showToast({
           type: "success",
           text1: "Đăng nhập thành công",
