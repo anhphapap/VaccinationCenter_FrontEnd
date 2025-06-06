@@ -117,7 +117,7 @@ const VaccineDetails = ({ route }) => {
               </Text>
             </Button>
           )}
-          <Button style={styles.btn2} onPress={() => handleBuy([vaccine])}>
+          <Button style={styles.btn2} onPress={() => handleBuy(vaccine)}>
             <Text style={{ color: "#0a56df" }}>Mua ngay</Text>
           </Button>
         </View>

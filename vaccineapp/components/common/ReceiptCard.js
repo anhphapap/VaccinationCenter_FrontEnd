@@ -86,6 +86,11 @@ const ReceiptCard = ({ item }) => {
               <TouchableOpacity
                 style={[Styles.flexRow, Styles.g10]}
                 key={index}
+                onPress={() => {
+                  nav.navigate("vaccineDetails", {
+                    vaccineId: item.id,
+                  });
+                }}
               >
                 <Image
                   source={{
