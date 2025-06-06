@@ -18,12 +18,14 @@ import {
   updateDoc,
   addDoc,
   serverTimestamp,
+  getDoc,
 } from "firebase/firestore";
 import { firestore } from "../../configs/firebase";
 import useUser from "../../hooks/useUser";
 import Styles, { color, defaultAvatar } from "../../styles/Styles";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
+import { showToast } from "../common/ShowToast";
 
 export default function ChatListScreen({ navigation }) {
   const currentUser = useUser();
@@ -34,8 +36,8 @@ export default function ChatListScreen({ navigation }) {
 
     const q = query(
       collection(firestore, "chats"),
-      where("status", "in", ["waiting", "in_progress"]),
-      orderBy("lastMessageTime", "desc")
+      orderBy("lastMessageTime", "desc"),
+      where("status", "in", ["waiting", "in_progress"])
     );
 
     const unsub = onSnapshot(q, (snapshot) => {
@@ -47,22 +49,36 @@ export default function ChatListScreen({ navigation }) {
   }, [currentUser]);
 
   async function acceptChat(chatId) {
-    const chatDocRef = doc(firestore, "chats", chatId);
-    await updateDoc(chatDocRef, {
-      "staff.id": currentUser.id,
-      status: "in_progress",
-    });
-    const messagesRef = collection(firestore, "chats", chatId, "messages");
-    await addDoc(messagesRef, {
-      senderId: "system",
-      text:
-        "Đã kết nối với nhân viên tư vấn " +
-        currentUser.last_name +
-        " " +
-        currentUser.first_name,
-      timestamp: serverTimestamp(),
-    });
-    navigation.navigate("Chat", { chatId });
+    try {
+      const chatDocRef = doc(firestore, "chats", chatId);
+      const chatSnapshot = await getDoc(chatDocRef);
+      if (chatSnapshot.exists && chatSnapshot.data().status === "waiting") {
+        await updateDoc(chatDocRef, {
+          "staff.id": currentUser.id,
+          status: "in_progress",
+        });
+        const messagesRef = collection(firestore, "chats", chatId, "messages");
+        await addDoc(messagesRef, {
+          senderId: "system",
+          text:
+            "Đã kết nối với nhân viên tư vấn " +
+            currentUser.last_name +
+            " " +
+            currentUser.first_name,
+          timestamp: serverTimestamp(),
+        });
+        navigation.navigate("Chat", { chatId });
+      } else if (chatSnapshot.data().staff.id === currentUser.id) {
+        navigation.navigate("Chat", { chatId });
+      } else {
+        showToast({
+          type: "error",
+          text1: "Cuộc trò chuyện này đã được nhân viên khác nhận.",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function resetUnreadCount(chatId) {
@@ -74,29 +90,17 @@ export default function ChatListScreen({ navigation }) {
   }
 
   const renderItem = ({ item }) => {
-    let otherParticipant, user;
-    if (currentUser.is_staff) {
-      otherParticipant = item.user;
-      user = item.staff;
-    } else {
-      otherParticipant = item.staff;
-      user = item.user;
-    }
-    const unreadCount = user?.unread || 0;
+    const unreadCount = item.staff?.unread || 0;
     return (
       <TouchableOpacity
         style={styles.chatItem}
         onPress={() => {
           resetUnreadCount(item.id);
-          if (currentUser.is_staff && item.status === "waiting") {
-            acceptChat(item.id);
-          } else {
-            navigation.navigate("Chat", { chatId: item.id });
-          }
+          acceptChat(item.id);
         }}
       >
         <Image
-          source={{ uri: otherParticipant?.avatar || defaultAvatar }}
+          source={{ uri: item.user?.avatar || defaultAvatar }}
           style={{ width: 50, height: 50, borderRadius: 25 }}
         />
         <View
@@ -120,7 +124,7 @@ export default function ChatListScreen({ navigation }) {
               <Text
                 style={unreadCount > 0 ? styles.unreadTitle : styles.chatTitle}
               >
-                {otherParticipant?.name || "Unknown"}
+                {item.user?.name || "Unknown"}
               </Text>
               <Badge
                 size={20}
