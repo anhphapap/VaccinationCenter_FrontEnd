@@ -46,7 +46,6 @@ export default function ChatListScreen({ navigation }) {
     return () => unsub();
   }, [currentUser]);
 
-  // Accept a chat as staff
   async function acceptChat(chatId) {
     const chatDocRef = doc(firestore, "chats", chatId);
     await updateDoc(chatDocRef, {
