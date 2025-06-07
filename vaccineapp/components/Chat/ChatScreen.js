@@ -37,6 +37,7 @@ export default function ChatScreen({ route }) {
 
   async function createChat() {
     try {
+      const timestamp = serverTimestamp();
       const chatRef = await addDoc(collection(firestore, "chats"), {
         user: {
           id: currentUser.id,
@@ -51,10 +52,22 @@ export default function ChatScreen({ route }) {
           unread: 0,
         },
         status: "waiting",
-        createdAt: serverTimestamp(),
-        lastMessage: "",
-        lastSenderId: "",
-        lastMessageTime: serverTimestamp(),
+        createdAt: timestamp,
+        lastMessage:
+          "Bạn đang cần tư vấn về loại vaccine bạn muốn mua hay các thông tin về trung tâm của chúng tôi, hãy nhắn tin để kết nối với nhân viên tư vấn của chúng tôi?",
+        lastSender: "staff",
+        lastMessageTime: timestamp,
+      });
+      const messagesRef = collection(
+        firestore,
+        "chats",
+        chatRef.id,
+        "messages"
+      );
+      await addDoc(messagesRef, {
+        sender: "staff",
+        text: "Bạn đang cần tư vấn về loại vaccine bạn muốn mua hay các thông tin về trung tâm của chúng tôi, hãy nhắn tin để kết nối với nhân viên tư vấn của chúng tôi?",
+        timestamp: timestamp,
       });
       setChatId(chatRef.id);
     } catch (error) {
@@ -103,7 +116,7 @@ export default function ChatScreen({ route }) {
 
     const messagesRef = collection(firestore, "chats", chatId, "messages");
     await addDoc(messagesRef, {
-      senderId: currentUser.id,
+      sender: currentUser.is_staff ? "staff" : "user",
       text: inputText.trim(),
       timestamp: serverTimestamp(),
     });
@@ -112,7 +125,7 @@ export default function ChatScreen({ route }) {
     await updateDoc(chatDocRef, {
       lastMessage: inputText.trim(),
       lastMessageTime: serverTimestamp(),
-      lastSenderId: currentUser.id,
+      lastSender: currentUser.is_staff ? "staff" : "user",
     });
 
     if (currentUser.is_staff) {
@@ -171,12 +184,13 @@ export default function ChatScreen({ route }) {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <>
-            {item.senderId === "system" ? (
+            {item.sender === "system" ? (
               <Text style={styles.systemMsg}>{item.text}</Text>
             ) : (
               <Text
                 style={
-                  item.senderId === currentUser.id
+                  (item.sender === "staff" && currentUser.is_staff) ||
+                  (item.sender === "user" && !currentUser.is_staff)
                     ? styles.myMsg
                     : styles.otherMsg
                 }

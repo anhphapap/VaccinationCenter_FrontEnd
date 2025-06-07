@@ -26,6 +26,7 @@ import Styles, { color, defaultAvatar } from "../../styles/Styles";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 import { showToast } from "../common/ShowToast";
+import NoneHistory from "../common/NoneHistory";
 
 export default function ChatListScreen({ navigation }) {
   const currentUser = useUser();
@@ -59,7 +60,7 @@ export default function ChatListScreen({ navigation }) {
         });
         const messagesRef = collection(firestore, "chats", chatId, "messages");
         await addDoc(messagesRef, {
-          senderId: "system",
+          sender: "system",
           text:
             "Đã kết nối với nhân viên tư vấn " +
             currentUser.last_name +
@@ -147,7 +148,7 @@ export default function ChatListScreen({ navigation }) {
                 }
                 numberOfLines={1}
               >
-                {item.lastSenderId === currentUser.id
+                {item.lastSender === "staff"
                   ? "Bạn: " + item.lastMessage
                   : item.lastMessage}
               </Text>
@@ -183,6 +184,12 @@ export default function ChatListScreen({ navigation }) {
         data={chats}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
+        ListEmptyComponent={
+          <NoneHistory
+            title={"Chưa có khách hàng cần tư vấn."}
+            description={false}
+          />
+        }
       />
     </View>
   );
