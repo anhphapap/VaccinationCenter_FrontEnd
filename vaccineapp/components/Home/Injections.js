@@ -24,8 +24,10 @@ const Injections = () => {
   const { showLoading, hideLoading } = useLoading();
   const [loading, setLoading] = useState(false);
   const nav = useNavigation();
+  const [page, setPage] = useState(1);
 
-  const loadData = async () => {
+  const loadData = async (page) => {
+    if (loading || page === 0) return;
     try {
       setLoading(true);
       showLoading();
@@ -33,15 +35,17 @@ const Injections = () => {
       const token = await AsyncStorage.getItem("token");
       const res = await authApis(token).get(
         endpoints.userInjections(user.id) +
-          "?status=MISSED&status=NOT_VACCINATED&sort_by=date_asc"
+          `?status=MISSED&status=NOT_VACCINATED&sort_by=date_asc&page=${page}`
       );
-      let list = res.data;
+      let list = res.data.results;
       for (let x of list) {
         let res = await Apis.get(endpoints.vaccineDetails(x.vaccine));
         res.data.number = x.number;
         res.data.injection_date = x.injection_time;
         setList((prev) => [...prev, res.data]);
       }
+      const nextPage = res.data.next ? page + 1 : 0;
+      setPage(nextPage);
     } catch (ex) {
       console.log(ex);
     } finally {
@@ -50,9 +54,13 @@ const Injections = () => {
     }
   };
 
+  const handleLoadMore = () => {
+    loadData(page);
+  };
+
   useFocusEffect(
     React.useCallback(() => {
-      if (user) loadData();
+      if (user) loadData(page);
     }, [])
   );
 
@@ -62,11 +70,19 @@ const Injections = () => {
       {!loading &&
         (list.length === 0 ? (
           <View style={[Styles.flex, Styles.alignCenter, Styles.flexCenter]}>
-            <NoneHistory></NoneHistory>
+            <NoneHistory
+              title={"Bạn không có lịch tiêm chủng nào sắp tới."}
+              description={false}
+            ></NoneHistory>
             {!user && (
               <View style={[Styles.flexRow, Styles.alignCenter]}>
                 <TouchableOpacity
-                  onPress={() => nav.navigate("TÀI KHOẢN", { screen: "login" })}
+                  onPress={() =>
+                    nav.navigate("TÀI KHOẢN", {
+                      screen: "login",
+                      params: { redirect: "injections" },
+                    })
+                  }
                 >
                   <Text style={[Styles.fontBold, Styles.underline]}>
                     Đăng nhập
@@ -77,7 +93,7 @@ const Injections = () => {
             )}
           </View>
         ) : (
-          <ScrollView>
+          <ScrollView onEndReached={handleLoadMore} onEndReachedThreshold={0.5}>
             {list.map((item) => (
               <InjectionCard
                 key={item.id + item.injection_date}

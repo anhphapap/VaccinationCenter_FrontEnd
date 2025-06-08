@@ -118,7 +118,7 @@ const ReceiptCard = ({ item }) => {
               style={{
                 height: 80,
                 aspectRatio: 2,
-                backgroundColor: "gray",
+                backgroundColor: color.border,
                 borderRadius: 10,
               }}
             ></View>
@@ -127,7 +127,7 @@ const ReceiptCard = ({ item }) => {
                 style={{
                   height: 14,
                   width: 100,
-                  backgroundColor: "gray",
+                  backgroundColor: color.border,
                   borderRadius: 10,
                 }}
               ></View>
@@ -135,7 +135,7 @@ const ReceiptCard = ({ item }) => {
                 style={{
                   height: 14,
                   width: 150,
-                  backgroundColor: "gray",
+                  backgroundColor: color.border,
                   borderRadius: 10,
                 }}
               ></View>

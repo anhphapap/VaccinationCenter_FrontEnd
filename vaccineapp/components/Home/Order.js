@@ -400,7 +400,7 @@ const Order = () => {
           </Text>
         </View>
         <Button style={[styles.btn1, { flex: 0 }]} onPress={handlePayment}>
-          <Text style={[Styles.textWhite, Styles.p10]}>Xác nhận</Text>
+          <Text style={[Styles.textWhite, Styles.p10]}>Thanh toán</Text>
         </Button>
       </View>
     </View>

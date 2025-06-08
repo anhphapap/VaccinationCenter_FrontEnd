@@ -124,7 +124,8 @@ const Receipt = () => {
       <ScrollView
         style={Styles.p10}
         showsVerticalScrollIndicator={false}
-        onScroll={handleLoadMore}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
         ListFooterComponent={
           loading && (
             <ActivityIndicator
@@ -156,7 +157,12 @@ const Receipt = () => {
       ></NoneHistory>
       <View style={[Styles.flexRow, Styles.alignCenter]}>
         <TouchableOpacity
-          onPress={() => nav.navigate("TÀI KHOẢN", { screen: "login" })}
+          onPress={() =>
+            nav.navigate("TÀI KHOẢN", {
+              screen: "login",
+              params: { redirect: "receipt" },
+            })
+          }
         >
           <Text style={[Styles.fontBold, Styles.underline]}>Đăng nhập</Text>
         </TouchableOpacity>
