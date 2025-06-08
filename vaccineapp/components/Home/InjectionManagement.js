@@ -46,7 +46,7 @@ const InjectionManagement = () => {
   };
 
   const loadData = async () => {
-    if (page === 0) return;
+    if (page === 0 || loading) return;
     try {
       setLoading(true);
       showLoading();

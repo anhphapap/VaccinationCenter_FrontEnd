@@ -56,7 +56,6 @@ const Login = () => {
   const login = async () => {
     if (validate() === true) {
       try {
-        // console.log(CLIENT_ID, CLIENT_SECRET);
         setLoading(true);
         const res = await Apis.post(
           endpoints["login"],
@@ -106,9 +105,13 @@ const Login = () => {
           }
         }
       } catch (ex) {
+        let m = ex.response?.data?.error_description || ex.message;
+        if (m === "Invalid credentials given.") {
+          m = "Thông tin đăng nhập không đúng.";
+        }
         setMsg({
           type: "error",
-          msg: ex.response?.data?.error_description || ex.message,
+          msg: m,
         });
       } finally {
         setLoading(false);

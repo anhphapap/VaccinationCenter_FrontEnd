@@ -93,7 +93,7 @@ const InjectionForm = ({ route, mode = "user" }) => {
       const token = await AsyncStorage.getItem("token");
 
       const res = await authApis(token).get(
-        endpoints.userCertificate(data.user.id, data.id),
+        endpoints.userCertificate(data.id),
         { responseType: "arraybuffer" }
       );
 
@@ -112,7 +112,6 @@ const InjectionForm = ({ route, mode = "user" }) => {
         await FileSystem.writeAsStringAsync(path, base64Data, {
           encoding: FileSystem.EncodingType.Base64,
         });
-        console.log("File downloaded successfully");
 
         const uri = await FileSystem.getContentUriAsync(path);
         await IntentLauncher.startActivityAsync("android.intent.action.VIEW", {
