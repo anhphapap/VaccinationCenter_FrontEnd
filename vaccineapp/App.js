@@ -444,7 +444,7 @@ const App = () => {
       try {
         const jsonValue = await AsyncStorage.getItem("user");
         const expiresIn = await AsyncStorage.getItem("expires_in");
-        if (expiresIn && Date.now() > expiresIn) {
+        if (expiresIn && Date.now() > parseInt(expiresIn)) {
           dispatch({ type: "logout" });
         } else if (jsonValue) {
           const savedUser = JSON.parse(jsonValue);
