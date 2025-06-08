@@ -7,6 +7,7 @@ export default (current, action) => {
     case "logout":
       AsyncStorage.removeItem("token");
       AsyncStorage.removeItem("user");
+      AsyncStorage.removeItem("expires_in");
       return null;
     case "update":
       return action.payload;

@@ -73,6 +73,10 @@ const Login = () => {
           }
         );
         await AsyncStorage.setItem("token", res.data.access_token);
+        await AsyncStorage.setItem(
+          "expires_in",
+          Date.now() + res.data.expires_in * 1000
+        );
         let u = await authApis(res.data.access_token).get(
           endpoints.currentUser
         );

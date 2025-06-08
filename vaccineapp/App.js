@@ -443,7 +443,10 @@ const App = () => {
     const bootstrapAsync = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem("user");
-        if (jsonValue) {
+        const expiresIn = await AsyncStorage.getItem("expires_in");
+        if (expiresIn && Date.now() > expiresIn) {
+          dispatch({ type: "logout" });
+        } else if (jsonValue) {
           const savedUser = JSON.parse(jsonValue);
           dispatch({ type: "login", payload: savedUser });
         }
